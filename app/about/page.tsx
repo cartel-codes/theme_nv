@@ -23,7 +23,7 @@ export default function AboutPage() {
                         Our pieces are designed in our Casablanca atelier, blending modern minimalist silhouettes with the deep technical expertise of local artisans. Each garment is part of a numbered series, limited to just 100 pieces worldwide.
                     </p>
                     <p>
-                        This isn't just clothing; it's a commitment to rarity, quality, and a more intentional way of life.
+                        This isn&apos;t just clothing; it&apos;s a commitment to rarity, quality, and a more intentional way of life.
                     </p>
                 </div>
             </div>
