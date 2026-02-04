@@ -13,50 +13,50 @@ export default function Footer() {
             >
               Novraux
             </Link>
-            <p className="mt-6 text-sm text-novraux-grey leading-relaxed max-w-xs">
+            <p className="mt-6 text-sm text-novraux-beige/60 leading-relaxed max-w-xs">
               Contemporary luxury, limited edition fashion. Handcrafted with intention in our Casablanca atelier.
             </p>
           </div>
 
           {/* Shop Links */}
           <div>
-            <h4 className="text-[13px] font-semibold tracking-editorial uppercase mb-6">Shop</h4>
+            <h4 className="text-[13px] font-semibold tracking-editorial uppercase mb-6 text-novraux-cream">Shop</h4>
             <ul className="space-y-4">
-              <li><Link href="/products" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">All Creations</Link></li>
-              <li><Link href="/products" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">New Arrivals</Link></li>
-              <li><Link href="/products" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Limited Editions</Link></li>
+              <li><Link href="/products" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">All Creations</Link></li>
+              <li><Link href="/products" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">New Arrivals</Link></li>
+              <li><Link href="/products" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Limited Editions</Link></li>
             </ul>
           </div>
 
           {/* About Links */}
           <div>
-            <h4 className="text-[13px] font-semibold tracking-editorial uppercase mb-6">Brand</h4>
+            <h4 className="text-[13px] font-semibold tracking-editorial uppercase mb-6 text-novraux-cream">Brand</h4>
             <ul className="space-y-4">
-              <li><Link href="/about" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Our Story</Link></li>
-              <li><Link href="/blog" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Editorial</Link></li>
-              <li><Link href="/about" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Atelier</Link></li>
+              <li><Link href="/about" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Our Story</Link></li>
+              <li><Link href="/blog" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Editorial</Link></li>
+              <li><Link href="/about" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Atelier</Link></li>
             </ul>
           </div>
 
           {/* Support Links */}
           <div>
-            <h4 className="text-[13px] font-semibold tracking-editorial uppercase mb-6">Support</h4>
+            <h4 className="text-[13px] font-semibold tracking-editorial uppercase mb-6 text-novraux-cream">Support</h4>
             <ul className="space-y-4">
-              <li><Link href="/contact" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Contact</Link></li>
-              <li><Link href="/contact" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Shipping</Link></li>
-              <li><Link href="/contact" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Returns</Link></li>
+              <li><Link href="/contact" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Contact</Link></li>
+              <li><Link href="/contact" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Shipping</Link></li>
+              <li><Link href="/contact" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Returns</Link></li>
             </ul>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-16 pt-8 border-t border-novraux-grey/20 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-novraux-grey tracking-widest uppercase">
+        <div className="mt-16 pt-8 border-t border-novraux-beige/10 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-novraux-beige/40 tracking-widest uppercase">
             © {new Date().getFullYear()} Novraux. All rights reserved.
           </p>
           <div className="flex gap-8">
             {['Instagram', 'Pinterest', 'X'].map((social) => (
-              <a key={social} href="#" className="text-xs text-novraux-grey hover:text-novraux-cream uppercase tracking-widest transition-colors">
+              <a key={social} href="#" className="text-xs text-novraux-beige/40 hover:text-novraux-cream uppercase tracking-widest transition-colors">
                 {social}
               </a>
             ))}

@@ -12,7 +12,7 @@ const config: Config = {
         novraux: {
           cream: "#FAF8F5",
           charcoal: "#2B2B2B",
-          grey: "#8B8680",
+          grey: "#55524F",
           beige: "#E8E3DC",
           terracotta: "#C97D60",
           navy: "#1A3A52",
