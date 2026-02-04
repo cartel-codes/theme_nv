@@ -2,70 +2,65 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[rgba(201,169,110,0.12)] bg-[#111111]">
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
-          <div>
+    <footer className="bg-novraux-charcoal text-novraux-cream px-4 py-16 lg:px-8">
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+          {/* Brand Info */}
+          <div className="col-span-1 lg:col-span-1">
             <Link
               href="/"
-              className="font-serif text-lg font-light tracking-[0.25em] text-[#e8e4df] uppercase transition-colors hover:text-[#c9a96e]"
+              className="font-serif text-2xl font-medium tracking-editorial-widest uppercase hover:text-novraux-terracotta transition-colors"
             >
               Novraux
             </Link>
-            <p className="mt-2 text-sm tracking-[0.08em] text-[#6b6560] uppercase">
-              A new chapter in fashion — built on intention, rooted in craft.
+            <p className="mt-6 text-sm text-novraux-grey leading-relaxed max-w-xs">
+              Contemporary luxury, limited edition fashion. Handcrafted with intention in our Casablanca atelier.
             </p>
           </div>
-          <nav className="flex flex-wrap items-center gap-8">
-            <Link
-              href="/products"
-              className="text-sm tracking-[0.18em] text-[#6b6560] uppercase transition-colors hover:text-[#c9a96e]"
-            >
-              Products
-            </Link>
-            <Link
-              href="/blog"
-              className="text-sm tracking-[0.18em] text-[#6b6560] uppercase transition-colors hover:text-[#c9a96e]"
-            >
-              Journal
-            </Link>
-            <Link
-              href="/cart"
-              className="text-sm tracking-[0.18em] text-[#6b6560] uppercase transition-colors hover:text-[#c9a96e]"
-            >
-              Cart
-            </Link>
-            <span className="h-px w-8 bg-[rgba(201,169,110,0.2)]" />
-            <a
-              href="https://instagram.com/novraux"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm tracking-[0.18em] text-[#6b6560] uppercase transition-colors hover:text-[#c9a96e]"
-            >
-              Instagram
-            </a>
-            <a
-              href="https://twitter.com/novraux"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm tracking-[0.18em] text-[#6b6560] uppercase transition-colors hover:text-[#c9a96e]"
-            >
-              X
-            </a>
-            <a
-              href="https://www.tiktok.com/@novraux"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm tracking-[0.18em] text-[#6b6560] uppercase transition-colors hover:text-[#c9a96e]"
-            >
-              TikTok
-            </a>
-          </nav>
+
+          {/* Shop Links */}
+          <div>
+            <h4 className="text-[13px] font-semibold tracking-editorial uppercase mb-6">Shop</h4>
+            <ul className="space-y-4">
+              <li><Link href="/products" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">All Creations</Link></li>
+              <li><Link href="/products" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">New Arrivals</Link></li>
+              <li><Link href="/products" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Limited Editions</Link></li>
+            </ul>
+          </div>
+
+          {/* About Links */}
+          <div>
+            <h4 className="text-[13px] font-semibold tracking-editorial uppercase mb-6">Brand</h4>
+            <ul className="space-y-4">
+              <li><Link href="/about" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Our Story</Link></li>
+              <li><Link href="/blog" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Editorial</Link></li>
+              <li><Link href="/about" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Atelier</Link></li>
+            </ul>
+          </div>
+
+          {/* Support Links */}
+          <div>
+            <h4 className="text-[13px] font-semibold tracking-editorial uppercase mb-6">Support</h4>
+            <ul className="space-y-4">
+              <li><Link href="/contact" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Contact</Link></li>
+              <li><Link href="/contact" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Shipping</Link></li>
+              <li><Link href="/contact" className="text-sm text-novraux-grey hover:text-novraux-cream transition-colors">Returns</Link></li>
+            </ul>
+          </div>
         </div>
-        <div className="mt-8 border-t border-[rgba(201,169,110,0.12)] pt-8">
-          <p className="text-center text-xs tracking-[0.18em] text-[#6b6560] uppercase">
-            © {new Date().getFullYear()} Novraux
+
+        {/* Bottom Bar */}
+        <div className="mt-16 pt-8 border-t border-novraux-grey/20 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-novraux-grey tracking-widest uppercase">
+            © {new Date().getFullYear()} Novraux. All rights reserved.
           </p>
+          <div className="flex gap-8">
+            {['Instagram', 'Pinterest', 'X'].map((social) => (
+              <a key={social} href="#" className="text-xs text-novraux-grey hover:text-novraux-cream uppercase tracking-widest transition-colors">
+                {social}
+              </a>
+            ))}
+          </div>
         </div>
       </div>
     </footer>

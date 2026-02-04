@@ -10,24 +10,21 @@ const config: Config = {
     extend: {
       colors: {
         novraux: {
-          bg: "#0a0a0a",
-          "bg-subtle": "#111111",
-          text: "#e8e4df",
-          "text-dim": "#6b6560",
-          accent: "#c9a96e",
-          "accent-light": "#d4bc8d",
-          "accent-dim": "rgba(201, 169, 110, 0.15)",
-          border: "rgba(201, 169, 110, 0.12)",
+          cream: "#FAF8F5",
+          charcoal: "#2B2B2B",
+          grey: "#8B8680",
+          beige: "#E8E3DC",
+          terracotta: "#C97D60",
+          navy: "#1A3A52",
         },
       },
       fontFamily: {
         serif: ["var(--font-cormorant)", "Cormorant Garamond", "serif"],
-        sans: ["var(--font-inter)", "Inter", "sans-serif"],
+        sans: ["var(--font-jost)", "Jost", "sans-serif"],
       },
       letterSpacing: {
-        "novraux": "0.3em",
-        "novraux-sm": "0.2em",
-        "novraux-xs": "0.08em",
+        "editorial": "0.2em",
+        "editorial-widest": "0.3em",
       },
     },
   },

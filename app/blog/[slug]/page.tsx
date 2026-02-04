@@ -64,68 +64,97 @@ export default async function BlogPostPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: generateJsonLd(jsonLd) }}
       />
-      <article className="container mx-auto max-w-3xl px-4 py-16">
-        <nav className="mb-10 text-sm tracking-[0.12em] text-[#6b6560] uppercase">
-          <Link href="/blog" className="transition-colors hover:text-[#c9a96e]">
-            Journal
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-[#e8e4df]">{post.title}</span>
-        </nav>
+      <article className="bg-novraux-cream min-h-screen">
+        {/* Hero Section */}
+        <header className="container mx-auto px-4 pt-24 pb-16 lg:px-8 max-w-4xl text-center">
+          <nav className="mb-12 flex justify-center items-center gap-4 text-[11px] font-semibold tracking-editorial text-novraux-grey uppercase">
+            <Link href="/blog" className="transition-colors hover:text-novraux-charcoal">
+              Journal
+            </Link>
+            <span className="w-1 h-1 bg-novraux-terracotta rounded-full" />
+            <span className="text-novraux-charcoal">{post.title}</span>
+          </nav>
 
-        <p className="text-xs tracking-[0.2em] text-[#c9a96e] uppercase">
-          {new Date(post.publishedAt).toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-          })}
-        </p>
-        <h1 className="mt-2 font-serif text-3xl font-light tracking-[0.1em] text-[#e8e4df] md:text-4xl">
-          {post.title}
-        </h1>
+          <span className="text-[11px] font-semibold tracking-editorial uppercase text-novraux-terracotta">
+            {new Date(post.publishedAt).toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric',
+            })}
+          </span>
+          <h1 className="mt-6 font-serif text-4xl md:text-5xl lg:text-6xl font-medium text-novraux-charcoal leading-tight">
+            {post.title}
+          </h1>
+          {post.excerpt && (
+            <p className="mt-8 text-lg font-medium text-novraux-grey leading-relaxed max-w-2xl mx-auto italic">
+              {post.excerpt}
+            </p>
+          )}
+        </header>
 
         {post.imageUrl && (
-          <div className="relative mt-10 aspect-[16/9] overflow-hidden border border-[rgba(201,169,110,0.12)]">
-            <Image
-              src={post.imageUrl}
-              alt={post.title}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 672px"
-              priority
-            />
+          <div className="container mx-auto px-4 lg:px-8 max-w-6xl mb-20">
+            <div className="relative aspect-[16/9] overflow-hidden bg-novraux-beige">
+              <Image
+                src={post.imageUrl}
+                alt={post.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1200px) 100vw, 1200px"
+                priority
+              />
+            </div>
           </div>
         )}
 
-        <div className="mt-12 space-y-6 text-[#e8e4df]">
-          {paragraphs.map((para, i) => {
-            if (para.startsWith('**') && para.endsWith('**')) {
-              return (
-                <h3
-                  key={i}
-                  className="font-serif text-lg font-light text-[#c9a96e]"
-                >
-                  {para.replace(/\*\*/g, '')}
-                </h3>
-              );
-            }
-            return (
-              <p
-                key={i}
-                className="leading-relaxed tracking-[0.02em] text-[#e8e4df]/90"
-              >
-                {para.replace(/\*\*(.*?)\*\*/g, '$1')}
-              </p>
-            );
-          })}
-        </div>
+        <div className="container mx-auto px-4 pb-32 lg:px-8 max-w-2xl">
+          <div className="prose prose-novraux prose-lg mx-auto">
+            <div className="space-y-10 text-novraux-charcoal leading-[1.8] font-sans text-[17px]">
+              {paragraphs.map((para, i) => {
+                if (para.startsWith('**') && para.endsWith('**')) {
+                  return (
+                    <h2
+                      key={i}
+                      className="font-serif text-3xl font-medium text-novraux-charcoal pt-8"
+                    >
+                      {para.replace(/\*\*/g, '')}
+                    </h2>
+                  );
+                }
+                return (
+                  <p
+                    key={i}
+                    className="tracking-[0.01em]"
+                  >
+                    {para.replace(/\*\*(.*?)\*\*/g, '$1')}
+                  </p>
+                );
+              })}
+            </div>
+          </div>
 
-        <Link
-          href="/blog"
-          className="mt-16 inline-block text-sm tracking-[0.2em] text-[#6b6560] uppercase transition-colors hover:text-[#c9a96e]"
-        >
-          ← Back to Journal
-        </Link>
+          <div className="mt-24 pt-12 border-t border-novraux-beige flex flex-col items-center">
+            <p className="text-xs font-semibold tracking-editorial uppercase text-novraux-grey mb-8">
+              Share this story
+            </p>
+            <div className="flex gap-12">
+              {['Facebook', 'Twitter', 'Pinterest'].map((social) => (
+                <button key={social} className="text-[11px] font-semibold tracking-editorial uppercase text-novraux-charcoal hover:text-novraux-terracotta transition-colors">
+                  {social}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-24 text-center">
+            <Link
+              href="/blog"
+              className="inline-block text-sm font-semibold tracking-editorial border-b border-novraux-charcoal pb-1 uppercase text-novraux-charcoal hover:text-novraux-terracotta hover:border-novraux-terracotta transition-colors"
+            >
+              ← Back to Journal
+            </Link>
+          </div>
+        </div>
       </article>
     </>
   );

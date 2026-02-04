@@ -16,54 +16,65 @@ export default async function BlogPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <p className="text-xs tracking-[0.25em] text-[#c9a96e] uppercase">
-        Journal
-      </p>
-      <h1 className="mt-2 font-serif text-3xl font-light tracking-[0.2em] text-[#e8e4df] uppercase md:text-4xl">
-        Stories & Essays
-      </h1>
-      <p className="mt-4 max-w-xl text-sm tracking-[0.08em] text-[#6b6560] uppercase">
-        Thoughts on fashion, craft, and intentional living.
-      </p>
+    <div className="bg-novraux-cream min-h-screen">
+      <div className="container mx-auto px-4 py-24 lg:px-8">
+        <div className="text-center mb-20">
+          <span className="text-xs font-semibold tracking-editorial uppercase text-novraux-terracotta">
+            The Journal
+          </span>
+          <h1 className="mt-4 font-serif text-4xl md:text-5xl font-medium text-novraux-charcoal uppercase">
+            Stories & Perspectives
+          </h1>
+          <p className="mt-6 text-novraux-grey max-w-xl mx-auto">
+            Exploring the intersection of contemporary design, traditional craftsmanship, and intentional living.
+          </p>
+        </div>
 
-      <div className="mt-16 grid gap-12 md:grid-cols-2 lg:grid-cols-3">
-        {posts.map((post) => (
-          <article key={post.id}>
-            <Link href={`/blog/${post.slug}`} className="group block">
-              <div className="relative aspect-[4/3] overflow-hidden border border-[rgba(201,169,110,0.12)] bg-[#111111]">
-                {post.imageUrl ? (
-                  <Image
-                    src={post.imageUrl}
-                    alt={post.title}
-                    fill
-                    className="object-cover opacity-90 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center text-[#6b6560] text-sm tracking-[0.2em] uppercase">
-                    No image
+        <div className="grid gap-16 md:grid-cols-2 lg:grid-cols-3">
+          {posts.map((post) => (
+            <article key={post.id} className="group">
+              <Link href={`/blog/${post.slug}`} className="block">
+                <div className="relative aspect-[3/2] overflow-hidden bg-novraux-beige">
+                  {post.imageUrl ? (
+                    <Image
+                      src={post.imageUrl}
+                      alt={post.title}
+                      fill
+                      className="object-cover transition-all duration-700 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-novraux-grey text-[10px] tracking-editorial uppercase">
+                      No image
+                    </div>
+                  )}
+                </div>
+                <div className="mt-8">
+                  <span className="text-[10px] tracking-editorial uppercase text-novraux-terracotta font-semibold">
+                    {new Date(post.publishedAt).toLocaleDateString('en-US', {
+                      month: 'long',
+                      day: 'numeric',
+                      year: 'numeric',
+                    })}
+                  </span>
+                  <h2 className="mt-4 font-serif text-2xl font-medium text-novraux-charcoal group-hover:text-novraux-terracotta transition-colors leading-tight">
+                    {post.title}
+                  </h2>
+                  {post.excerpt && (
+                    <p className="mt-4 line-clamp-3 text-sm text-novraux-grey leading-relaxed">
+                      {post.excerpt}
+                    </p>
+                  )}
+                  <div className="mt-6">
+                    <span className="text-[11px] font-semibold tracking-editorial uppercase text-novraux-charcoal border-b border-novraux-charcoal pb-0.5 group-hover:text-novraux-terracotta group-hover:border-novraux-terracotta transition-all">
+                      Read Story
+                    </span>
                   </div>
-                )}
-              </div>
-              <p className="mt-4 text-xs tracking-[0.2em] text-[#6b6560] uppercase">
-                {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </p>
-              <h2 className="mt-2 font-serif text-xl font-light text-[#e8e4df] transition-colors group-hover:text-[#c9a96e]">
-                {post.title}
-              </h2>
-              {post.excerpt && (
-                <p className="mt-2 line-clamp-2 text-sm text-[#6b6560]">
-                  {post.excerpt}
-                </p>
-              )}
-            </Link>
-          </article>
-        ))}
+                </div>
+              </Link>
+            </article>
+          ))}
+        </div>
       </div>
     </div>
   );

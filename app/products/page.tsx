@@ -16,20 +16,28 @@ export default async function ProductsPage() {
   });
 
   return (
-    <div className="container mx-auto px-4 py-16">
-      <p className="text-xs tracking-[0.25em] text-[#c9a96e] uppercase">
-        Catalog
-      </p>
-      <h1 className="mt-2 font-serif text-3xl font-light tracking-[0.2em] text-[#e8e4df] uppercase md:text-4xl">
-        All Products
-      </h1>
-      <p className="mt-4 text-sm tracking-[0.08em] text-[#6b6560] uppercase">
-        {products.length} products
-      </p>
-      <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+    <div className="bg-novraux-cream min-h-screen">
+      <div className="container mx-auto px-4 py-24 lg:px-8">
+        <div className="text-center mb-16">
+          <span className="text-xs font-semibold tracking-editorial uppercase text-novraux-terracotta">
+            The Collection
+          </span>
+          <h1 className="mt-4 font-serif text-4xl md:text-5xl font-medium text-novraux-charcoal uppercase">
+            All Creations
+          </h1>
+          <p className="mt-6 text-novraux-grey max-w-xl mx-auto">
+            Discover our curated archive of limited series garments, each handcrafted with a commitment to refined minimalism.
+          </p>
+          <p className="mt-4 text-[10px] tracking-editorial uppercase text-novraux-grey/60 font-medium">
+            Showing {products.length} series
+          </p>
+        </div>
+
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
       </div>
     </div>
   );

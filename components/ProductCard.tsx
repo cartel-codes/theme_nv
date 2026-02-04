@@ -12,33 +12,45 @@ export default function ProductCard({ product }: ProductCardProps) {
   return (
     <Link
       href={`/products/${product.slug}`}
-      className="group flex flex-col overflow-hidden border border-[rgba(201,169,110,0.12)] bg-[#111111] transition-all duration-300 hover:border-[rgba(201,169,110,0.3)]"
+      className="group flex flex-col overflow-hidden bg-white shadow-sm hover:shadow-md transition-all duration-500"
     >
-      <div className="relative aspect-square bg-[#0a0a0a]">
+      <div className="relative aspect-[2/3] overflow-hidden bg-novraux-beige">
+        {/* Edition Badge */}
+        <div className="absolute top-4 left-4 z-10">
+          <span className="bg-white/90 backdrop-blur-sm px-3 py-1 text-[10px] font-semibold tracking-editorial uppercase text-novraux-charcoal">
+            Limited Edition
+          </span>
+        </div>
+
         {product.imageUrl ? (
           <Image
             src={product.imageUrl}
             alt={product.name}
             fill
-            className="object-cover opacity-90 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100"
+            className="object-cover transition-all duration-700 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
-          <div className="flex h-full items-center justify-center text-[#6b6560] text-sm tracking-[0.2em] uppercase">
+          <div className="flex h-full items-center justify-center text-novraux-grey text-xs tracking-editorial uppercase">
             No image
           </div>
         )}
       </div>
-      <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-serif text-lg font-light text-[#e8e4df] transition-colors group-hover:text-[#c9a96e]">
+      <div className="flex flex-col p-6">
+        <h3 className="font-serif text-xl font-medium text-novraux-charcoal group-hover:text-novraux-terracotta transition-colors">
           {product.name}
         </h3>
-        <p className="mt-2 line-clamp-2 text-sm tracking-[0.06em] text-[#6b6560]">
+        <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed text-novraux-grey">
           {product.description}
         </p>
-        <p className="mt-auto pt-4 font-serif text-[#c9a96e]">
-          ${price.toFixed(2)}
-        </p>
+        <div className="mt-4 flex items-center justify-between">
+          <p className="font-sans font-medium text-novraux-charcoal">
+            ${price.toFixed(2)}
+          </p>
+          <span className="text-[10px] tracking-editorial uppercase text-novraux-charcoal/40 group-hover:text-novraux-terracotta transition-colors">
+            Shop Now →
+          </span>
+        </div>
       </div>
     </Link>
   );

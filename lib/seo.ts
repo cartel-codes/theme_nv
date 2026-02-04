@@ -19,10 +19,10 @@ export function generateMetadata({
   noIndex = false,
 }: SEOProps): Metadata {
   const url = `${siteUrl}${path}`;
-  const fullTitle = title ? `${title} | Novraux` : 'Novraux - Modern E-commerce';
+  const fullTitle = title ? `${title} | Novraux` : 'Novraux — Contemporary Luxury & Limited Editions';
   const fullDescription =
     description ||
-    'Modern, SEO-optimized e-commerce platform. Discover quality products.';
+    'Discover contemporary luxury through our numbered series of limited edition fashion. Handcrafted in Casablanca, designed for the intentional.';
   const fullImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`) : `${siteUrl}/og-default.png`;
 
   return {
