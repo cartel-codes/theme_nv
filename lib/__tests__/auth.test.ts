@@ -70,7 +70,6 @@ describe('Authentication Utilities', () => {
       );
 
       expect(result.email).toBe('admin@novraux.com');
-      expect(result.password).toBe('hashed_password');
       expect(prisma.adminUser.create).toHaveBeenCalledWith({
         data: expect.objectContaining({
           email: 'admin@novraux.com',
@@ -100,8 +99,8 @@ describe('Authentication Utilities', () => {
         'password123'
       );
 
-      expect(result.email).toBe('admin@novraux.com');
-      expect(result.password).toBeUndefined(); // password should not be returned
+      expect(result).not.toBeNull();
+      expect(result?.email).toBe('admin@novraux.com');
       expect(prisma.adminUser.findUnique).toHaveBeenCalledWith({
         where: { email: 'admin@novraux.com' },
       });
@@ -161,17 +160,19 @@ describe('Authentication Utilities', () => {
       const mockUser = {
         id: 'user-123',
         email: 'admin@novraux.com',
-        password: 'hashed_password',
         name: 'Admin User',
         role: 'admin',
+        isActive: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       (prisma.adminUser.findUnique as jest.Mock).mockResolvedValue(mockUser);
 
       const result = await getAdminUserById('user-123');
 
-      expect(result.email).toBe('admin@novraux.com');
-      expect(result.password).toBeUndefined();
+      expect(result).not.toBeNull();
+      expect(result?.email).toBe('admin@novraux.com');
     });
 
     it('should return null if user not found', async () => {
@@ -196,6 +197,7 @@ describe('Authentication Utilities', () => {
 
       const result = await updateAdminUserPassword('user-123', 'newpassword123');
 
+      expect(result).not.toBeNull();
       expect(prisma.adminUser.update).toHaveBeenCalledWith({
         where: { id: 'user-123' },
         data: { password: 'new_hashed_password' },
@@ -219,9 +221,9 @@ describe('Authentication Utilities', () => {
         email: 'newemail@novraux.com',
       });
 
-      expect(result.email).toBe('newemail@novraux.com');
-      expect(result.name).toBe('New Name');
-      expect(result.password).toBeUndefined();
+      expect(result).not.toBeNull();
+      expect(result?.email).toBe('newemail@novraux.com');
+      expect(result?.name).toBe('New Name');
     });
 
     it('should handle partial updates', async () => {

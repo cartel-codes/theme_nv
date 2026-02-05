@@ -38,7 +38,8 @@ describe('Session Tracking', () => {
         userAgent: 'Mozilla/5.0',
       });
 
-      expect(result.userId).toBe('user-123');
+      expect(result).not.toBeNull();
+      expect(result?.userId).toBe('user-123');
       expect(prisma.adminSession.create).toHaveBeenCalled();
     });
 
@@ -60,7 +61,8 @@ describe('Session Tracking', () => {
         expiresIn: 24 * 60 * 60 * 1000,
       });
 
-      expect(result.expiresAt).toBeDefined();
+      expect(result).not.toBeNull();
+      expect(result?.expiresAt).toBeDefined();
     });
   });
 
@@ -85,7 +87,8 @@ describe('Session Tracking', () => {
 
       const result = await getSessionByToken('token-uuid');
 
-      expect(result.user.email).toBe('admin@novraux.com');
+      expect(result).not.toBeNull();
+      expect(result?.user?.email).toBe('admin@novraux.com');
       expect(prisma.adminSession.findUnique).toHaveBeenCalledWith({
         where: { sessionToken: 'token-uuid' },
         include: expect.any(Object),
@@ -106,7 +109,8 @@ describe('Session Tracking', () => {
 
       const result = await updateSessionActivity('token-uuid');
 
-      expect(result.lastActivity).toBeDefined();
+      expect(result).not.toBeNull();
+      expect(result?.lastActivity).toBeDefined();
       expect(prisma.adminSession.update).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { sessionToken: 'token-uuid' },
@@ -150,7 +154,8 @@ describe('Session Tracking', () => {
 
       const result = await getUserSessions('user-123');
 
-      expect(result).toHaveLength(2);
+      expect(result).not.toBeNull();
+      expect(result?.length).toBe(2);
       expect(prisma.adminSession.findMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
