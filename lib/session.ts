@@ -56,11 +56,13 @@ export async function getSession(): Promise<SessionData | null> {
   // Update last activity (fire and forget)
   updateSessionActivity(token).catch(() => { });
 
+  const user = dbSession.user as any;
+
   return {
-    id: dbSession.user.id,
-    email: dbSession.user.email,
-    username: (dbSession.user as any).username ?? undefined,
-    role: dbSession.user.role,
+    id: user.id,
+    email: user.email,
+    username: user.username ?? undefined,
+    role: user.role,
   };
 }
 
