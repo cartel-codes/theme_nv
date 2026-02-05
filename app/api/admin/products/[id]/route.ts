@@ -91,6 +91,7 @@ export async function PUT(
         ...(keywords !== undefined && { keywords }),
         ...(ogImage !== undefined && { ogImage }),
         ...(focusKeyword !== undefined && { focusKeyword }),
+        ...(images && Array.isArray(images) && images.length > 0 ? { imageUrl: images[0].url } : {}),
         ...(images && Array.isArray(images) && {
           images: {
             create: images.map((img: any, index: number) => ({

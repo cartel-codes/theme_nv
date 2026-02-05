@@ -101,6 +101,7 @@ export async function POST(request: NextRequest) {
         keywords,
         ogImage,
         focusKeyword,
+        imageUrl: images && Array.isArray(images) && images.length > 0 ? images[0].url : null,
         images: {
           create: Array.isArray(images)
             ? images.map((img: any, index: number) => ({

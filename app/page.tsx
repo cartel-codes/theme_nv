@@ -7,7 +7,13 @@ export default async function HomePage() {
   const [featuredProducts, latestPosts] = await Promise.all([
     prisma.product.findMany({
       take: 6,
-      include: { category: true },
+      include: {
+        category: true,
+        images: {
+          take: 1,
+          orderBy: { order: 'asc' }
+        }
+      },
       orderBy: { createdAt: 'desc' },
     }),
     prisma.post.findMany({

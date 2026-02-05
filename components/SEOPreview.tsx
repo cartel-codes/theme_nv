@@ -5,6 +5,7 @@ interface SEOPreviewProps {
     description: string;
     url: string;
     siteName?: string;
+    type?: 'product' | 'collection' | 'blog' | 'page';
 }
 
 export default function SEOPreview({
@@ -12,6 +13,7 @@ export default function SEOPreview({
     description,
     url,
     siteName = 'novraux.com',
+    type = 'product',
 }: SEOPreviewProps) {
     // Truncate title to ~60 chars for Google
     const displayTitle = title.length > 60 ? `${title.slice(0, 57)}...` : title;
@@ -22,9 +24,16 @@ export default function SEOPreview({
         : description;
 
     // Format URL for display
+    const typePath = {
+        product: 'products',
+        collection: 'collections',
+        blog: 'blog',
+        page: '',
+    }[type];
+
     const displayUrl = url
-        ? `${siteName} › products › ${url}`
-        : `${siteName} › products`;
+        ? `${siteName} › ${typePath ? `${typePath} › ` : ''}${url}`
+        : `${siteName}${typePath ? ` › ${typePath}` : ''}`;
 
     return (
         <div className="border border-neutral-200 dark:border-neutral-700 rounded-lg p-4 bg-white dark:bg-neutral-900">

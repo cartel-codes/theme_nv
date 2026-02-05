@@ -64,7 +64,13 @@ export default async function ProductPage({ params }: PageProps) {
       id: { not: product.id }
     },
     take: 4,
-    include: { category: true }
+    include: {
+      category: true,
+      images: {
+        take: 1,
+        orderBy: { order: 'asc' }
+      }
+    }
   });
 
   const price = Number(product.price);
@@ -240,6 +246,7 @@ export default async function ProductPage({ params }: PageProps) {
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {relatedProducts.map((relatedProduct) => {
                 const relatedPrice = Number(relatedProduct.price);
+                const relatedDisplayImage = relatedProduct.images?.[0]?.url || relatedProduct.imageUrl;
                 return (
                   <Link
                     key={relatedProduct.id}
@@ -247,9 +254,9 @@ export default async function ProductPage({ params }: PageProps) {
                     className="group"
                   >
                     <div className="relative aspect-square overflow-hidden border border-[rgba(201,169,110,0.12)] bg-[#0f0f0f] mb-4">
-                      {relatedProduct.imageUrl && (
+                      {relatedDisplayImage && (
                         <Image
-                          src={relatedProduct.imageUrl}
+                          src={relatedDisplayImage}
                           alt={relatedProduct.name}
                           fill
                           className="object-cover transition-transform duration-700 group-hover:scale-105"

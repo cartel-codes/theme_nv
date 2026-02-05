@@ -19,6 +19,7 @@ interface ProductFormProps {
 export default function ProductForm({ productId }: ProductFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [isAiGenerating, setIsAiGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -130,6 +131,53 @@ export default function ProductForm({ productId }: ProductFormProps) {
     }));
   };
 
+  const handleAiGenerateSEO = async () => {
+    const hasImages = formData.images && formData.images.length > 0;
+    if (!formData.name && !hasImages) return;
+
+    setIsAiGenerating(true);
+    setError(null);
+
+    try {
+      // Get the first image URL if available
+      const imageUrl = hasImages ? formData.images[0].url : undefined;
+
+      const res = await fetch('/api/admin/seo/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          description: formData.description,
+          type: 'product',
+          imageUrl // Pass the image URL
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || 'Failed to generate AI SEO');
+      }
+
+      const suggestion = await res.json();
+
+      setFormData(prev => ({
+        ...prev,
+        // Update name and description if they were empty and AI generated them
+        name: (!prev.name && suggestion.generatedName) ? suggestion.generatedName : prev.name,
+        description: (!prev.description && suggestion.generatedDescription) ? suggestion.generatedDescription : prev.description,
+
+        metaTitle: suggestion.metaTitle,
+        metaDescription: suggestion.metaDescription,
+        keywords: suggestion.keywords,
+        focusKeyword: suggestion.focusKeyword,
+      }));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'AI Generation failed');
+    } finally {
+      setIsAiGenerating(false);
+    }
+  };
+
   // Character counter color logic
   const getCharCountColor = (length: number, min: number, max: number) => {
     if (length === 0) return 'text-neutral-400';
@@ -231,14 +279,32 @@ export default function ProductForm({ productId }: ProductFormProps) {
       <div className="bg-white dark:bg-neutral-900 rounded border border-neutral-200 dark:border-neutral-700 p-6 space-y-6">
         <div className="flex items-center justify-between">
           <h2 className="font-serif text-xl dark:text-white">SEO Settings</h2>
-          <button
-            type="button"
-            onClick={handleAutoGenerateSEO}
-            disabled={!formData.name}
-            className="px-3 py-1.5 text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            ✨ Auto-generate
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={handleAutoGenerateSEO}
+              disabled={!formData.name}
+              className="px-3 py-1.5 text-xs font-medium bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 rounded hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              ✨ Basic Auto
+            </button>
+            <button
+              type="button"
+              onClick={handleAiGenerateSEO}
+              disabled={isAiGenerating || (!formData.name && (!formData.images || formData.images.length === 0))}
+              title={(!formData.name && (!formData.images || formData.images.length === 0)) ? "Enter a name OR upload an image to enable AI generation" : "Generate content using AI"}
+              className="px-3 py-1.5 text-xs font-medium bg-novraux-charcoal dark:bg-neutral-100 text-white dark:text-neutral-900 rounded hover:bg-black dark:hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+            >
+              {isAiGenerating ? (
+                <>
+                  <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                  Generating...
+                </>
+              ) : (
+                <>🤖 AI Generate</>
+              )}
+            </button>
+          </div>
         </div>
 
         {/* SEO Health Indicator */}

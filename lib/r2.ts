@@ -73,8 +73,9 @@ export async function uploadToR2(
 
     await client.send(command);
 
-    // Return the public URL
-    return `${config.publicUrl}/${key}`;
+    // Return the proxy URL instead of direct R2 URL to bypass public access restrictions
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001';
+    return `${siteUrl}/api/images/${key}`;
 }
 
 /**

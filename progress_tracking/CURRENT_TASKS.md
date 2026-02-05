@@ -7,32 +7,18 @@
 
 ## 🔴 High Priority - This Week
 
-## 🟢 Phase 3.1: Core SEO Fields (Completed)
+## 🔴 High Priority - This Week
 
-#### Database & Schema
-- [x] Review seo-2.md specification
-- [x] Design final Prisma schema (SEO fields)
-- [x] Create Prisma migration file
-- [x] Test migration in dev environment
-- **Status**: ✅ Complete
+### Phase 3.2: Category & Content SEO
 
-#### Admin Panel - Product Form
-- [x] Add "SEO" tab to product editor
-- [x] Create SEO fields component (reusable)
-- [x] Add meta title field + character counter
-- [x] Add meta description field + character counter
-- [x] Add OG image field
-- [x] Add focus keyword field
-- [x] Wire form to API endpoints
-- **Status**: ✅ Complete
-
-#### Frontend Integration
-- [x] Update `app/products/[slug]/page.tsx` metadata
-- [x] Read SEO from database instead of hardcode
-- [x] Implement fallback logic
-- [x] Add schema.org Product JSON-LD
-- [x] Test in browser DevTools
-- **Status**: ✅ Complete
+- [ ] Add SEO fields to Category Editor form
+- [ ] Implement SEO field support in Category API (GET/PUT)
+- [ ] Add character counters and health indicator to Category Form
+- [ ] Add validation warnings (length checks) to all forms
+- [ ] Polish UI to match Novraux luxury design
+- **Estimated**: 4-6 hours
+- **Owner**: TBD
+- **Status**: Ready to start
 
 ---
 

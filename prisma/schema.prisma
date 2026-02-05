@@ -9,25 +9,23 @@ datasource db {
 }
 
 model Product {
-  id              String  @id @default(cuid())
+  id              String         @id @default(cuid())
   name            String
-  slug            String  @unique
+  slug            String         @unique
   description     String?
-  price           Decimal @db.Decimal(10, 2)
+  price           Decimal        @db.Decimal(10, 2)
   imageUrl        String?
-  // SEO Fields
-  metaTitle       String?
-  metaDescription String?
+  categoryId      String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
   keywords        String?
-  ogImage         String?  // Custom Open Graph image URL for social sharing
-  focusKeyword    String?  // Primary keyword for SEO analysis
-
-  images     ProductImage[]
-  categoryId String?
-  category   Category?      @relation(fields: [categoryId], references: [id])
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
-  cartItems  CartItem[]
+  metaDescription String?
+  metaTitle       String?
+  focusKeyword    String?
+  ogImage         String?
+  cartItems       CartItem[]
+  category        Category?      @relation(fields: [categoryId], references: [id])
+  images          ProductImage[]
 
   @@index([categoryId])
   @@index([slug])
@@ -40,36 +38,33 @@ model ProductImage {
   order     Int      @default(0)
   isPrimary Boolean  @default(false)
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId])
 }
 
 model Category {
-  id              String  @id @default(cuid())
+  id              String    @id @default(cuid())
   name            String
-  slug            String  @unique
-  // SEO Fields
-  metaTitle       String?
+  slug            String    @unique
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
   metaDescription String?
-
-  products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  metaTitle       String?
+  description     String?
+  products        Product[]
 }
 
 model Cart {
   id        String     @id @default(cuid())
-  userId    String? // For authenticated users
-  sessionId String? // For guest users
-  items     CartItem[]
+  sessionId String?    @unique
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  userId    String?    @unique
+  items     CartItem[]
 
-  @@unique([userId])
-  @@unique([sessionId])
   @@index([userId])
   @@index([sessionId])
 }
@@ -77,42 +72,46 @@ model Cart {
 model CartItem {
   id        String   @id @default(cuid())
   cartId    String
-  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   quantity  Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([cartId, productId], name: "cartId_productId")
   @@index([cartId])
 }
 
 model Post {
-  id          String   @id @default(cuid())
-  title       String
-  slug        String   @unique
-  excerpt     String?
-  content     String
-  imageUrl    String?
-  publishedAt DateTime @default(now())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  excerpt         String?
+  content         String
+  imageUrl        String?
+  publishedAt     DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  focusKeyword    String?
+  keywords        String?
+  metaDescription String?
+  metaTitle       String?
+  ogImage         String?
 
   @@index([slug])
   @@index([publishedAt])
 }
 
 model AdminUser {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String // bcrypt hashed password
+  id        String          @id @default(cuid())
+  email     String          @unique
+  password  String
   name      String?
-  role      String   @default("admin") // admin, editor
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  role      String          @default("admin")
+  isActive  Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
   auditLogs AdminAuditLog[]
   sessions  AdminSession[]
 
@@ -122,15 +121,15 @@ model AdminUser {
 model AdminAuditLog {
   id           String     @id @default(cuid())
   userId       String?
-  user         AdminUser? @relation(fields: [userId], references: [id], onDelete: SetNull)
-  email        String? // Email of the action (in case user is deleted)
-  action       String // LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT, etc
+  email        String?
+  action       String
   ip           String?
   userAgent    String?
-  status       String // success, failed
+  status       String
   errorMessage String?
-  metadata     String? // JSON string for additional data
+  metadata     String?
   createdAt    DateTime   @default(now())
+  user         AdminUser? @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([email])
@@ -141,13 +140,13 @@ model AdminAuditLog {
 model AdminSession {
   id           String    @id @default(cuid())
   userId       String
-  user         AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
   sessionToken String    @unique
   ip           String?
   userAgent    String?
   expiresAt    DateTime
   createdAt    DateTime  @default(now())
   lastActivity DateTime  @updatedAt
+  user         AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([sessionToken])
@@ -155,20 +154,19 @@ model AdminSession {
 }
 
 model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  password      String // bcrypt hashed password
+  id            String         @id @default(cuid())
+  email         String         @unique
+  password      String
   firstName     String?
   lastName      String?
   avatar        String?
   phone         String?
-  isActive      Boolean  @default(true)
-  emailVerified Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  sessions  UserSession[]
-  auditLogs UserAuditLog[]
+  isActive      Boolean        @default(true)
+  emailVerified Boolean        @default(false)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  auditLogs     UserAuditLog[]
+  sessions      UserSession[]
 
   @@index([email])
 }
@@ -176,7 +174,6 @@ model User {
 model UserSession {
   id           String   @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   sessionToken String   @unique
   ip           String?
   userAgent    String?
@@ -184,6 +181,7 @@ model UserSession {
   expiresAt    DateTime
   createdAt    DateTime @default(now())
   lastActivity DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([sessionToken])
@@ -193,15 +191,15 @@ model UserSession {
 model UserAuditLog {
   id           String   @id @default(cuid())
   userId       String?
-  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
   email        String?
-  action       String // LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT, SIGNUP, PROFILE_UPDATE
+  action       String
   ip           String?
   userAgent    String?
-  status       String // success, failed
+  status       String
   errorMessage String?
-  metadata     String? // JSON string for additional data
+  metadata     String?
   createdAt    DateTime @default(now())
+  user         User?    @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([email])

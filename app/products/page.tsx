@@ -11,7 +11,13 @@ export const metadata: Metadata = getSEO({
 
 export default async function ProductsPage() {
   const products = await prisma.product.findMany({
-    include: { category: true },
+    include: {
+      category: true,
+      images: {
+        take: 1,
+        orderBy: { order: 'asc' }
+      }
+    },
     orderBy: { name: 'asc' },
   });
 

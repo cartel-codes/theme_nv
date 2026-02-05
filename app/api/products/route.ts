@@ -16,8 +16,13 @@ export async function GET(request: Request) {
           : { name: order as 'asc' | 'desc' };
 
     const products = await prisma.product.findMany({
-      where: category ? { category: { slug: category } } : undefined,
-      include: { category: true },
+      include: {
+        category: true,
+        images: {
+          take: 1,
+          orderBy: { order: 'asc' }
+        }
+      },
       orderBy,
     });
 

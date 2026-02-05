@@ -1,13 +1,18 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { Product } from '@prisma/client';
+import type { Product, ProductImage } from '@prisma/client';
+
+interface ProductWithImages extends Product {
+  images?: ProductImage[];
+}
 
 interface ProductCardProps {
-  product: Product;
+  product: ProductWithImages;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
   const price = Number(product.price);
+  const displayImage = product.images?.[0]?.url || product.imageUrl;
 
   return (
     <Link
@@ -21,20 +26,21 @@ export default function ProductCard({ product }: ProductCardProps) {
             Limited Edition
           </span>
         </div>
-
-        {product.imageUrl ? (
-          <Image
-            src={product.imageUrl}
-            alt={product.name}
-            fill
-            className="object-cover transition-all duration-700 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center text-novraux-grey dark:text-novraux-beige/50 text-xs tracking-editorial uppercase">
-            No image
-          </div>
-        )}
+        <div className="absolute inset-0">
+          {displayImage ? (
+            <Image
+              src={displayImage}
+              alt={product.name}
+              fill
+              className="object-cover transition-all duration-700 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-novraux-grey dark:text-novraux-beige/50 text-xs tracking-editorial uppercase">
+              No image
+            </div>
+          )}
+        </div>
       </div>
       <div className="flex flex-col p-6">
         <h3 className="font-serif text-xl font-medium text-novraux-charcoal dark:text-novraux-cream group-hover:text-novraux-terracotta transition-colors">

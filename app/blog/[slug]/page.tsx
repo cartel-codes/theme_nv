@@ -18,9 +18,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!post) return {};
 
   return getSEO({
-    title: post.title,
-    description: post.excerpt || undefined,
-    image: post.imageUrl || undefined,
+    title: post.metaTitle || post.title,
+    description: post.metaDescription || post.excerpt || undefined,
+    image: post.ogImage || post.imageUrl || undefined,
     path: `/blog/${post.slug}`,
   });
 }

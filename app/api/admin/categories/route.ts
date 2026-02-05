@@ -12,11 +12,11 @@ export async function GET(request: NextRequest) {
     const categories = await prisma.category.findMany({
       where: search
         ? {
-            OR: [
-              { name: { contains: search, mode: 'insensitive' } },
-              { slug: { contains: search, mode: 'insensitive' } },
-            ],
-          }
+          OR: [
+            { name: { contains: search, mode: 'insensitive' } },
+            { slug: { contains: search, mode: 'insensitive' } },
+          ],
+        }
         : undefined,
       include: {
         _count: {
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const { name, slug, metaTitle, metaDescription } = body;
+    const { name, slug, description, metaTitle, metaDescription } = body;
 
     if (!name || !slug) {
       return NextResponse.json(
@@ -68,6 +68,7 @@ export async function POST(request: NextRequest) {
       data: {
         name,
         slug,
+        description,
         metaTitle,
         metaDescription,
       },
