@@ -12,6 +12,11 @@ export const metadata: Metadata = getSEO({
 
 export default async function BlogPage() {
   const posts = await prisma.post.findMany({
+    where: {
+      publishedAt: {
+        not: null,
+      },
+    },
     orderBy: { publishedAt: 'desc' },
   });
 
