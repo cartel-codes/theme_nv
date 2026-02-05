@@ -24,6 +24,7 @@ model Product {
   focusKeyword    String?
   ogImage         String?
   cartItems       CartItem[]
+  orderItems      OrderItem[]
   category        Category?      @relation(fields: [categoryId], references: [id])
   images          ProductImage[]
 
@@ -165,6 +166,7 @@ model User {
   updatedAt     DateTime       @updatedAt
   auditLogs     UserAuditLog[]
   sessions      UserSession[]
+  orders        Order[]
 
   @@index([email])
 }
@@ -203,4 +205,56 @@ model UserAuditLog {
   @@index([email])
   @@index([action])
   @@index([createdAt])
+}
+
+enum OrderStatus {
+  pending
+  paid
+  processing
+  shipped
+  delivered
+  cancelled
+  refunded
+}
+
+model Order {
+  id              String       @id @default(cuid())
+  userId          String
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items           OrderItem[]
+  
+  subtotal        Decimal      @db.Decimal(10, 2) @default(0)
+  tax             Decimal      @db.Decimal(10, 2) @default(0)
+  shipping        Decimal      @db.Decimal(10, 2) @default(0)
+  total           Decimal      @db.Decimal(10, 2)
+  
+  status          OrderStatus  @default(pending)
+  shippingAddress String       // JSON string with address details
+  paymentId       String?      // Stripe payment intent ID
+  paymentStatus   String       @default("pending") // pending, processing, succeeded, failed
+  
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+  @@index([paymentId])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id              String   @id @default(cuid())
+  orderId         String
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id])
+  
+  quantity        Int
+  priceAtPurchase Decimal  @db.Decimal(10, 2)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@index([orderId])
+  @@index([productId])
 }
