@@ -122,7 +122,7 @@ export async function PUT(
 }
 
 /**
- * DELETE /api/admin/products/[id] - Delete a product
+ * DELETE /api/admin/products/[id] - Delete a product and clean up R2 images
  */
 export async function DELETE(
   request: NextRequest,
@@ -131,19 +131,58 @@ export async function DELETE(
   try {
     const { id } = await params;
 
+    // Fetch product with images to get URLs for R2 cleanup
     const existingProduct = await prisma.product.findUnique({
       where: { id },
+      include: {
+        images: true,
+      },
     });
 
     if (!existingProduct) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
+    // Collect all image URLs to delete from R2
+    const imageUrlsToDelete: string[] = [];
+
+    // Add images from the images relation
+    if (existingProduct.images && existingProduct.images.length > 0) {
+      imageUrlsToDelete.push(...existingProduct.images.map(img => img.url));
+    }
+
+    // Add legacy imageUrl if it exists and is different
+    if (existingProduct.imageUrl && !imageUrlsToDelete.includes(existingProduct.imageUrl)) {
+      imageUrlsToDelete.push(existingProduct.imageUrl);
+    }
+
+    // Delete images from R2 (import function dynamically to avoid issues)
+    if (imageUrlsToDelete.length > 0) {
+      console.log(`🗑️ Cleaning up ${imageUrlsToDelete.length} images from R2...`);
+
+      const { deleteFromR2 } = await import('@/lib/r2');
+
+      for (const url of imageUrlsToDelete) {
+        try {
+          await deleteFromR2(url);
+        } catch (r2Error) {
+          // Log but don't fail the delete - image may already be gone
+          console.warn('⚠️ Failed to delete image from R2:', url, r2Error);
+        }
+      }
+    }
+
+    // Delete product from database (cascades to images in DB)
     await prisma.product.delete({
       where: { id },
     });
 
-    return NextResponse.json({ message: 'Product deleted successfully' });
+    console.log('✅ Product deleted:', existingProduct.name);
+
+    return NextResponse.json({
+      message: 'Product deleted successfully',
+      deletedImages: imageUrlsToDelete.length
+    });
   } catch (error) {
     console.error('Failed to delete product:', error);
     return NextResponse.json(

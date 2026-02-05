@@ -83,18 +83,39 @@ export async function uploadToR2(
 
 /**
  * Delete a file from R2
+ * Handles both direct R2 URLs and proxy URLs (/api/images/...)
  */
 export async function deleteFromR2(url: string): Promise<void> {
     const config = getR2Config();
     const client = getR2Client();
 
-    if (!config.bucketName || !config.publicUrl) {
-        throw new Error('R2 delete failed: Missing bucket name or public URL configuration.');
+    if (!config.bucketName) {
+        throw new Error('R2 delete failed: Missing bucket name configuration.');
     }
 
-    // Extract the key from the URL, handling potential double slashes
-    const baseUrl = config.publicUrl;
-    const key = url.replace(`${baseUrl}/`, '');
+    // Extract the key from different URL formats
+    let key: string;
+
+    // Handle proxy URLs like http://localhost:3001/api/images/products/...
+    if (url.includes('/api/images/')) {
+        const match = url.match(/\/api\/images\/(.+)$/);
+        key = match ? match[1] : '';
+    }
+    // Handle direct R2 public URLs
+    else if (config.publicUrl && url.includes(config.publicUrl)) {
+        key = url.replace(`${config.publicUrl}/`, '');
+    }
+    // Handle full URLs with just the key path
+    else {
+        key = url.replace(/^https?:\/\/[^\/]+\//, '');
+    }
+
+    if (!key) {
+        console.warn('Could not extract R2 key from URL:', url);
+        return;
+    }
+
+    console.log('🗑️ Deleting from R2:', { url: url.slice(0, 60), key });
 
     const command = new DeleteObjectCommand({
         Bucket: config.bucketName,
@@ -102,6 +123,7 @@ export async function deleteFromR2(url: string): Promise<void> {
     });
 
     await client.send(command);
+    console.log('✅ Deleted from R2:', key);
 }
 
 /**

@@ -31,20 +31,27 @@ export async function generateSEOWithAI(
         throw new Error('AI_API_KEY is not configured in environment variables.');
     }
 
+    // Generate unique request ID to prevent caching
+    const requestId = `REQ-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+
     const prompt = `
 You are an expert luxury e-commerce SEO and content specialist for "Novraux", a high-end contemporary luxury brand.
+
+[REQUEST ID: ${requestId}] - Generate UNIQUE content for this specific request.
 
 ${imageUrl ? `CRITICAL: Analyze the provided IMAGE FIRST to identify the product/item. Then generate appropriate content based on what you see.
 
 VISUAL ANALYSIS INSTRUCTIONS:
-- Describe the item's key visual characteristics (material, color, design, style)
-- Identify the product category and type
-- Note unique features and design elements
-- Consider the luxury positioning and target audience` : ''}
+- Carefully examine EVERY detail of this specific image
+- Describe the item's key visual characteristics (material, color, design, style, texture, patterns)
+- Identify the product category and type based on what you SEE
+- Note unique features and design elements that make THIS item distinctive
+- Consider the luxury positioning and target audience
+- DO NOT reuse content from previous requests - this is a NEW, UNIQUE product` : ''}
 
 Input Data:
-Name: ${name || '(Will be generated based on visual analysis)'}
-Description: ${description || '(Will be generated based on visual analysis)'}
+Name: ${name || '(Generate a UNIQUE name based on visual analysis of THIS specific image)'}
+Description: ${description || '(Generate a UNIQUE description based on visual analysis of THIS specific image)'}
 
 Task: Generate luxury e-commerce content for a ${type}.
 
@@ -55,12 +62,12 @@ Requirements:
 4. Focus Keyword: The most important 1-3 word keyword for this ${type}
 5. Suggested Category: The primary category this ${type} belongs to (e.g., "Clothing", "Accessories", "Jewelry", "Home & Decor"). Just the category name, no description.
 6. Suggested Slug: A URL-friendly slugified version of the ${type} name (lowercase, hyphens instead of spaces, no special characters)
-${(!name || !description) ? `7. Content Generation: Generate suitable luxury "generatedName" and "generatedDescription" based on ${imageUrl ? 'WHAT YOU SEE IN THE IMAGE' : 'the provided information'}` : ''}
+${(!name || !description) ? `7. Content Generation: Generate UNIQUE luxury "generatedName" and "generatedDescription" based on ${imageUrl ? 'WHAT YOU SEE IN THE IMAGE - describe the specific item, its colors, materials, and unique characteristics' : 'the provided information'}` : ''}
 
 Response format MUST be valid JSON with NO markdown blocks:
 {
-    ${(!name) ? '"generatedName": "...(based on image if available)",' : ''}
-    ${(!description) ? '"generatedDescription": "...(based on image if available)",' : ''}
+    ${(!name) ? '"generatedName": "...(UNIQUE name based on image analysis)",' : ''}
+    ${(!description) ? '"generatedDescription": "...(UNIQUE description based on image analysis)",' : ''}
     "metaTitle": "...",
     "metaDescription": "...",
     "keywords": "keyword1, keyword2, keyword3",
@@ -69,7 +76,7 @@ Response format MUST be valid JSON with NO markdown blocks:
     "suggestedSlug": "product-slug-name"
 }
 
-${imageUrl ? 'Remember: BASE YOUR RESPONSE ON THE VISUAL ANALYSIS OF THE IMAGE PROVIDED' : ''}
+${imageUrl ? 'IMPORTANT: Your response MUST reflect the SPECIFIC visual content of THIS image. Do not generate generic content.' : ''}
     `;
 
     const messages: any[] = [
@@ -101,20 +108,20 @@ ${imageUrl ? 'Remember: BASE YOUR RESPONSE ON THE VISUAL ANALYSIS OF THE IMAGE P
             const response = await fetch(url, {
                 headers: { 'User-Agent': 'Novraux-AI/1.0' }
             });
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-            
+
             // Detect MIME type from header
             const contentType = response.headers.get('content-type') || 'image/jpeg';
             const mimeType = contentType.split(';')[0].trim();
             console.log('📸 Image MIME type detected:', mimeType);
-            
+
             const buffer = await response.arrayBuffer();
             const base64 = Buffer.from(buffer).toString('base64');
             console.log('✅ Image converted to base64, size:', Math.round(base64.length / 1024), 'KB');
-            
+
             return { base64, mimeType };
         } catch (err) {
             const errMsg = err instanceof Error ? err.message : String(err);
@@ -130,21 +137,21 @@ ${imageUrl ? 'Remember: BASE YOUR RESPONSE ON THE VISUAL ANALYSIS OF THE IMAGE P
         try {
             console.log('\n🤖 === GEMINI VISION ATTEMPT ===');
             console.log('🔍 Image URL received:', imageUrl.slice(0, 100), '...');
-            
+
             const { base64, mimeType } = await urlToBase64(imageUrl);
-            
+
             console.log('🎨 Preparing Gemini request with:');
             console.log('   - MIME type:', mimeType);
             console.log('   - Image size:', Math.round(base64.length / 1024), 'KB');
             console.log('   - Prompt length:', prompt.length, 'characters');
 
             const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${googleKey}`;
-            
+
             const geminiBody = {
                 contents: [{
                     parts: [
-                        { 
-                            text: prompt + "\n\n⚠️ CRITICAL: Return ONLY valid JSON. No markdown, no explanation." 
+                        {
+                            text: prompt + "\n\n⚠️ CRITICAL: Return ONLY valid JSON. No markdown, no explanation."
                         },
                         {
                             inline_data: {
@@ -178,7 +185,7 @@ ${imageUrl ? 'Remember: BASE YOUR RESPONSE ON THE VISUAL ANALYSIS OF THE IMAGE P
             const data = await response.json();
             console.log('✅ Gemini response received');
             console.log('   Candidates:', data.candidates?.length || 0);
-            
+
             const content = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
             if (!content) {
                 console.error('❌ No content in Gemini response');
@@ -193,7 +200,7 @@ ${imageUrl ? 'Remember: BASE YOUR RESPONSE ON THE VISUAL ANALYSIS OF THE IMAGE P
             const errMsg = error instanceof Error ? error.message : String(error);
             console.error('\n❌ === GEMINI VISION FAILED ===');
             console.error('   Error:', errMsg);
-            
+
             // ✅ Check if it's a localhost/proxy URL issue (expected in local development)
             if (imageUrl && (imageUrl.includes('localhost') || imageUrl.includes('127.0.0.1'))) {
                 console.warn('⚠️ Image is on localhost - cannot access from Gemini API');
@@ -228,7 +235,7 @@ ${imageUrl ? 'Remember: BASE YOUR RESPONSE ON THE VISUAL ANALYSIS OF THE IMAGE P
             body: JSON.stringify({
                 model: model, // llama-3.3-70b-versatile
                 messages: msgs,
-                temperature: 0.1,
+                temperature: 0.7, // Higher temperature for more varied outputs
                 response_format: { type: "json_object" }
             }),
         });
@@ -247,7 +254,7 @@ ${imageUrl ? 'Remember: BASE YOUR RESPONSE ON THE VISUAL ANALYSIS OF THE IMAGE P
             console.log('\n⚠️ Using TEXT-ONLY fallback (image analysis failed)');
             console.log('   Results will be generic, not based on the image\n');
         }
-        
+
         const textOnlyMessages = [
             { role: 'system', content: 'You are a luxury SEO assistant. You MUST respond ONLY with a valid JSON object. No markdown, no explanation.' },
             { role: 'user', content: prompt }
