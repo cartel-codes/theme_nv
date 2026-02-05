@@ -52,17 +52,39 @@ export default function CheckoutPage() {
         { number: 4, label: 'Payment', icon: '💳' },
     ];
 
-    // Load cart from localStorage
+    // Load cart from API
     useEffect(() => {
-        const savedCart = localStorage.getItem('cart');
-        if (savedCart) {
-            const items = JSON.parse(savedCart);
-            setCartItems(items);
-            validateCart(items);
-        } else {
-            setError('Your cart is empty');
-        }
+        fetchCart();
     }, []);
+
+    // Fetch cart from API
+    const fetchCart = async () => {
+        try {
+            const response = await fetch('/api/cart');
+            if (!response.ok) {
+                throw new Error('Failed to load cart');
+            }
+
+            const data = await response.json();
+            const items = data.items.map((item: any) => ({
+                productId: item.product.id,
+                name: item.product.name,
+                price: Number(item.product.price),
+                quantity: item.quantity,
+                imageUrl: item.product.imageUrl,
+                slug: item.product.slug,
+            }));
+
+            setCartItems(items);
+            if (items.length > 0) {
+                validateCart(items);
+            } else {
+                setError('Your cart is empty');
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to load cart');
+        }
+    };
 
     // Validate cart
     const validateCart = async (items: CartItem[]) => {
@@ -166,8 +188,6 @@ export default function CheckoutPage() {
                 throw new Error(data.error || 'Failed to complete order');
             }
 
-            // Clear cart and redirect to success page
-            localStorage.removeItem('cart');
             router.push(`/checkout/success?orderId=${orderId}`);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Checkout failed');

@@ -93,6 +93,22 @@ export async function POST(request: NextRequest) {
             include: { items: { include: { product: true } } },
         });
 
+        // Clear the user's cart after successful order
+        try {
+            const userCart = await prisma.cart.findUnique({
+                where: { userId: userSession.userId },
+            });
+
+            if (userCart) {
+                await prisma.cartItem.deleteMany({
+                    where: { cartId: userCart.id },
+                });
+            }
+        } catch (err) {
+            console.error('Failed to clear cart:', err);
+            // Don't fail the order if cart clearing fails
+        }
+
         // TODO: Send confirmation email
         // TODO: Update inventory/stock
         // TODO: Create fulfillment request
