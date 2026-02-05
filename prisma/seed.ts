@@ -1,8 +1,26 @@
 import { PrismaClient } from '@prisma/client';
 
+const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
 async function main() {
+  // Create default admin user
+  const defaultAdminPassword = await bcrypt.hash('admin123!', 10);
+  
+  await prisma.adminUser.upsert({
+    where: { email: 'admin@novraux.com' },
+    update: {},
+    create: {
+      email: 'admin@novraux.com',
+      password: defaultAdminPassword,
+      name: 'Admin',
+      role: 'admin',
+      isActive: true,
+    },
+  });
+
+  console.log('Created default admin user: admin@novraux.com / admin123!');
+
   // Create categories
   const clothing = await prisma.category.upsert({
     where: { slug: 'clothing' },

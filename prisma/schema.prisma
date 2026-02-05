@@ -15,6 +15,12 @@ model Product {
   description String?
   price       Decimal  @db.Decimal(10, 2)
   imageUrl    String?
+  // SEO Fields
+  metaTitle       String?
+  metaDescription String?
+  keywords        String?
+  
+  images      ProductImage[]
   categoryId  String?
   category    Category? @relation(fields: [categoryId], references: [id])
   createdAt   DateTime @default(now())
@@ -25,10 +31,28 @@ model Product {
   @@index([slug])
 }
 
+model ProductImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String?
+  order     Int      @default(0)
+  isPrimary Boolean  @default(false)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+}
+
 model Category {
   id        String    @id @default(cuid())
   name      String
   slug      String    @unique
+  // SEO Fields
+  metaTitle       String?
+  metaDescription String?
+  
   products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -70,3 +94,55 @@ model Post {
   @@index([slug])
   @@index([publishedAt])
 }
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // bcrypt hashed password
+  name      String?
+  role      String   @default("admin") // admin, editor
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  auditLogs AdminAuditLog[]
+  sessions  AdminSession[]
+
+  @@index([email])
+}
+
+model AdminAuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      AdminUser? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email     String?  // Email of the action (in case user is deleted)
+  action    String   // LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT, etc
+  ip        String?
+  userAgent String?
+  status    String   // success, failed
+  errorMessage String?
+  metadata  String?  // JSON string for additional data
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([email])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model AdminSession {
+  id          String   @id @default(cuid())
+  userId      String
+  user        AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionToken String   @unique
+  ip          String?
+  userAgent   String?
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  lastActivity DateTime @updatedAt
+
+  @@index([userId])
+  @@index([sessionToken])
+  @@index([expiresAt])
+}
+

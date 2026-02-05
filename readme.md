@@ -79,6 +79,30 @@ docker-compose down      # Stop Docker services
 docker-compose logs      # View logs
 ```
 
+## Admin Panel
+
+Access the secure admin panel at `http://localhost:3000/admin`
+
+**Default Credentials** (change in production):
+- Email: `admin@novraux.com`
+- Password: `admin123!`
+
+⚠️ **Important**: Change default password immediately in production!
+
+### Admin Features
+- Secure email/password authentication
+- Protected admin routes
+- Session-based authorization
+- Admin dashboard with user profile
+
+### Documentation
+- **Quick Start**: See [QUICK_REFERENCE.md](./QUICK_REFERENCE.md)
+- **Complete Guide**: See [documentation/ADMIN_AUTH_GUIDE.md](./documentation/ADMIN_AUTH_GUIDE.md)
+- **Setup & Deployment**: See [documentation/SETUP_AND_DEPLOYMENT.md](./documentation/SETUP_AND_DEPLOYMENT.md)
+- **API Reference**: See [documentation/API_REFERENCE.md](./documentation/API_REFERENCE.md)
+
+Full documentation available in `/documentation` folder.
+
 ## Environment Variables
 
 Create `.env.local` with:
@@ -146,15 +170,20 @@ docker-compose down -v
 - ✅ SEO optimization
 - ✅ Local Docker setup
 
-### Phase 2 (Next)
-- User authentication
+### Phase 2 (In Progress)
+- ✅ Admin authentication (login/signup/logout)
+- ✅ Secure admin dashboard
+- ✅ DB-backed sessions & cookies
+- ✅ Admin profile (name, email, password)
 - User accounts & order history
 - Wishlist
+- Product management via admin panel
 
 ### Phase 3 (Later)
 - PayPal Enterprise integration
 - Order management
 - Inventory tracking
+- Advanced admin features
 
 ## Troubleshooting
 
