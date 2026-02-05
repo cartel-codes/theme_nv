@@ -67,23 +67,28 @@ export default function ImageUploader({ images, onImagesChange }: ImageUploaderP
     }
 
     try {
-      // For now, use data URLs (in production, you'd upload to a cloud service)
+      // Upload images to R2
       const newImages: ImageItem[] = [];
 
       for (const file of imageFiles) {
-        const reader = new FileReader();
-        await new Promise((resolve, reject) => {
-          reader.onload = (e) => {
-            const dataUrl = e.target?.result as string;
-            newImages.push({
-              url: dataUrl,
-              alt: file.name.replace(/\.[^/.]+$/, ''),
-              isPrimary: images.length === 0 && newImages.length === 0,
-            });
-            resolve(null);
-          };
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to upload image');
+        }
+
+        const data = await response.json();
+        newImages.push({
+          url: data.url,
+          alt: file.name.replace(/\.[^/.]+$/, ''),
+          isPrimary: images.length === 0 && newImages.length === 0,
         });
       }
 
@@ -126,12 +131,12 @@ export default function ImageUploader({ images, onImagesChange }: ImageUploaderP
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className="border-2 border-dashed border-neutral-300 rounded-lg p-8 text-center transition-colors cursor-pointer hover:border-neutral-400"
+        className="border-2 border-dashed border-neutral-300 dark:border-neutral-600 rounded-lg p-8 text-center transition-colors cursor-pointer hover:border-neutral-400 dark:hover:border-neutral-500 dark:bg-neutral-800/50"
         onClick={() => fileInputRef.current?.click()}
       >
         <div className="space-y-2">
-          <p className="font-medium text-neutral-900">Drop images here or click to upload</p>
-          <p className="text-sm text-neutral-500">Supported formats: PNG, JPG, WebP</p>
+          <p className="font-medium text-neutral-900 dark:text-neutral-100">Drop images here or click to upload</p>
+          <p className="text-sm text-neutral-500 dark:text-neutral-400">Supported formats: PNG, JPG, WebP (Max 5MB)</p>
         </div>
         <input
           ref={fileInputRef}

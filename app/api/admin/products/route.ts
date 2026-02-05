@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const { name, slug, description, price, categoryId, metaTitle, metaDescription, keywords, images } = body;
+    const { name, slug, description, price, categoryId, metaTitle, metaDescription, keywords, ogImage, focusKeyword, images } = body;
 
     if (!name || !slug || !price) {
       return NextResponse.json(
@@ -99,14 +99,16 @@ export async function POST(request: NextRequest) {
         metaTitle,
         metaDescription,
         keywords,
+        ogImage,
+        focusKeyword,
         images: {
           create: Array.isArray(images)
             ? images.map((img: any, index: number) => ({
-                url: img.url,
-                alt: img.alt || name,
-                order: index,
-                isPrimary: index === 0,
-              }))
+              url: img.url,
+              alt: img.alt || name,
+              order: index,
+              isPrimary: index === 0,
+            }))
             : [],
         },
       },

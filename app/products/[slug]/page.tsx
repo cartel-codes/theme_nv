@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
-import { generateMetadata as getSEO, generateJsonLd } from '@/lib/seo';
+import { generateMetadata as getSEO, generateJsonLd, generateAutoTitle, generateAutoDescription } from '@/lib/seo';
 import AddToCartButton from './AddToCartButton';
 import ImageGallery from './ImageGallery';
 import ProductTabs from './ProductTabs';
@@ -16,16 +16,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params;
   const product = await prisma.product.findUnique({
     where: { slug },
-    include: { category: true },
+    include: {
+      category: true,
+      images: { orderBy: { order: 'asc' }, take: 1 }
+    },
   });
 
   if (!product) return {};
 
-  const imageUrl = product.imageUrl || '';
+  // Use database SEO fields with smart fallbacks
+  const title = product.metaTitle || generateAutoTitle(product.name);
+  const description = product.metaDescription || generateAutoDescription(product.description, product.name);
+
+  // Use ogImage, or first product image, or legacy imageUrl
+  const imageUrl = product.ogImage
+    || (product.images.length > 0 ? product.images[0].url : null)
+    || product.imageUrl
+    || '';
 
   return getSEO({
-    title: product.name,
-    description: product.description || undefined,
+    title,
+    description,
     image: imageUrl,
     path: `/products/${product.slug}`,
   });

@@ -19,6 +19,8 @@ model Product {
   metaTitle       String?
   metaDescription String?
   keywords        String?
+  ogImage         String?  // Custom Open Graph image URL for social sharing
+  focusKeyword    String?  // Primary keyword for SEO analysis
 
   images     ProductImage[]
   categoryId String?

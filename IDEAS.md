@@ -55,7 +55,60 @@ Novraux is a fashion/clothing brand being built from the ground up with a focus 
 
 ---
 
-## 5. Ideas & Brainstorming
+## 5. Phase 3: Dynamic SEO Management (Admin Panel)
+
+**Goal:** Empower non-technical admins to optimize SEO for every product/article without code changes.
+
+### Implementation Strategy
+- Database-driven SEO (instead of hardcoded)
+- Admin panel UI for managing SEO metadata
+- Dynamic metadata rendering from database
+- Smart fallbacks (auto-generate from product data)
+- SEO health indicators and preview tools
+
+### Key Components
+| Component | Purpose | Priority |
+|-----------|---------|----------|
+| **Database Schema** | Add SEO fields to Product, Article, Category | Phase 3.1 |
+| **Admin SEO Tab** | Edit meta title, description, OG image | Phase 3.1 |
+| **Search Preview** | Show how it looks in Google results | Phase 3.2 |
+| **Character Counters** | Validate meta length in real-time | Phase 3.2 |
+| **Auto-Generate** | Suggest SEO from product name/description | Phase 3.2 |
+| **SEO Health Indicator** | Show ✅/⚠️ for missing SEO | Phase 3.2 |
+| **Bulk Tools** | Bulk edit, auto-generate for 100s of products | Phase 3.3 |
+| **Audit Dashboard** | Find duplicate metas, missing alt text | Phase 3.3 |
+
+### Database Schema Updates Required
+```
+Product Model:
+  - metaTitle (String)
+  - metaDescription (String)
+  - ogImage (String)
+  - schemaBrand (String) - default: "Novraux"
+  - schemaCondition (String) - default: "NewCondition"
+
+Article Model:
+  - metaTitle (String)
+  - metaDescription (String)
+  - ogImage (String)
+  - focusKeyword (String)
+
+Category Model:
+  - metaTitle (String)
+  - metaDescription (String)
+```
+
+### Benefits
+- ✅ Non-technical team can optimize SEO
+- ✅ Per-product keyword targeting
+- ✅ Easy to maintain at scale (100+ products)
+- ✅ Smart fallbacks prevent empty meta tags
+- ✅ Visual feedback on SEO quality
+- ✅ Follow best practices (like Shopify, WooCommerce)
+
+---
+
+## 6. Ideas & Brainstorming
 
 <!-- Add new ideas, features, or notes below -->
 
