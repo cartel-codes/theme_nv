@@ -76,11 +76,11 @@ export default async function BlogPostPage({ params }: PageProps) {
           </nav>
 
           <span className="text-[11px] font-semibold tracking-editorial uppercase text-novraux-terracotta">
-            {new Date(post.publishedAt).toLocaleDateString('en-US', {
+            {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', {
               month: 'long',
               day: 'numeric',
               year: 'numeric',
-            })}
+            }) : 'Draft'}
           </span>
           <h1 className="mt-6 font-serif text-4xl md:text-5xl lg:text-6xl font-medium text-novraux-charcoal leading-tight">
             {post.title}

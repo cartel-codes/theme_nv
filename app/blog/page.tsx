@@ -51,11 +51,11 @@ export default async function BlogPage() {
                 </div>
                 <div className="mt-8">
                   <span className="text-[10px] tracking-editorial uppercase text-novraux-terracotta font-semibold">
-                    {new Date(post.publishedAt).toLocaleDateString('en-US', {
+                    {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', {
                       month: 'long',
                       day: 'numeric',
                       year: 'numeric',
-                    })}
+                    }) : 'Draft'}
                   </span>
                   <h2 className="mt-4 font-serif text-2xl font-medium text-novraux-charcoal group-hover:text-novraux-terracotta transition-colors leading-tight">
                     {post.title}
