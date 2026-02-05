@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 
 /**
@@ -91,6 +92,15 @@ export async function PUT(
                 ogImage,
             },
         });
+
+        // Revalidate the blog page if the post was published or slug changed
+        if (updatedPost.publishedAt) {
+            revalidatePath('/blog');
+        }
+        if (slug && slug !== existingPost.slug) {
+            revalidatePath(`/blog/${existingPost.slug}`);
+            revalidatePath(`/blog/${slug}`);
+        }
 
         return NextResponse.json(updatedPost);
     } catch (error) {

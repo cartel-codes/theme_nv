@@ -4,6 +4,9 @@ import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { generateMetadata as getSEO } from '@/lib/seo';
 
+// Revalidate the page every 60 seconds to show new published articles
+export const revalidate = 60;
+
 export const metadata: Metadata = getSEO({
   title: 'Journal',
   description: 'Fashion, style, and the art of dressing well. Essays on minimalist aesthetics and craftsmanship.',

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/prisma';
 
 /**
@@ -111,6 +112,9 @@ export async function POST(request: NextRequest) {
                 ogImage,
             },
         });
+
+        // Revalidate the blog page to show the new article
+        revalidatePath('/blog');
 
         return NextResponse.json(post, { status: 201 });
     } catch (error) {
