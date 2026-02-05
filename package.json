@@ -9,6 +9,7 @@
     "lint": "next lint",
     "type-check": "tsc --noEmit",
     "pre-deploy": "./scripts/pre-deploy.sh",
+    "db:health": "./scripts/db-health-check.sh",
     "db:migrate": "prisma migrate deploy",
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",

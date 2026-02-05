@@ -210,34 +210,34 @@ describe('Authentication Utilities', () => {
       const mockUser = {
         id: 'user-123',
         email: 'newemail@novraux.com',
-        name: 'New Name',
+        username: 'newuser',
         password: 'hashed',
       };
 
       (prisma.adminUser.update as jest.Mock).mockResolvedValue(mockUser);
 
       const result = await updateAdminUserProfile('user-123', {
-        name: 'New Name',
+        username: 'newuser',
         email: 'newemail@novraux.com',
       });
 
       expect(result).not.toBeNull();
       expect(result?.email).toBe('newemail@novraux.com');
-      expect(result?.name).toBe('New Name');
+      expect(result?.username).toBe('newuser');
     });
 
     it('should handle partial updates', async () => {
       const mockUser = {
         id: 'user-123',
         email: 'admin@novraux.com',
-        name: 'New Name',
+        username: 'newuser',
         password: 'hashed',
       };
 
       (prisma.adminUser.update as jest.Mock).mockResolvedValue(mockUser);
 
       await updateAdminUserProfile('user-123', {
-        name: 'New Name',
+        username: 'newuser',
       });
 
       expect(prisma.adminUser.update).toHaveBeenCalled();
