@@ -3,6 +3,7 @@ import { Cormorant_Garamond, Jost } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { AuthProvider } from '@/app/providers';
 import { generateMetadata as getBaseMetadata } from '@/lib/seo';
 
 const cormorant = Cormorant_Garamond({
@@ -31,9 +32,11 @@ export default function RootLayout({
         <div className="ambient-bg" />
         <div className="grain-overlay" />
         <div className="relative z-10 flex min-h-screen flex-col">
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <AuthProvider>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </AuthProvider>
         </div>
       </body>
     </html>

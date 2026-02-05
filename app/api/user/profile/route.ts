@@ -28,20 +28,17 @@ export async function GET(req: NextRequest) {
     // Update activity
     await updateUserSessionActivity(sessionToken);
 
+    // Return user object directly as the response body for easier consumption
     return NextResponse.json({
-      user: session.user,
+      ...session.user,
       session: {
         id: session.id,
-        ip: session.ip,
-        userAgent: session.userAgent,
-        deviceName: session.deviceName,
-        createdAt: session.createdAt,
-        lastActivity: session.lastActivity,
         expiresAt: session.expiresAt,
-      },
+        lastActivity: session.lastActivity
+      }
     });
   } catch (error) {
-    console.error('Get profile error:', error);
+    console.error('[API] Get profile error:', error);
 
     return NextResponse.json(
       { error: 'Internal server error' },
