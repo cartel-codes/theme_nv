@@ -71,8 +71,12 @@ export default async function ProductPage({ params }: PageProps) {
     '@type': 'Product',
     name: product.name,
     description: product.description,
-    image: product.imageUrl,
+    image: galleryImages.map(img => img.url),  // Multiple images
     sku: product.id,
+    brand: {
+      '@type': 'Brand',
+      name: 'Novraux',
+    },
     offers: {
       '@type': 'Offer',
       price: price,
@@ -80,6 +84,12 @@ export default async function ProductPage({ params }: PageProps) {
       availability: 'https://schema.org/InStock',
     },
     url: `${siteUrl}/products/${product.slug}`,
+    ...(product.category && {
+      category: product.category.name,
+    }),
+    ...(product.metaTitle && {
+      headline: product.metaTitle,
+    }),
   };
 
   // Tab content
