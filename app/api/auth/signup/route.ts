@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const userAgent = getUserAgent(req);
 
     try {
-        const { email, password, name } = await req.json();
+        const { email, password, username } = await req.json();
 
         if (!email || !password) {
             // Log failed signup attempt
@@ -58,13 +58,13 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const user = await createAdminUser(email, password, name);
+        const user = await createAdminUser(email, password, username || email.split('@')[0]);
 
         // Create session
         await createSession({
             id: user.id,
             email: user.email,
-            name: user.name || undefined,
+            username: (user as any).username || undefined,
             role: user.role,
         });
 
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
             userAgent,
             status: 'success',
             metadata: {
-                userName: user.name,
+                userName: (user as any).username,
                 userRole: user.role,
             },
         });

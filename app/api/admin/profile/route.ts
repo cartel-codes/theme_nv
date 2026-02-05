@@ -11,7 +11,7 @@ export async function GET() {
 
   const user = await prisma.adminUser.findUnique({
     where: { id: session.id },
-    select: { id: true, email: true, name: true, role: true, createdAt: true },
+    select: { id: true, email: true, username: true, role: true, createdAt: true } as any,
   });
 
   if (!user) {
@@ -29,7 +29,7 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { name, email } = body;
+    const { username, email } = body;
 
     if (email) {
       const existing = await prisma.adminUser.findFirst({
@@ -43,7 +43,7 @@ export async function PATCH(req: NextRequest) {
       }
     }
 
-    const user = await updateAdminUserProfile(session.id, { name, email });
+    const user = await updateAdminUserProfile(session.id, { username, email });
     return NextResponse.json(user);
   } catch (error) {
     console.error('Profile update error:', error);

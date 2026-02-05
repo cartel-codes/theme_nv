@@ -17,7 +17,7 @@ export default async function AdminProfilePage() {
 
       <ProfileForm
         initialEmail={session.email}
-        initialName={session.name || ''}
+        initialUsername={session.username || ''}
       />
     </div>
   );

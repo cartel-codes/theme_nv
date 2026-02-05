@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
             {
                 id: user.id,
                 email: user.email,
-                name: user.name || undefined,
+                username: (user as any).username || undefined,
                 role: user.role,
             },
             { ip, userAgent }
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
             userAgent,
             status: 'success',
             metadata: {
-                userName: user.name,
+                userName: (user as any).username,
                 userRole: user.role,
             },
         });

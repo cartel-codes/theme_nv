@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
             currentSession: {
                 userId: session.id,
                 email: session.email,
-                name: session.name,
+                username: session.username,
             },
         });
     } catch (error) {

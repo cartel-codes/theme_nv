@@ -4,11 +4,11 @@ import { useState } from 'react';
 
 interface ProfileFormProps {
   initialEmail: string;
-  initialName: string;
+  initialUsername: string;
 }
 
-export default function ProfileForm({ initialEmail, initialName }: ProfileFormProps) {
-  const [name, setName] = useState(initialName);
+export default function ProfileForm({ initialEmail, initialUsername }: ProfileFormProps) {
+  const [username, setUsername] = useState(initialUsername);
   const [email, setEmail] = useState(initialEmail);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileMessage, setProfileMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -27,7 +27,7 @@ export default function ProfileForm({ initialEmail, initialName }: ProfileFormPr
       const res = await fetch('/api/admin/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name || undefined, email }),
+        body: JSON.stringify({ username: username || undefined, email }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to update');
@@ -73,13 +73,13 @@ export default function ProfileForm({ initialEmail, initialName }: ProfileFormPr
         <h2 className="font-serif text-xl mb-6">Profile Information</h2>
         <form onSubmit={handleProfileSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-novraux-charcoal mb-1">Name</label>
+            <label className="block text-sm font-medium text-novraux-charcoal mb-1">Username</label>
             <input
               type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-2 border border-neutral-200 rounded focus:ring-2 focus:ring-novraux-charcoal/20 focus:border-novraux-charcoal"
-              placeholder="Your name"
+              placeholder="Your username"
             />
           </div>
           <div>

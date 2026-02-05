@@ -7,7 +7,7 @@ const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 export interface SessionData {
   id: string;
   email: string;
-  name?: string;
+  username?: string;
   role: string;
 }
 
@@ -54,12 +54,12 @@ export async function getSession(): Promise<SessionData | null> {
   if (!dbSession || dbSession.expiresAt < new Date()) return null;
 
   // Update last activity (fire and forget)
-  updateSessionActivity(token).catch(() => {});
+  updateSessionActivity(token).catch(() => { });
 
   return {
     id: dbSession.user.id,
     email: dbSession.user.email,
-    name: dbSession.user.name ?? undefined,
+    username: (dbSession.user as any).username ?? undefined,
     role: dbSession.user.role,
   };
 }
@@ -72,7 +72,7 @@ export async function destroySession() {
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
 
   if (token) {
-    await invalidateSession(token).catch(() => {});
+    await invalidateSession(token).catch(() => { });
   }
 
   cookieStore.delete(SESSION_COOKIE_NAME);

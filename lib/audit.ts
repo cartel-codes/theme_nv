@@ -1,6 +1,6 @@
 import { prisma } from './prisma';
 
-export type AuditAction = 
+export type AuditAction =
   | 'LOGIN_SUCCESS'
   | 'LOGIN_FAILED'
   | 'LOGOUT'
@@ -75,8 +75,8 @@ export async function getAuditLogs(options?: {
           select: {
             id: true,
             email: true,
-            name: true,
-          },
+            username: true,
+          } as any,
         },
       },
     }),

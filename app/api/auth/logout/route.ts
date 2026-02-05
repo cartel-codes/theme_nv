@@ -30,11 +30,11 @@ export async function POST(req: NextRequest) {
                 userAgent,
                 status: 'success',
                 metadata: {
-                    userName: session.name,
+                    userName: session.username,
                 },
             });
         }
-        
+
         return NextResponse.json(
             { success: true, message: 'Logged out successfully' },
             { status: 200 }

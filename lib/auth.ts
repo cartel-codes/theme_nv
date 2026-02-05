@@ -23,16 +23,16 @@ export async function comparePassword(plain: string, hash: string): Promise<bool
 export async function createAdminUser(
     email: string,
     password: string,
-    name?: string
+    username: string
 ) {
     const hashedPassword = await hashPassword(password);
-    
+
     return prisma.adminUser.create({
         data: {
             email,
             password: hashedPassword,
-            name,
-        },
+            username,
+        } as any,
     });
 }
 
@@ -49,7 +49,7 @@ export async function authenticateAdminUser(email: string, password: string) {
     }
 
     const isValid = await comparePassword(password, user.password);
-    
+
     if (!isValid) {
         return null;
     }
@@ -80,7 +80,7 @@ export async function getAdminUserById(id: string) {
  */
 export async function updateAdminUserPassword(userId: string, newPassword: string) {
     const hashedPassword = await hashPassword(newPassword);
-    
+
     return prisma.adminUser.update({
         where: { id: userId },
         data: { password: hashedPassword },
@@ -92,10 +92,10 @@ export async function updateAdminUserPassword(userId: string, newPassword: strin
  */
 export async function updateAdminUserProfile(
     userId: string,
-    data: { name?: string; email?: string }
+    data: { username?: string; email?: string }
 ) {
-    const updateData: { name?: string; email?: string } = {};
-    if (data.name !== undefined) updateData.name = data.name;
+    const updateData: { username?: string; email?: string } = {};
+    if (data.username !== undefined) updateData.username = data.username;
     if (data.email !== undefined) updateData.email = data.email;
 
     if (Object.keys(updateData).length === 0) {
