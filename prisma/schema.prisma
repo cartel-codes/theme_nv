@@ -146,3 +146,58 @@ model AdminSession {
   @@index([expiresAt])
 }
 
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // bcrypt hashed password
+  firstName String?
+  lastName  String?
+  avatar    String?
+  phone     String?
+  isActive  Boolean  @default(true)
+  emailVerified Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  sessions  UserSession[]
+  auditLogs UserAuditLog[]
+
+  @@index([email])
+}
+
+model UserSession {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionToken String   @unique
+  ip          String?
+  userAgent   String?
+  deviceName  String?
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+  lastActivity DateTime @updatedAt
+
+  @@index([userId])
+  @@index([sessionToken])
+  @@index([expiresAt])
+}
+
+model UserAuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email     String?
+  action    String   // LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT, SIGNUP, PROFILE_UPDATE
+  ip        String?
+  userAgent String?
+  status    String   // success, failed
+  errorMessage String?
+  metadata  String?  // JSON string for additional data
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([email])
+  @@index([action])
+  @@index([createdAt])
+}
+
