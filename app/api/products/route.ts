@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-async function getProducts(searchParams: URLSearchParams) {
+export async function getProducts(searchParams: URLSearchParams) {
   const category = searchParams.get('category');
   const sort = searchParams.get('sort') || 'name';
   const order = searchParams.get('order') || 'asc';

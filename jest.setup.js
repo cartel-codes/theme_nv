@@ -1,5 +1,14 @@
 require('@testing-library/jest-dom');
 
+// Mock global fetch
+global.fetch = jest.fn(() =>
+  Promise.resolve({
+    ok: false,
+    status: 404,
+    json: async () => ({}),
+  })
+);
+
 // Mock next/headers
 jest.mock('next/headers', () => ({
   cookies: jest.fn(() => ({

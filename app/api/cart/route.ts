@@ -35,6 +35,29 @@ export async function POST(request: Request) {
       );
     }
 
+    // Check if user is authenticated
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    const sessionToken = cookieStore.get('userSession')?.value;
+
+    if (!sessionToken) {
+      return NextResponse.json(
+        { error: 'Authentication required. Please log in to add items to cart.' },
+        { status: 401 }
+      );
+    }
+
+    // Verify session is valid
+    const { getUserSession } = await import('@/lib/user-auth');
+    const userSession = await getUserSession(sessionToken);
+
+    if (!userSession || !userSession.user) {
+      return NextResponse.json(
+        { error: 'Invalid or expired session. Please log in again.' },
+        { status: 401 }
+      );
+    }
+
     const product = await prisma.product.findUnique({
       where: { id: productId },
     });

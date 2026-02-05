@@ -9,23 +9,23 @@ datasource db {
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  description String?
-  price       Decimal  @db.Decimal(10, 2)
-  imageUrl    String?
+  id              String  @id @default(cuid())
+  name            String
+  slug            String  @unique
+  description     String?
+  price           Decimal @db.Decimal(10, 2)
+  imageUrl        String?
   // SEO Fields
   metaTitle       String?
   metaDescription String?
   keywords        String?
-  
-  images      ProductImage[]
-  categoryId  String?
-  category    Category? @relation(fields: [categoryId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  cartItems   CartItem[]
+
+  images     ProductImage[]
+  categoryId String?
+  category   Category?      @relation(fields: [categoryId], references: [id])
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+  cartItems  CartItem[]
 
   @@index([categoryId])
   @@index([slug])
@@ -46,13 +46,13 @@ model ProductImage {
 }
 
 model Category {
-  id        String    @id @default(cuid())
-  name      String
-  slug      String    @unique
+  id              String  @id @default(cuid())
+  name            String
+  slug            String  @unique
   // SEO Fields
   metaTitle       String?
   metaDescription String?
-  
+
   products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -60,10 +60,16 @@ model Category {
 
 model Cart {
   id        String     @id @default(cuid())
-  sessionId String     @unique
+  userId    String? // For authenticated users
+  sessionId String? // For guest users
   items     CartItem[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+
+  @@unique([userId])
+  @@unique([sessionId])
+  @@index([userId])
+  @@index([sessionId])
 }
 
 model CartItem {
@@ -76,7 +82,7 @@ model CartItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([cartId, productId])
+  @@unique([cartId, productId], name: "cartId_productId")
   @@index([cartId])
 }
 
@@ -98,7 +104,7 @@ model Post {
 model AdminUser {
   id        String   @id @default(cuid())
   email     String   @unique
-  password  String   // bcrypt hashed password
+  password  String // bcrypt hashed password
   name      String?
   role      String   @default("admin") // admin, editor
   isActive  Boolean  @default(true)
@@ -112,17 +118,17 @@ model AdminUser {
 }
 
 model AdminAuditLog {
-  id        String   @id @default(cuid())
-  userId    String?
-  user      AdminUser? @relation(fields: [userId], references: [id], onDelete: SetNull)
-  email     String?  // Email of the action (in case user is deleted)
-  action    String   // LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT, etc
-  ip        String?
-  userAgent String?
-  status    String   // success, failed
+  id           String     @id @default(cuid())
+  userId       String?
+  user         AdminUser? @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email        String? // Email of the action (in case user is deleted)
+  action       String // LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT, etc
+  ip           String?
+  userAgent    String?
+  status       String // success, failed
   errorMessage String?
-  metadata  String?  // JSON string for additional data
-  createdAt DateTime @default(now())
+  metadata     String? // JSON string for additional data
+  createdAt    DateTime   @default(now())
 
   @@index([userId])
   @@index([email])
@@ -131,15 +137,15 @@ model AdminAuditLog {
 }
 
 model AdminSession {
-  id          String   @id @default(cuid())
-  userId      String
-  user        AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
-  sessionToken String   @unique
-  ip          String?
-  userAgent   String?
-  expiresAt   DateTime
-  createdAt   DateTime @default(now())
-  lastActivity DateTime @updatedAt
+  id           String    @id @default(cuid())
+  userId       String
+  user         AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionToken String    @unique
+  ip           String?
+  userAgent    String?
+  expiresAt    DateTime
+  createdAt    DateTime  @default(now())
+  lastActivity DateTime  @updatedAt
 
   @@index([userId])
   @@index([sessionToken])
@@ -147,17 +153,17 @@ model AdminSession {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String   // bcrypt hashed password
-  firstName String?
-  lastName  String?
-  avatar    String?
-  phone     String?
-  isActive  Boolean  @default(true)
-  emailVerified Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String // bcrypt hashed password
+  firstName     String?
+  lastName      String?
+  avatar        String?
+  phone         String?
+  isActive      Boolean  @default(true)
+  emailVerified Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   sessions  UserSession[]
   auditLogs UserAuditLog[]
@@ -166,15 +172,15 @@ model User {
 }
 
 model UserSession {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   sessionToken String   @unique
-  ip          String?
-  userAgent   String?
-  deviceName  String?
-  expiresAt   DateTime
-  createdAt   DateTime @default(now())
+  ip           String?
+  userAgent    String?
+  deviceName   String?
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
   lastActivity DateTime @updatedAt
 
   @@index([userId])
@@ -183,21 +189,20 @@ model UserSession {
 }
 
 model UserAuditLog {
-  id        String   @id @default(cuid())
-  userId    String?
-  user      User? @relation(fields: [userId], references: [id], onDelete: SetNull)
-  email     String?
-  action    String   // LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT, SIGNUP, PROFILE_UPDATE
-  ip        String?
-  userAgent String?
-  status    String   // success, failed
+  id           String   @id @default(cuid())
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email        String?
+  action       String // LOGIN_SUCCESS, LOGIN_FAILED, LOGOUT, SIGNUP, PROFILE_UPDATE
+  ip           String?
+  userAgent    String?
+  status       String // success, failed
   errorMessage String?
-  metadata  String?  // JSON string for additional data
-  createdAt DateTime @default(now())
+  metadata     String? // JSON string for additional data
+  createdAt    DateTime @default(now())
 
   @@index([userId])
   @@index([email])
   @@index([action])
   @@index([createdAt])
 }
-
