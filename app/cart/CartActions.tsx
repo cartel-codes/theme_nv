@@ -51,7 +51,7 @@ export default function CartActions({ itemId, quantity }: CartActionsProps) {
 
   return (
     <div className="flex items-center gap-4">
-      <div className="flex items-center border border-[rgba(201,169,110,0.2)]">
+      <div className="flex items-center border border-[rgba(201,169,110,0.2)] dark:border-[rgba(201,169,110,0.2)]">
         <button
           onClick={() => updateQuantity(qty - 1)}
           disabled={loading || qty <= 1}
@@ -59,7 +59,7 @@ export default function CartActions({ itemId, quantity }: CartActionsProps) {
         >
           −
         </button>
-        <span className="min-w-[2.5rem] px-2 py-2 text-center text-sm text-[#e8e4df]">
+        <span className="min-w-[2.5rem] px-2 py-2 text-center text-sm text-[#2C2C2C] dark:text-[#e8e4df]">
           {qty}
         </span>
         <button

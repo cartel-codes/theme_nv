@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useCart } from '@/contexts/CartContext';
 import QuantitySelector from './QuantitySelector';
 
 interface AddToCartButtonProps {
@@ -14,38 +15,29 @@ export default function AddToCartButton({ productId }: AddToCartButtonProps) {
   const [added, setAdded] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
+  const { addToCart } = useCart();
 
   async function handleAddToCart() {
     setLoading(true);
     setError('');
 
-    try {
-      const res = await fetch('/api/cart', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId, quantity }),
-      });
+    const result = await addToCart(productId, quantity);
 
-      if (res.status === 401) {
-        const currentPath = window.location.pathname;
-        router.push(`/auth/login?redirect=${encodeURIComponent(currentPath)}`);
-        return;
-      }
-
-      if (res.ok) {
-        setAdded(true);
-        setTimeout(() => setAdded(false), 3000);
-        router.refresh();
-      } else {
-        const data = await res.json();
-        setError(data.error || 'Failed to add to cart');
-      }
-    } catch (err) {
-      console.error('Failed to add to cart:', err);
-      setError('An error occurred. Please try again.');
-    } finally {
+    if (result.error === 'auth_required') {
+      const currentPath = window.location.pathname;
+      router.push(`/auth/login?redirect=${encodeURIComponent(currentPath)}`);
       setLoading(false);
+      return;
     }
+
+    if (result.success) {
+      setAdded(true);
+      setTimeout(() => setAdded(false), 3000);
+    } else {
+      setError(result.error || 'Failed to add to cart');
+    }
+
+    setLoading(false);
   }
 
   return (

@@ -5,6 +5,8 @@ module.exports = {
   moduleNameMapper: {
     '^next/server$': '<rootDir>/app/__mocks__/next/server.js',
     '^@/components/(.*)$': '<rootDir>/components/$1',
+    '^@/contexts/(.*)$': '<rootDir>/contexts/$1',
+    '^@/providers/(.*)$': '<rootDir>/providers/$1',
     '^@/app/(.*)$': '<rootDir>/app/$1',
     '^@/lib/(.*)$': '<rootDir>/lib/$1',
   },

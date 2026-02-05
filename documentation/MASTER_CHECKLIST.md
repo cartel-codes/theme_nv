@@ -64,6 +64,7 @@
 - [x] **Luxury Aesthetic**: Editorial typography (Cormorant Garamond), minimalist layout, and premium color palette.
 - [x] **Responsive Header/Footer**: Universal navigation with dynamic User Menu and Cart Icon.
 - [x] **Loading States & Feedback**: Comprehensive UI feedback for forms and transitions.
+- [x] **Dark Mode**: Full dark/light theme support via next-themes.
 
 ---
 
@@ -71,6 +72,8 @@
 
 ### 🛒 Commerce & Transactions
 - [x] **Persistent Shopping Cart**: Database storage for carts, allowing cross-device persistence and automatic merging upon login.
+- [x] **Cart UI & Drawer**: Slide-out cart drawer, global CartContext state, real-time badge updates.
+- [x] **Checkout Page**: Placeholder page ready for Stripe integration.
 - [ ] **Promotion/Discount System**: Support for coupon codes and seasonal sales.
 - [ ] **Checkout Flow**: Multi-step checkout with address book and payment integration.
 - [ ] **Inventory Management**: Real-time stock tracking and low-stock alerts for admins.

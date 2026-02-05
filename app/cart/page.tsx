@@ -17,7 +17,7 @@ export default async function CartPage() {
   if (cart.items.length === 0) {
     return (
       <div className="container mx-auto px-4 py-24 text-center">
-        <h1 className="font-serif text-2xl font-light tracking-[0.2em] text-[#e8e4df] uppercase">
+        <h1 className="font-serif text-2xl font-light tracking-[0.2em] text-[#2C2C2C] dark:text-[#e8e4df] uppercase">
           Your cart is empty
         </h1>
         <p className="mt-4 text-sm tracking-[0.08em] text-[#6b6560] uppercase">
@@ -43,7 +43,7 @@ export default async function CartPage() {
       <p className="text-xs tracking-[0.25em] text-[#c9a96e] uppercase">
         Cart
       </p>
-      <h1 className="mt-2 font-serif text-3xl font-light tracking-[0.2em] text-[#e8e4df] uppercase">
+      <h1 className="mt-2 font-serif text-3xl font-light tracking-[0.2em] text-[#2C2C2C] dark:text-[#e8e4df] uppercase">
         Shopping Cart
       </h1>
       <p className="mt-4 text-sm tracking-[0.08em] text-[#6b6560] uppercase">
@@ -56,9 +56,9 @@ export default async function CartPage() {
         {cart.items.map((item) => (
           <div
             key={item.id}
-            className="flex flex-col gap-6 border border-[rgba(201,169,110,0.12)] bg-[#111111] p-6 sm:flex-row sm:items-center"
+            className="flex flex-col gap-6 border border-[rgba(201,169,110,0.12)] bg-[#FAF8F5] dark:bg-[#111111] p-6 sm:flex-row sm:items-center transition-colors"
           >
-            <div className="relative h-28 w-28 shrink-0 overflow-hidden bg-[#0a0a0a]">
+            <div className="relative h-28 w-28 shrink-0 overflow-hidden bg-[#f0ede8] dark:bg-[#0a0a0a]">
               {item.product.imageUrl ? (
                 <Image
                   src={item.product.imageUrl}
@@ -76,7 +76,7 @@ export default async function CartPage() {
             <div className="flex-1">
               <Link
                 href={`/products/${item.product.slug}`}
-                className="font-serif text-lg font-light text-[#e8e4df] transition-colors hover:text-[#c9a96e]"
+                className="font-serif text-lg font-light text-[#2C2C2C] dark:text-[#e8e4df] transition-colors hover:text-[#c9a96e]"
               >
                 {item.product.name}
               </Link>
@@ -95,13 +95,27 @@ export default async function CartPage() {
       </div>
 
       <div className="mt-12 border-t border-[rgba(201,169,110,0.12)] pt-10">
-        <div className="flex flex-col items-end gap-2">
-          <p className="font-serif text-xl text-[#c9a96e]">
-            Total: ${total.toFixed(2)}
-          </p>
-          <p className="text-xs tracking-[0.12em] text-[#6b6560] uppercase">
-            Checkout coming in Phase 3
-          </p>
+        <div className="flex flex-col items-end gap-4">
+          <div className="text-right">
+            <p className="text-xs tracking-[0.1em] text-[#6b6560] uppercase mb-1">Subtotal</p>
+            <p className="font-serif text-2xl text-[#c9a96e]">
+              ${total.toFixed(2)}
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 mt-4">
+            <Link
+              href="/products"
+              className="border border-[rgba(201,169,110,0.4)] px-8 py-3.5 text-center text-xs font-light tracking-[0.2em] text-[#c9a96e] uppercase transition-all hover:bg-[rgba(201,169,110,0.08)] hover:border-[#c9a96e]"
+            >
+              Continue Shopping
+            </Link>
+            <Link
+              href="/checkout"
+              className="bg-[#c9a96e] px-8 py-3.5 text-center text-xs font-semibold tracking-[0.25em] text-[#0a0a0a] uppercase transition-all hover:bg-[#b8986d] hover:shadow-lg"
+            >
+              Proceed to Checkout
+            </Link>
+          </div>
         </div>
       </div>
     </div>

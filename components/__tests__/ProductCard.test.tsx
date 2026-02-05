@@ -1,21 +1,20 @@
 import { render, screen } from '@testing-library/react';
 import ProductCard from '../ProductCard';
-import { Product } from '@prisma/client';
+import { Product, Prisma } from '@prisma/client';
 
 const mockProduct: Product = {
   id: 'clx123456',
   name: 'Test Product',
   description: 'This is a test product.',
-  price: '99.99',
+  price: new Prisma.Decimal('99.99'),
   slug: 'test-product',
   imageUrl: 'https://via.placeholder.com/300',
-  stock: 10,
   createdAt: new Date(),
   updatedAt: new Date(),
   categoryId: null,
-  seoTitle: null,
-  seoDescription: null,
-  seoKeywords: null,
+  metaTitle: null,
+  metaDescription: null,
+  keywords: null,
 };
 
 describe('ProductCard', () => {

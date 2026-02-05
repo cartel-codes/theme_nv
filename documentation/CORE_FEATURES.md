@@ -60,27 +60,57 @@ model Product {
 ### Cart Page
 
 - **Route**: `/cart`
-- **Persistence**: Session-based (cookie `cart_session_id`), stored in DB
-- **Features**: Add, update quantity, remove items; cart total
+- **Persistence**: Session-based for guests, user-linked for authenticated users
+- **Features**: Add, update quantity, remove items; cart total; checkout button
+
+### Cart Drawer
+
+- **Component**: `components/CartDrawer.tsx`
+- **Trigger**: Opens automatically on add-to-cart, or via CartIcon click
+- **Features**: 
+  - Slide-out panel from right
+  - Product images, quantities, prices
+  - Quick quantity controls (+/-)
+  - "View Full Cart" and "Proceed to Checkout" buttons
+  - ESC key or click-outside to close
+
+### Cart Context (Global State)
+
+- **File**: `contexts/CartContext.tsx`
+- **Provider**: `CartProvider` wraps the app in `layout.tsx`
+- **Hook**: `useCart()` for accessing cart state and actions
+- **Functions**:
+  - `addToCart(productId, quantity)` — adds item, opens drawer
+  - `updateQuantity(itemId, quantity)` — updates item
+  - `removeItem(itemId)` — removes item
+  - `refreshCart()` — re-fetches cart from API
+  - `openDrawer()` / `closeDrawer()` — drawer visibility
+
+### Checkout
+
+- **Route**: `/checkout`
+- **Status**: Placeholder page (Stripe integration pending)
+- **Features Preview**: Card, Apple Pay, Google Pay support coming
 
 ### Cart Logic
 
-- **lib/cart.ts**: `getOrCreateCart()`, `getCartSessionId()` — cookie-based session
-- **Cart model**: `Cart` + `CartItem` linked to `Product`
+- **lib/cart.ts**: `getOrCreateCart()`, `getCartSessionId()` — handles both guest and authenticated carts
+- **Authentication**: Add-to-cart requires login (redirects to `/auth/login`)
+- **Cart Merge**: Guest cart items merge into user cart on login
 
 ### API Endpoints
 
-| Method | Endpoint | Body | Description |
-|--------|----------|------|-------------|
-| GET | `/api/cart` | — | Get cart items |
-| POST | `/api/cart` | `{ productId, quantity? }` | Add to cart |
-| PUT | `/api/cart` | `{ itemId, quantity }` | Update quantity |
-| DELETE | `/api/cart?itemId=xxx` | — | Remove item |
+| Method | Endpoint | Body | Auth Required | Description |
+|--------|----------|------|---------------|-------------|
+| GET | `/api/cart` | — | No | Get cart items |
+| POST | `/api/cart` | `{ productId, quantity? }` | **Yes** | Add to cart |
+| PUT | `/api/cart` | `{ itemId, quantity }` | No | Update quantity |
+| DELETE | `/api/cart?itemId=xxx` | — | No | Remove item |
 
 ### Cart Cookie
 
 - **Name**: `cart_session_id`
-- **Purpose**: Anonymous cart before checkout (Phase 3)
+- **Purpose**: Anonymous cart identification (merged on login)
 
 ---
 
@@ -172,6 +202,7 @@ model Post {
 | `/products` | Product catalog |
 | `/products/[slug]` | Product detail |
 | `/cart` | Shopping cart |
+| `/checkout` | Checkout (placeholder for Stripe) |
 | `/blog` | Blog listing |
 | `/blog/[slug]` | Blog post |
 | `/about` | About page |
@@ -185,15 +216,24 @@ model Post {
 app/
 ├── page.tsx              # Homepage
 ├── products/
+│   └── [slug]/
+│       └── AddToCartButton.tsx
 ├── cart/
+│   ├── page.tsx          # Cart page
+│   └── CartActions.tsx   # Quantity controls
+├── checkout/
+│   └── page.tsx          # Checkout placeholder
 ├── blog/
 ├── about/
 ├── contact/
 ├── sitemap.ts
 └── robots.ts
 
+contexts/
+└── CartContext.tsx       # Global cart state
+
 lib/
-├── cart.ts
+├── cart.ts               # Cart logic (get/create)
 ├── seo.ts
 └── prisma.ts
 
@@ -201,7 +241,8 @@ components/
 ├── Header.tsx
 ├── Footer.tsx
 ├── ProductCard.tsx
-└── CartIcon.tsx
+├── CartIcon.tsx          # Cart badge (uses CartContext)
+└── CartDrawer.tsx        # Slide-out cart panel
 ```
 
 ---
@@ -210,5 +251,7 @@ components/
 
 - **Add product**: Use Prisma Studio or admin products API
 - **Add blog post**: Insert into `Post` table via Prisma
-- **Cart**: Session cookie + DB; no auth required
+- **Cart**: Requires authentication to add items; uses CartContext for global state
+- **Cart Drawer**: Opens on add-to-cart or click CartIcon
 - **SEO**: Set `NEXT_PUBLIC_SITE_URL` in production
+

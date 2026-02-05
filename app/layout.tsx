@@ -3,7 +3,9 @@ import { Cormorant_Garamond, Jost } from 'next/font/google';
 import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import CartDrawer from '@/components/CartDrawer';
 import { AuthProvider } from '@/app/providers';
+import { CartProvider } from '@/contexts/CartContext';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { generateMetadata as getBaseMetadata } from '@/lib/seo';
 
@@ -35,11 +37,14 @@ export default function RootLayout({
         <div className="relative z-10 flex min-h-screen flex-col">
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <AuthProvider>
-              <Header />
-              <main className="flex-1 text-novraux-charcoal dark:text-novraux-cream transition-colors duration-300">
-                {children}
-              </main>
-              <Footer />
+              <CartProvider>
+                <Header />
+                <main className="flex-1 text-novraux-charcoal dark:text-novraux-cream transition-colors duration-300">
+                  {children}
+                </main>
+                <Footer />
+                <CartDrawer />
+              </CartProvider>
             </AuthProvider>
           </ThemeProvider>
         </div>
