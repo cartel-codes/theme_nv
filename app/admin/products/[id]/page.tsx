@@ -1,4 +1,5 @@
 import ProductForm from '@/components/ProductForm';
+import ProductVariantForm from '@/components/admin/ProductVariantForm';
 import { prisma } from '@/lib/prisma';
 
 interface PageProps {
@@ -30,6 +31,10 @@ export default async function EditProductPage({ params }: PageProps) {
       </div>
 
       <ProductForm productId={id} />
+
+      <div className="border-t border-neutral-200 pt-6">
+        <ProductVariantForm productId={id} />
+      </div>
     </div>
   );
 }

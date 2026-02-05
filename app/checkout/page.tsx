@@ -7,7 +7,10 @@ import Image from 'next/image';
 
 interface CartItem {
     productId: string;
+    variantId?: string | null;
     name: string;
+    variantName?: string | null;
+    variantValue?: string | null;
     price: number;
     quantity: number;
     imageUrl: string | null;
@@ -68,8 +71,11 @@ export default function CheckoutPage() {
             const data = await response.json();
             const items = data.items.map((item: any) => ({
                 productId: item.product.id,
+                variantId: item.variantId,
                 name: item.product.name,
-                price: Number(item.product.price),
+                variantName: item.variant?.name,
+                variantValue: item.variant?.value,
+                price: item.variant?.price ? Number(item.variant.price) : Number(item.product.price),
                 quantity: item.quantity,
                 imageUrl: item.product.imageUrl,
                 slug: item.product.slug,
@@ -151,6 +157,7 @@ export default function CheckoutPage() {
                 body: JSON.stringify({
                     items: cartItems.map(item => ({
                         productId: item.productId,
+                        variantId: item.variantId,
                         quantity: item.quantity,
                     })),
                     shippingAddress: {
@@ -214,27 +221,24 @@ export default function CheckoutPage() {
                         {steps.map((step) => (
                             <div
                                 key={step.number}
-                                className={`flex flex-col items-center flex-1 pb-8 ${
-                                    step.number <= currentStep ? '' : 'opacity-50'
-                                }`}
+                                className={`flex flex-col items-center flex-1 pb-8 ${step.number <= currentStep ? '' : 'opacity-50'
+                                    }`}
                             >
                                 <div
-                                    className={`w-12 h-12 rounded-full flex items-center justify-center text-white mb-2 ${
-                                        step.number < currentStep
+                                    className={`w-12 h-12 rounded-full flex items-center justify-center text-white mb-2 ${step.number < currentStep
                                             ? 'bg-green-600'
                                             : step.number === currentStep
-                                            ? 'bg-novraux-charcoal'
-                                            : 'bg-neutral-300'
-                                    }`}
+                                                ? 'bg-novraux-charcoal'
+                                                : 'bg-neutral-300'
+                                        }`}
                                 >
                                     {step.number < currentStep ? '✓' : step.icon}
                                 </div>
                                 <span className="text-sm font-medium text-novraux-charcoal">{step.label}</span>
                                 {step.number < steps.length && (
                                     <div
-                                        className={`absolute w-1/4 h-1 mt-6 ${
-                                            step.number < currentStep ? 'bg-green-600' : 'bg-neutral-300'
-                                        }`}
+                                        className={`absolute w-1/4 h-1 mt-6 ${step.number < currentStep ? 'bg-green-600' : 'bg-neutral-300'
+                                            }`}
                                     />
                                 )}
                             </div>
@@ -284,6 +288,11 @@ export default function CheckoutPage() {
                                                     >
                                                         {item.name}
                                                     </Link>
+                                                    {item.variantName && (
+                                                        <p className="text-xs text-novraux-grey uppercase tracking-wide mt-1">
+                                                            {item.variantName}{item.variantValue ? `: ${item.variantValue}` : ''}
+                                                        </p>
+                                                    )}
                                                     <p className="text-sm text-novraux-grey">Qty: {item.quantity}</p>
                                                 </div>
                                                 <div className="text-right">
@@ -439,6 +448,7 @@ export default function CheckoutPage() {
                                                 <div key={item.productId} className="flex justify-between">
                                                     <span className="text-novraux-grey">
                                                         {item.name} × {item.quantity}
+                                                        {item.variantName && ` (${item.variantValue})`}
                                                     </span>
                                                     <span className="font-medium text-novraux-charcoal">
                                                         ${(item.price * item.quantity).toFixed(2)}

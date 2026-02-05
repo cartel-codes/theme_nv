@@ -12,11 +12,20 @@ export default async function AdminLayout({
     const session = await getSession();
     const pathname = (await headers()).get('x-pathname') || '';
 
+    // Allow login and signup pages without authentication
+    const isPublicPage = pathname.includes('/admin/login') || pathname.includes('/admin/signup');
+
     // Redirect to login if no valid session on protected pages
-    if (!session && !pathname.includes('/admin/login') && !pathname.includes('/admin/signup')) {
+    if (!session && !isPublicPage) {
         redirect('/admin/login');
     }
 
+    // Render public pages (login/signup) without sidebar
+    if (isPublicPage) {
+        return <>{children}</>;
+    }
+
+    // At this point, we have a valid session - render full layout
     return (
         <div className="min-h-screen bg-neutral-50 flex font-sans">
             {/* Sidebar */}

@@ -14,8 +14,10 @@ export async function GET() {
       items: cart.items?.map((item) => ({
         id: item.id,
         productId: item.productId,
+        variantId: item.variantId,
         quantity: item.quantity,
         product: item.product,
+        variant: item.variant,
       })) || [],
       totalItems: cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0,
     });
@@ -31,7 +33,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { productId, quantity = 1 } = body;
+    const { productId, variantId, quantity = 1 } = body;
 
     if (!productId) {
       return NextResponse.json(
@@ -71,11 +73,34 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
+    // Verify variant if provided
+    if (variantId) {
+      const variant = await prisma.productVariant.findUnique({
+        where: { id: variantId },
+      });
+      if (!variant || variant.productId !== productId) {
+        return NextResponse.json({ error: 'Invalid variant' }, { status: 400 });
+      }
+    }
+
     const cart = await getOrCreateCart();
+
+    // Use findFirst because unique constraint might be tricky with nulls in Prisma sometimes, 
+    // but better to explicitly use the compound unique if possible.
+    // However, Prisma schema says: @@unique([cartId, productId, variantId])
+    // If variantId is null, it should still work if we pass it explicitly.
+    // Using findFirst is safer for "null" variantId handling in some DBs/Prisma versions if the unique index doesn't treat multiple NULLs as duplicates (Postgres does unique nulls differently usually, but let's try findFirst for flexibility).
+
+    // Actually, let's try to use the unique key logic if we can, but safely.
+    // If we changed the unique key, we MUST match it.
 
     const existingItem = await prisma.cartItem.findUnique({
       where: {
-        cartId_productId: { cartId: cart.id, productId },
+        cartId_productId_variantId: {
+          cartId: cart.id,
+          productId,
+          variantId: variantId || null // Explicitly handle null/undefined
+        },
       },
     });
 
@@ -89,6 +114,7 @@ export async function POST(request: Request) {
         data: {
           cartId: cart.id,
           productId,
+          variantId: variantId || null,
           quantity,
         },
       });

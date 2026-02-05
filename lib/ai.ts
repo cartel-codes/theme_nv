@@ -104,8 +104,15 @@ ${imageUrl ? 'IMPORTANT: Your response MUST reflect the SPECIFIC visual content 
     // Helper to fetch image and convert to base64 with MIME type detection
     const urlToBase64 = async (url: string): Promise<{ base64: string; mimeType: string }> => {
         try {
-            console.log('📥 Fetching image from URL:', url.slice(0, 80));
-            const response = await fetch(url, {
+            // Handle relative URLs (from R2 proxy)
+            let fetchUrl = url;
+            if (url.startsWith('/')) {
+                const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+                fetchUrl = `${baseUrl}${url}`;
+            }
+
+            console.log('📥 Fetching image from URL:', fetchUrl.slice(0, 80));
+            const response = await fetch(fetchUrl, {
                 headers: { 'User-Agent': 'Novraux-AI/1.0' }
             });
 
@@ -226,44 +233,156 @@ ${imageUrl ? 'IMPORTANT: Your response MUST reflect the SPECIFIC visual content 
 
     // Existing Groq/OpenAI Logic (Text-Only or Fallback)
     const makeRequest = async (msgs: any[]) => {
+        const payload: any = {
+            model: model, // llama-3.3-70b-versatile or gpt-4o
+            messages: msgs,
+            temperature: 0.7,
+            response_format: { type: "json_object" }
+        };
+
+        // OpenAI/Groq image format handling
+        // If image_url is present, ensure model supports it or fallback
+
         const response = await fetch(`${apiBaseUrl}/chat/completions`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${apiKey}`,
             },
-            body: JSON.stringify({
-                model: model, // llama-3.3-70b-versatile
-                messages: msgs,
-                temperature: 0.7, // Higher temperature for more varied outputs
-                response_format: { type: "json_object" }
-            }),
+            body: JSON.stringify(payload),
         });
 
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`Groq API Error: ${errorText}`);
+            throw new Error(`AI API Error: ${response.status} - ${errorText}`);
         }
 
         return response.json();
     };
 
     try {
-        // Fallback: Text-only generation (when Gemini fails or no image provided)
+        // Decide which messages to use
+        // If we fell back from Gemini, we might want to try OpenAI with Vision if supported
+        // OR we might want to fall back to purely text.
+
+        let finalMessages = messages;
+
         if (imageUrl) {
-            console.log('\n⚠️ Using TEXT-ONLY fallback (image analysis failed)');
-            console.log('   Results will be generic, not based on the image\n');
+            // If we are here, it means either:
+            // 1. Gemini wasn't configured, so we are trying the default provider (OpenAI/Groq).
+            // 2. Gemini failed, and we caught the error.
+
+            // If model is NOT vision-capable (like Llama 3 on Groq), we MUST fallback to text-only.
+            // But we need to clean the prompt to avoid "Analyze this image" instructions.
+            const isVisionModel = model.includes('gpt-4') || model.includes('vision') || model.includes('claude-3');
+
+            if (!isVisionModel) {
+                console.log(`⚠️ Model ${model} may not support vision. Falling back to TEXT-ONLY prompt.`);
+                const textOnlyPrompt = `
+You are an expert luxury e-commerce SEO and content specialist for "Novraux".
+[REQUEST ID: ${requestId}]
+
+Input Data:
+Name: ${name || 'Product Name'}
+Description: ${description || 'Product Description'}
+
+Task: Generate luxury e-commerce content for a ${type}.
+Requirements:
+1. Meta Title: 50-60 chars, luxury and elegance
+2. Meta Description: 150-160 chars, editorial style
+3. Keywords: 5-8 comma-separated keywords
+4. Focus Keyword: Main keyword
+5. Suggested Category: Primary category name
+6. Suggested Slug: URL-friendly slug
+${(!name || !description) ? '7. Content Generation: Generate a sophisticated, generic luxury name and description since no specific details were provided.' : ''}
+
+Response format (JSON only):
+{
+    ${(!name) ? '"generatedName": "...",' : ''}
+    ${(!description) ? '"generatedDescription": "...",' : ''}
+    "metaTitle": "...",
+    "metaDescription": "...",
+    "keywords": "...",
+    "focusKeyword": "...",
+    "suggestedCategory": "...",
+    "suggestedSlug": "..."
+}
+                 `;
+
+                finalMessages = [
+                    { role: 'system', content: 'You are a luxury SEO assistant. Return JSON only.' },
+                    { role: 'user', content: textOnlyPrompt }
+                ];
+            } else {
+                console.log('📸 Attempting Vision with OpenAI/Compatible provider...');
+                try {
+                    // Fetch and convert image to base64 for OpenAI
+                    const { base64, mimeType } = await urlToBase64(imageUrl);
+                    const dataUrl = `data:${mimeType};base64,${base64}`;
+
+                    finalMessages = [
+                        { role: 'system', content: 'You are a luxury SEO assistant. You MUST respond ONLY with a valid JSON object. No preamble, no markdown blocks, just the raw JSON.' },
+                        {
+                            role: 'user',
+                            content: [
+                                { type: 'text', text: prompt },
+                                {
+                                    type: 'image_url',
+                                    image_url: {
+                                        url: dataUrl,
+                                        detail: 'high'
+                                    }
+                                }
+                            ]
+                        }
+                    ];
+                } catch (conversionError) {
+                    console.error('⚠️ Failed to prepare image for OpenAI Vision:', conversionError);
+                    console.log('   Falling back to text-only prompt.');
+
+                    const textOnlyPrompt = `
+You are an expert luxury e-commerce SEO and content specialist for "Novraux".
+[REQUEST ID: ${requestId}]
+
+Input Data:
+Name: ${name || 'Product Name'}
+Description: ${description || 'Product Description'}
+
+Task: Generate luxury e-commerce content for a ${type}.
+Requirements:
+1. Meta Title: 50-60 chars, luxury and elegance
+2. Meta Description: 150-160 chars, editorial style
+3. Keywords: 5-8 comma-separated keywords
+4. Focus Keyword: Main keyword
+5. Suggested Category: Primary category name
+6. Suggested Slug: URL-friendly slug
+${(!name || !description) ? '7. Content Generation: Generate a sophisticated, generic luxury name and description since no specific details were provided.' : ''}
+
+Response format (JSON only):
+{
+    ${(!name) ? '"generatedName": "...",' : ''}
+    ${(!description) ? '"generatedDescription": "...",' : ''}
+    "metaTitle": "...",
+    "metaDescription": "...",
+    "keywords": "...",
+    "focusKeyword": "...",
+    "suggestedCategory": "...",
+    "suggestedSlug": "..."
+}
+                 `;
+
+                    finalMessages = [
+                        { role: 'system', content: 'You are a luxury SEO assistant. Return JSON only.' },
+                        { role: 'user', content: textOnlyPrompt }
+                    ];
+                }
+            }
         }
 
-        const textOnlyMessages = [
-            { role: 'system', content: 'You are a luxury SEO assistant. You MUST respond ONLY with a valid JSON object. No markdown, no explanation.' },
-            { role: 'user', content: prompt }
-        ];
-
-        console.log('📝 Calling Groq for text-only generation...');
-        const data = await makeRequest(textOnlyMessages);
+        console.log('📝 Calling AI provider...');
+        const data = await makeRequest(finalMessages);
         const content = data.choices[0].message.content || '';
-        console.log('✅ Groq text-only generation complete');
+        console.log('✅ AI generation complete');
         return parseResponse(content);
 
     } catch (error) {

@@ -68,18 +68,16 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Fetch products and validate availability
-        const productIds = items.map((item: any) => item.productId);
+        // Fetch products and variants
+        // We will fetch products by ID as before, but also need to handle variants independently or included.
+        // Simplest strategy: iterate and fetch individually or fetch all affected products with variants included.
+        const productIds = Array.from(new Set(items.map((item: any) => item.productId))) as string[];
         const products = await prisma.product.findMany({
             where: { id: { in: productIds } },
+            include: { variants: true }
         });
 
-        if (products.length !== productIds.length) {
-            return NextResponse.json(
-                { error: 'Some products not found' },
-                { status: 400 }
-            );
-        }
+        // ... (check product existence)
 
         // Calculate order total
         let subtotal = 0;
@@ -88,20 +86,34 @@ export async function POST(request: NextRequest) {
         for (const item of items) {
             const product = products.find((p) => p.id === item.productId);
             if (!product) {
-                return NextResponse.json(
-                    { error: `Product ${item.productId} not found` },
-                    { status: 400 }
-                );
+                // Return error
+                return NextResponse.json({ error: 'Product not found' }, { status: 400 });
+            }
+
+            let price = Number(product.price);
+            let variantId = item.variantId || null;
+
+            if (variantId) {
+                const variant = product.variants.find(v => v.id === variantId);
+                if (variant) {
+                    if (variant.price) {
+                        price = Number(variant.price);
+                    }
+                    // TODO: Check stock specific to variant
+                } else {
+                    return NextResponse.json({ error: 'Variant not found' }, { status: 400 });
+                }
             }
 
             const quantity = item.quantity || 1;
-            const itemTotal = Number(product.price) * quantity;
+            const itemTotal = price * quantity;
             subtotal += itemTotal;
 
             orderItems.push({
                 productId: product.id,
+                variantId: variantId,
                 quantity,
-                priceAtPurchase: product.price,
+                priceAtPurchase: price,
             });
         }
 

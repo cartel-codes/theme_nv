@@ -9,6 +9,7 @@ const USER_SESSION_COOKIE = 'userSession';
 type CartWithItems = Cart & {
   items: (CartItem & {
     product: Product;
+    variant?: any;
   })[];
 };
 
@@ -52,6 +53,7 @@ export async function getOrCreateCart(): Promise<CartWithItems> {
         items: {
           include: {
             product: true,
+            variant: true,
           },
         },
       },
@@ -64,6 +66,7 @@ export async function getOrCreateCart(): Promise<CartWithItems> {
           items: {
             include: {
               product: true,
+              variant: true,
             },
           },
         },
@@ -84,9 +87,11 @@ export async function getOrCreateCart(): Promise<CartWithItems> {
         // Check if the product already exists in user cart
         const existingItem = await prisma.cartItem.findUnique({
           where: {
-            cartId_productId: {
+            cartId_productId_variantId: {
               cartId: userCart.id,
               productId: item.productId,
+              // @ts-ignore - Prisma typing issue with nullable variantId in unique constraint
+              variantId: item.variantId || null,
             },
           },
         });
@@ -103,6 +108,7 @@ export async function getOrCreateCart(): Promise<CartWithItems> {
             data: {
               cartId: userCart.id,
               productId: item.productId,
+              variantId: item.variantId || null,
               quantity: item.quantity,
             },
           });
@@ -121,6 +127,7 @@ export async function getOrCreateCart(): Promise<CartWithItems> {
           items: {
             include: {
               product: true,
+              variant: true,
             },
           },
         },
@@ -137,6 +144,7 @@ export async function getOrCreateCart(): Promise<CartWithItems> {
       items: {
         include: {
           product: true,
+          variant: true,
         },
       },
     },
@@ -149,6 +157,7 @@ export async function getOrCreateCart(): Promise<CartWithItems> {
         items: {
           include: {
             product: true,
+            variant: true,
           },
         },
       },

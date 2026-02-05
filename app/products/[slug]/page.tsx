@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { generateMetadata as getSEO, generateJsonLd, generateAutoTitle, generateAutoDescription } from '@/lib/seo';
-import AddToCartButton from './AddToCartButton';
+import ProductPurchase from '@/components/ProductPurchase';
 import ImageGallery from './ImageGallery';
 import ProductTabs from './ProductTabs';
 
@@ -51,6 +51,14 @@ export default async function ProductPage({ params }: PageProps) {
       category: true,
       images: {
         orderBy: { order: 'asc' }
+      },
+      variants: {
+        include: {
+          inventory: true
+        },
+        orderBy: {
+          createdAt: 'asc'
+        }
       }
     },
   });
@@ -198,10 +206,7 @@ export default async function ProductPage({ params }: PageProps) {
               {product.name}
             </h1>
 
-            {/* Price - Tom Ford gold */}
-            <p className="font-serif text-3xl text-[#B8926A] font-normal">
-              ${price.toFixed(2)}
-            </p>
+            {/* Price - handled by ProductPurchase for dynamic updates */}
 
             {/* Short Description - Warm gray */}
             {product.description && (
@@ -211,9 +216,20 @@ export default async function ProductPage({ params }: PageProps) {
               </p>
             )}
 
-            {/* Add to Cart */}
+            {/* Purchase Section with Variants */}
             <div className="pt-4">
-              <AddToCartButton productId={product.id} />
+              <ProductPurchase
+                productId={product.id}
+                basePrice={price}
+                variants={product.variants.map(v => ({
+                  id: v.id,
+                  name: v.name,
+                  value: v.value,
+                  sku: v.sku,
+                  price: v.price ? Number(v.price) : null,
+                  inventory: v.inventory
+                }))}
+              />
             </div>
 
             {/* Additional Info - Refined badges */}
