@@ -75,8 +75,9 @@ export async function uploadToR2(
 
     // ✅ Use proxy URL for UI (works locally and on production)
     // The proxy endpoint /api/images/[...key] handles R2 access
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001';
-    const proxyUrl = `${siteUrl}/api/images/${key}`;
+    // ✅ Use relative path for proxy URL
+    // This ensures it works on both localhost and production without hardcoding the domain
+    const proxyUrl = `/api/images/${key}`;
     console.log('📸 Uploaded to R2:', { key, proxyUrl });
     return proxyUrl;
 }

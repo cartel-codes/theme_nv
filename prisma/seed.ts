@@ -11,9 +11,9 @@ async function main() {
     where: { email: 'admin@novraux.com' },
     update: {},
     create: {
+      username: 'admin',
       email: 'admin@novraux.com',
       password: defaultAdminPassword,
-      name: 'Admin',
       role: 'admin',
       isActive: true,
     },

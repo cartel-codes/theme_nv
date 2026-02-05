@@ -104,18 +104,16 @@ model Post {
 }
 
 model AdminUser {
-  id        String          @id @default(cuid())
-  email     String          @unique
+  id        String         @id @default(cuid())
+  username  String         @unique
   password  String
-  name      String?
-  role      String          @default("admin")
-  isActive  Boolean         @default(true)
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt
+  email     String         @unique
+  role      String         @default("admin")
+  isActive  Boolean        @default(true)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
   auditLogs AdminAuditLog[]
   sessions  AdminSession[]
-
-  @@index([email])
 }
 
 model AdminAuditLog {
