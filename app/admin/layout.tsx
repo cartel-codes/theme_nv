@@ -48,6 +48,12 @@ export default async function AdminLayout({
                         Collections
                     </Link>
                     <Link
+                        href="/admin/posts"
+                        className="block px-4 py-2 rounded text-sm hover:bg-white/5 transition-colors"
+                    >
+                        Articles
+                    </Link>
+                    <Link
                         href="/admin/orders"
                         className="block px-4 py-2 rounded text-sm hover:bg-white/5 transition-colors opacity-50 cursor-not-allowed"
                     >

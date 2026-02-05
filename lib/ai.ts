@@ -298,3 +298,308 @@ function parseResponse(content: string): SEOSuggestion {
         throw new Error(`AI returned invalid content: ${cleanedContent.slice(0, 50)}...`);
     }
 }
+
+/**
+ * Generate article topic ideas based on a niche or context.
+ */
+export async function generateArticleTopics(niche: string = 'luxury fashion'): Promise<string[]> {
+    const apiKey = process.env.AI_API_KEY;
+    const apiBaseUrl = process.env.AI_API_BASE_URL || 'https://api.openai.com/v1';
+    const model = process.env.AI_MODEL || 'llama-3.3-70b-versatile';
+
+    if (!apiKey) throw new Error('AI_API_KEY is not configured');
+
+    const prompt = `
+      Generate 5 engaging, editorial-style blog post titles for a luxury fashion brand named "Novraux".
+      Focus on the niche: "${niche}".
+      Titles should be sophisticated, intriguing, and SEO-friendly.
+      Return ONLY a JSON array of strings, e.g., ["Title 1", "Title 2"].
+    `;
+
+    const response = await fetch(`${apiBaseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+            model,
+            messages: [
+                { role: 'system', content: 'You are a luxury fashion editor. Return JSON array only.' },
+                { role: 'user', content: prompt }
+            ],
+            temperature: 0.8,
+            response_format: { type: "json_object" }
+        }),
+    });
+
+    if (!response.ok) throw new Error('Failed to generate topics');
+
+    const data = await response.json();
+    const content = data.choices[0].message.content;
+
+    console.log('🤖 AI Topics Response:', content);
+
+    try {
+        const parsed = JSON.parse(content);
+        console.log('📋 Parsed topics:', parsed);
+
+        // Handle { "titles": [...] } or { "topics": [...] } or just [...]
+        if (Array.isArray(parsed)) return parsed;
+        if (parsed.titles && Array.isArray(parsed.titles)) return parsed.titles;
+        if (parsed.topics && Array.isArray(parsed.topics)) return parsed.topics;
+
+        // Check for any array property
+        const arrays = Object.values(parsed).filter(v => Array.isArray(v));
+        if (arrays.length > 0) return arrays[0] as string[];
+
+        throw new Error('No array found in response');
+    } catch (e) {
+        console.error('Failed to parse topics JSON:', content);
+        throw new Error(`Invalid topics response: ${e instanceof Error ? e.message : 'Unknown error'}`);
+    }
+}
+
+/**
+ * Generate a full blog article in Markdown format.
+ */
+export async function generateFullArticle(title: string, excerpt?: string): Promise<string> {
+    const apiKey = process.env.AI_API_KEY;
+    const apiBaseUrl = process.env.AI_API_BASE_URL || 'https://api.openai.com/v1';
+    const model = process.env.AI_MODEL || 'llama-3.3-70b-versatile';
+
+    if (!apiKey) throw new Error('AI_API_KEY is not configured');
+
+    const prompt = `
+      Write a sophisticated editorial article for "Novraux", a luxury fashion brand.
+      
+      Article Title: "${title}"
+      ${excerpt ? `Focus/Angle: "${excerpt}"` : ''}
+      
+      STRUCTURE & FORMATTING:
+      - Start with a compelling opening paragraph (2-3 sentences) that hooks readers immediately
+      - Use ONLY 2-3 H2 headers (##) max for main sections - don't overuse headers!
+      - Body should be 4-6 flowing paragraphs with natural transitions
+      - Use **bold** sparingly for emphasis on key terms only
+      - End with a concluding thought or call-to-action
+      
+      TONE & STYLE:
+      - Sophisticated and authoritative, like Vogue or Harper's Bazaar
+      - Natural, conversational elegance - avoid corporate/robotic language
+      - NO phrases like "In this article..." or "We will explore..."
+      - Write in present tense, engage the reader directly
+      
+      CONTENT GUIDELINES:
+      - Length: 600-800 words
+      - Include specific, actionable insights (styling tips, trends, techniques)
+      - Reference current fashion moments or timeless principles
+      - Maintain the luxury brand's voice: refined, confident, tasteful
+      - Add subtle product/brand mentions naturally if relevant
+      
+      IMPORTANT: Focus on quality prose over structure. Less headers, more substance.
+    `;
+
+    const response = await fetch(`${apiBaseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+            model,
+            messages: [
+                { role: 'system', content: 'You are a seasoned luxury fashion editor. Write with elegance, authority, and natural flow. Avoid excessive formatting - let the prose speak.' },
+                { role: 'user', content: prompt }
+            ],
+            temperature: 0.75, // Slightly higher for more creative, natural prose
+        }),
+    });
+
+    if (!response.ok) throw new Error('Failed to generate article');
+
+    const data = await response.json();
+    return data.choices[0].message.content || '';
+}
+
+/**
+ * Generate an image using Hugging Face Inference API.
+ * Returns ArrayBuffer of the image.
+ */
+export async function generateArticleImage(prompt: string): Promise<ArrayBuffer> {
+    const hfKey = process.env.HUGGINGFACE_API_KEY;
+    if (!hfKey) throw new Error('HUGGINGFACE_API_KEY is not configured');
+
+    console.log('🎨 Generating image via Hugging Face:', prompt);
+
+    // Using SDXL Base 1.0 for high quality
+    // Alternative: stabilityai/stable-diffusion-2-1
+    const model = "stabilityai/stable-diffusion-xl-base-1.0";
+
+    const response = await fetch(
+        `https://router.huggingface.co/hf-inference/models/${model}`,
+        {
+            headers: {
+                Authorization: `Bearer ${hfKey}`,
+                "Content-Type": "application/json",
+                "x-use-cache": "false"
+            },
+            method: "POST",
+            body: JSON.stringify({
+                inputs: `luxury fashion photography, editorial shot, ${prompt}, 8k, highly detailed, professional lighting, photorealistic`,
+            }),
+        }
+    );
+
+    if (!response.ok) {
+        const errText = await response.text();
+        console.error('HF Error:', errText);
+        throw new Error(`Hugging Face API Error: ${response.statusText}`);
+    }
+
+    return await response.arrayBuffer();
+}
+import { NextRequest, NextResponse } from 'next/server';
+
+// Append to end of lib/ai.ts
+
+/**
+ * Generate article angle/topic proposals based on a title.
+ * Returns 3-5 specific angles or subtopics.
+ */
+export async function generateArticleAngles(title: string): Promise<string[]> {
+    const apiKey = process.env.AI_API_KEY;
+    const apiBaseUrl = process.env.AI_API_BASE_URL || 'https://api.openai.com/v1';
+    const model = process.env.AI_MODEL || 'llama-3.3-70b-versatile';
+
+    if (!apiKey) throw new Error('AI_API_KEY is not configured');
+
+    const prompt = `
+      Based on the article title: "${title}"
+      
+      Generate 4 specific article angles or subtopics that would make compelling sections or approaches.
+      Each angle should be a unique perspective or focus area.
+      
+      Return ONLY a JSON object with an "angles" array of strings.
+      Example: {"angles": ["Angle 1", "Angle 2", "Angle 3", "Angle 4"]}
+    `;
+
+    const response = await fetch(`${apiBaseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+            model,
+            messages: [
+                { role: 'system', content: 'You are a luxury fashion editor. Return JSON only.' },
+                { role: 'user', content: prompt }
+            ],
+            temperature: 0.8,
+            response_format: { type: "json_object" }
+        }),
+    });
+
+    if (!response.ok) throw new Error('Failed to generate angles');
+
+    const data = await response.json();
+    const content = data.choices[0].message.content;
+
+    console.log('🎯 AI Angles Response:', content);
+
+    try {
+        const parsed = JSON.parse(content);
+        console.log('📋 Parsed angles:', parsed);
+
+        if (parsed.angles && Array.isArray(parsed.angles)) return parsed.angles;
+
+        // Check for any array property
+        const arrays = Object.values(parsed).filter(v => Array.isArray(v));
+        if (arrays.length > 0) return arrays[0] as string[];
+
+        throw new Error('No array found in response');
+    } catch (e) {
+        console.error('Failed to parse angles JSON:', content);
+        throw new Error(`Invalid angles response: ${e instanceof Error ? e.message : 'Unknown error'}`);
+    }
+}
+
+/**
+ * Generate SEO metadata for an article based on title and content.
+ */
+export async function generateArticleSEO(
+    title: string,
+    content: string
+): Promise<{
+    metaTitle: string;
+    metaDescription: string;
+    keywords: string;
+    focusKeyword: string;
+}> {
+    const apiKey = process.env.AI_API_KEY;
+    const apiBaseUrl = process.env.AI_API_BASE_URL || 'https://api.openai.com/v1';
+    const model = process.env.AI_MODEL || 'llama-3.3-70b-versatile';
+
+    if (!apiKey) throw new Error('AI_API_KEY is not configured');
+
+    const contentPreview = content.slice(0, 500); // First 500 chars
+
+    const prompt = `
+      You are an SEO expert for a luxury fashion blog called "Novraux".
+      
+      Article Title: "${title}"
+      Content Preview: "${contentPreview}..."
+      
+      Generate SEO metadata for this article:
+      1. metaTitle: 50-60 characters, compelling and keyword-rich
+      2. metaDescription: 120-160 characters, engaging preview
+      3. keywords: 5-7 relevant keywords (comma-separated)
+      4. focusKeyword: The single most important keyword
+      
+      Return ONLY a JSON object with these exact keys.
+      Example: {
+        "metaTitle": "Example Title | Novraux",
+        "metaDescription": "Discover...",
+        "keywords": "luxury fashion, trends, style",
+        "focusKeyword": "luxury fashion"
+      }
+    `;
+
+    const response = await fetch(`${apiBaseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+            model,
+            messages: [
+                { role: 'system', content: 'You are an SEO specialist. Return JSON only.' },
+                { role: 'user', content: prompt }
+            ],
+            temperature: 0.7,
+            response_format: { type: "json_object" }
+        }),
+    });
+
+    if (!response.ok) throw new Error('Failed to generate SEO');
+
+    const data = await response.json();
+    const content_response = data.choices[0].message.content;
+
+    console.log('🔍 AI SEO Response:', content_response);
+
+    try {
+        const parsed = JSON.parse(content_response);
+
+        return {
+            metaTitle: parsed.metaTitle || title,
+            metaDescription: parsed.metaDescription || '',
+            keywords: parsed.keywords || '',
+            focusKeyword: parsed.focusKeyword || ''
+        };
+    } catch (e) {
+        console.error('Failed to parse SEO JSON:', content_response);
+        throw new Error(`Invalid SEO response: ${e instanceof Error ? e.message : 'Unknown error'}`);
+    }
+}
