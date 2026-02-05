@@ -42,12 +42,12 @@ export default function QuantitySelector({
 
     return (
         <div className="flex items-center gap-4">
-            <span className="text-[11px] tracking-[0.25em] text-[#5D5D5D] uppercase font-medium">Quantity</span>
+            <span className="text-[11px] tracking-[0.25em] text-[#5D5D5D] dark:text-novraux-beige/80 uppercase font-medium">Quantity</span>
             <div className="flex items-center border border-[#D4A574]">
                 <button
                     onClick={handleDecrease}
                     disabled={quantity <= min}
-                    className="px-4 py-2.5 text-[#2C2C2C] font-medium text-lg transition-all hover:bg-[#F5F5F5] disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="px-4 py-2.5 text-[#2C2C2C] dark:text-novraux-cream font-medium text-lg transition-all hover:bg-[#F5F5F5] dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed"
                     aria-label="Decrease quantity"
                 >
                     −
@@ -58,13 +58,13 @@ export default function QuantitySelector({
                     onChange={handleChange}
                     min={min}
                     max={max}
-                    className="w-16 bg-transparent border-x border-[#D4A574] px-3 py-2.5 text-center text-base font-semibold text-[#2C2C2C] focus:outline-none focus:ring-0"
+                    className="w-16 bg-transparent border-x border-[#D4A574] px-3 py-2.5 text-center text-base font-semibold text-[#2C2C2C] dark:text-novraux-cream focus:outline-none focus:ring-0"
                     aria-label="Quantity"
                 />
                 <button
                     onClick={handleIncrease}
                     disabled={quantity >= max}
-                    className="px-4 py-2.5 text-[#2C2C2C] font-medium text-lg transition-all hover:bg-[#F5F5F5] disabled:opacity-30 disabled:cursor-not-allowed"
+                    className="px-4 py-2.5 text-[#2C2C2C] dark:text-novraux-cream font-medium text-lg transition-all hover:bg-[#F5F5F5] dark:hover:bg-white/10 disabled:opacity-30 disabled:cursor-not-allowed"
                     aria-label="Increase quantity"
                 >
                     +

@@ -62,8 +62,8 @@ export default function AddToCartButton({ productId }: AddToCartButtonProps) {
           w-full border-2 px-8 py-4 text-[11px] font-semibold tracking-[0.3em] uppercase 
           transition-all duration-300 relative overflow-hidden group
           ${added
-            ? 'border-green-600 bg-green-50 text-green-700'
-            : 'border-[#B8926A] text-[#2C2C2C] bg-[#FAF8F5] hover:bg-[#B8926A] hover:text-white hover:shadow-[0_4px_16px_rgba(184,146,106,0.3)]'
+            ? 'border-green-600 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400'
+            : 'border-[#B8926A] text-[#2C2C2C] dark:text-novraux-cream bg-[#FAF8F5] dark:bg-[#121212] hover:bg-[#B8926A] hover:text-white dark:hover:text-white hover:shadow-[0_4px_16px_rgba(184,146,106,0.3)]'
           }
           disabled:opacity-50 disabled:cursor-not-allowed
         `}

@@ -16,19 +16,19 @@ export default async function ProductsPage() {
   });
 
   return (
-    <div className="bg-novraux-cream min-h-screen">
+    <div className="bg-novraux-cream dark:bg-[#121212] min-h-screen transition-colors duration-300">
       <div className="container mx-auto px-4 py-24 lg:px-8">
         <div className="text-center mb-16">
           <span className="text-xs font-semibold tracking-editorial uppercase text-novraux-terracotta">
             The Collection
           </span>
-          <h1 className="mt-4 font-serif text-4xl md:text-5xl font-medium text-novraux-charcoal uppercase">
+          <h1 className="mt-4 font-serif text-4xl md:text-5xl font-medium text-novraux-charcoal dark:text-novraux-cream uppercase transition-colors">
             All Creations
           </h1>
-          <p className="mt-6 text-novraux-grey max-w-xl mx-auto">
+          <p className="mt-6 text-novraux-grey dark:text-novraux-beige/70 max-w-xl mx-auto transition-colors">
             Discover our curated archive of limited series garments, each handcrafted with a commitment to refined minimalism.
           </p>
-          <p className="mt-4 text-[10px] tracking-editorial uppercase text-novraux-grey/60 font-medium">
+          <p className="mt-4 text-[10px] tracking-editorial uppercase text-novraux-grey/60 dark:text-novraux-beige/50 font-medium transition-colors">
             Showing {products.length} series
           </p>
         </div>

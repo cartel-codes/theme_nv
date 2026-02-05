@@ -17,7 +17,7 @@ export default async function HomePage() {
   ]);
 
   return (
-    <div className="bg-novraux-cream">
+    <div className="bg-novraux-cream dark:bg-[#121212] transition-colors duration-300">
       {/* Hero Section — Editorial Quality */}
       <section className="relative h-[90vh] min-h-[700px] overflow-hidden">
         <div className="absolute inset-0">
@@ -40,7 +40,7 @@ export default async function HomePage() {
           </p>
           <div className="mt-12">
             <Link
-              href="/collection"
+              href="/products"
               className="bg-white text-novraux-charcoal px-10 py-4 text-xs font-semibold tracking-editorial uppercase transition-all hover:bg-novraux-charcoal hover:text-white"
             >
               Discover the Collection
@@ -61,10 +61,10 @@ export default async function HomePage() {
           <span className="text-xs font-semibold tracking-editorial uppercase text-novraux-terracotta">
             Current Selection
           </span>
-          <h2 className="mt-4 font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-novraux-charcoal uppercase">
+          <h2 className="mt-4 font-serif text-3xl md:text-4xl lg:text-5xl font-medium text-novraux-charcoal dark:text-novraux-cream uppercase transition-colors">
             Limited Editions
           </h2>
-          <p className="mt-6 text-novraux-grey max-w-xl mx-auto">
+          <p className="mt-6 text-novraux-grey dark:text-novraux-beige/70 max-w-xl mx-auto transition-colors">
             Each piece is part of a numbered series of max 100 items worldwide. Once sold out, they are never reproduced.
           </p>
         </div>
@@ -77,8 +77,8 @@ export default async function HomePage() {
 
         <div className="mt-20 text-center">
           <Link
-            href="/collection"
-            className="inline-block border-b border-novraux-charcoal pb-1 text-sm font-semibold tracking-editorial uppercase text-novraux-charcoal transition-all hover:text-novraux-terracotta hover:border-novraux-terracotta"
+            href="/products"
+            className="inline-block border-b border-novraux-charcoal dark:border-novraux-cream pb-1 text-sm font-semibold tracking-editorial uppercase text-novraux-charcoal dark:text-novraux-cream transition-all hover:text-novraux-terracotta hover:border-novraux-terracotta"
           >
             View Entire Collection
           </Link>
@@ -86,7 +86,7 @@ export default async function HomePage() {
       </section>
 
       {/* About Section — 50/50 Split */}
-      <section className="bg-novraux-beige py-24 lg:py-0">
+      <section className="bg-novraux-beige dark:bg-[#1a1a1a] py-24 lg:py-0 transition-colors">
         <div className="container mx-auto lg:px-0 flex flex-col lg:flex-row min-h-[600px]">
           <div className="relative flex-1 h-[400px] lg:h-auto overflow-hidden">
             <Image
@@ -100,10 +100,10 @@ export default async function HomePage() {
             <span className="text-xs font-semibold tracking-editorial uppercase text-novraux-terracotta">
               Our Craft
             </span>
-            <h2 className="mt-6 font-serif text-3xl md:text-4xl font-medium text-novraux-charcoal uppercase leading-tight">
+            <h2 className="mt-6 font-serif text-3xl md:text-4xl font-medium text-novraux-charcoal dark:text-novraux-cream uppercase leading-tight transition-colors">
               Hand-Drawn. Numbered. <br className="hidden md:block" /> Yours.
             </h2>
-            <div className="mt-8 space-y-6 text-novraux-grey leading-relaxed">
+            <div className="mt-8 space-y-6 text-novraux-grey dark:text-novraux-beige/70 leading-relaxed transition-colors">
               <p>
                 Founded on the principles of refined minimalism and intentional scarcity, Novraux specializes in contemporary luxury for the modern individual.
               </p>
@@ -114,7 +114,7 @@ export default async function HomePage() {
             <div className="mt-12">
               <Link
                 href="/about"
-                className="text-sm font-semibold tracking-editorial border-b border-novraux-charcoal pb-1 uppercase text-novraux-charcoal hover:text-novraux-terracotta hover:border-novraux-terracotta transition-colors"
+                className="text-sm font-semibold tracking-editorial border-b border-novraux-charcoal dark:border-novraux-cream pb-1 uppercase text-novraux-charcoal dark:text-novraux-cream hover:text-novraux-terracotta hover:border-novraux-terracotta transition-colors"
               >
                 Learn More About Our Story
               </Link>
@@ -124,48 +124,48 @@ export default async function HomePage() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-32 bg-novraux-cream">
+      <section className="py-32 bg-novraux-cream dark:bg-[#121212] transition-colors">
         <div className="container mx-auto px-4 max-w-2xl text-center">
-          <h2 className="font-serif text-3xl font-medium text-novraux-charcoal uppercase">
+          <h2 className="font-serif text-3xl font-medium text-novraux-charcoal dark:text-novraux-cream uppercase transition-colors">
             Stay Informed
           </h2>
-          <p className="mt-6 text-novraux-grey">
+          <p className="mt-6 text-novraux-grey dark:text-novraux-beige/70 transition-colors">
             Join our inner circle for early access to new limited editions and editorial stories.
           </p>
           <form className="mt-12 flex flex-col sm:flex-row gap-4">
             <input
               type="email"
               placeholder="Your email address"
-              className="flex-1 bg-white border border-novraux-beige px-6 py-4 text-novraux-charcoal focus:outline-none focus:border-novraux-charcoal transition-colors"
+              className="flex-1 bg-white dark:bg-[#1a1a1a] border border-novraux-beige dark:border-white/20 px-6 py-4 text-novraux-charcoal dark:text-novraux-cream focus:outline-none focus:border-novraux-charcoal dark:focus:border-novraux-terracotta transition-colors placeholder:text-novraux-grey/60"
               required
             />
             <button
               type="submit"
-              className="bg-novraux-charcoal text-white px-8 py-4 text-xs font-semibold tracking-editorial uppercase transition-all hover:bg-novraux-terracotta"
+              className="bg-novraux-charcoal dark:bg-novraux-terracotta text-white px-8 py-4 text-xs font-semibold tracking-editorial uppercase transition-all hover:bg-novraux-terracotta dark:hover:bg-novraux-charcoal"
             >
               Subscribe
             </button>
           </form>
-          <p className="mt-6 text-[11px] text-novraux-grey uppercase tracking-widest">
+          <p className="mt-6 text-[11px] text-novraux-grey dark:text-novraux-beige/50 uppercase tracking-widest transition-colors">
             Privacy respected. Unsubscribe at any time.
           </p>
         </div>
       </section>
 
       {/* Editorial Journal Teaser */}
-      <section className="container mx-auto px-4 py-32 lg:px-8 border-t border-novraux-beige">
+      <section className="container mx-auto px-4 py-32 lg:px-8 border-t border-novraux-beige dark:border-white/10 transition-colors">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
             <span className="text-xs font-semibold tracking-editorial uppercase text-novraux-terracotta">
               Editorial
             </span>
-            <h2 className="mt-4 font-serif text-3xl md:text-4xl font-medium text-novraux-charcoal uppercase">
+            <h2 className="mt-4 font-serif text-3xl md:text-4xl font-medium text-novraux-charcoal dark:text-novraux-cream uppercase transition-colors">
               The Journal
             </h2>
           </div>
           <Link
             href="/blog"
-            className="text-xs font-semibold tracking-editorial uppercase text-novraux-grey hover:text-novraux-charcoal transition-colors"
+            className="text-xs font-semibold tracking-editorial uppercase text-novraux-grey dark:text-novraux-beige/70 hover:text-novraux-charcoal dark:hover:text-novraux-cream transition-colors"
           >
             Read All Stories →
           </Link>
@@ -178,7 +178,7 @@ export default async function HomePage() {
               href={`/blog/${post.slug}`}
               className="group flex flex-col"
             >
-              <div className="relative aspect-[3/2] overflow-hidden bg-novraux-beige">
+              <div className="relative aspect-[3/2] overflow-hidden bg-novraux-beige dark:bg-[#1a1a1a]">
                 {post.imageUrl ? (
                   <Image
                     src={post.imageUrl}
@@ -187,7 +187,7 @@ export default async function HomePage() {
                     className="object-cover transition-all duration-700 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="flex h-full items-center justify-center text-novraux-grey text-[10px] tracking-editorial uppercase">
+                  <div className="flex h-full items-center justify-center text-novraux-grey dark:text-novraux-beige/50 text-[10px] tracking-editorial uppercase">
                     No image
                   </div>
                 )}
@@ -199,11 +199,11 @@ export default async function HomePage() {
                   year: 'numeric',
                 })}
               </p>
-              <h3 className="mt-4 font-serif text-2xl font-medium text-novraux-charcoal group-hover:text-novraux-terracotta transition-colors">
+              <h3 className="mt-4 font-serif text-2xl font-medium text-novraux-charcoal dark:text-novraux-cream group-hover:text-novraux-terracotta transition-colors">
                 {post.title}
               </h3>
               {post.excerpt && (
-                <p className="mt-4 line-clamp-2 text-sm text-novraux-grey leading-relaxed">
+                <p className="mt-4 line-clamp-2 text-sm text-novraux-grey dark:text-novraux-beige/70 leading-relaxed transition-colors">
                   {post.excerpt}
                 </p>
               )}

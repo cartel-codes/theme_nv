@@ -3,7 +3,18 @@ import { prisma } from '@/lib/prisma';
 import { getUserSession } from '@/lib/user-auth';
 import { getOrCreateCart } from '@/lib/cart';
 
-jest.mock('@/lib/prisma');
+jest.mock('@/lib/prisma', () => ({
+    prisma: {
+        product: {
+            findUnique: jest.fn(),
+        },
+        cartItem: {
+            findUnique: jest.fn(),
+            create: jest.fn(),
+            update: jest.fn(),
+        },
+    },
+}));
 jest.mock('@/lib/user-auth');
 jest.mock('@/lib/cart');
 jest.mock('next/headers', () => ({

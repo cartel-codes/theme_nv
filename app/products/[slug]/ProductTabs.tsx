@@ -26,8 +26,8 @@ export default function ProductTabs({ tabs }: ProductTabsProps) {
                         className={`
               relative pb-4 text-[11px] tracking-[0.3em] uppercase transition-colors duration-300 font-medium
               ${activeTab === tab.id
-                                ? 'text-[#2C2C2C]'
-                                : 'text-[#8B8B8B] hover:text-[#5D5D5D]'
+                                ? 'text-[#2C2C2C] dark:text-novraux-cream'
+                                : 'text-[#8B8B8B] dark:text-novraux-beige/60 hover:text-[#5D5D5D] dark:hover:text-novraux-cream'
                             }
             `}
                     >

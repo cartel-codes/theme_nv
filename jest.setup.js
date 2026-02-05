@@ -1,5 +1,25 @@
 require('@testing-library/jest-dom');
 
+// Simple Request mock for Node.js test environment
+class MockRequest {
+  constructor(url, options = {}) {
+    this.url = url;
+    this.method = options.method || 'GET';
+    this._body = options.body;
+    this.headers = new Map(Object.entries(options.headers || {}));
+  }
+  async json() {
+    return JSON.parse(this._body || '{}');
+  }
+  async text() {
+    return this._body || '';
+  }
+}
+
+if (typeof Request === 'undefined') {
+  global.Request = MockRequest;
+}
+
 // Mock global fetch
 global.fetch = jest.fn(() =>
   Promise.resolve({

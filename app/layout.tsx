@@ -4,6 +4,7 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { AuthProvider } from '@/app/providers';
+import { ThemeProvider } from '@/providers/ThemeProvider';
 import { generateMetadata as getBaseMetadata } from '@/lib/seo';
 
 const cormorant = Cormorant_Garamond({
@@ -27,16 +28,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${jost.variable}`}>
-      <body className="min-h-screen flex flex-col antialiased relative">
-        <div className="ambient-bg" />
-        <div className="grain-overlay" />
+    <html lang="en" className={`${cormorant.variable} ${jost.variable}`} suppressHydrationWarning>
+      <body className="min-h-screen flex flex-col antialiased relative bg-novraux-cream dark:bg-[#121212] transition-colors duration-300">
+        <div className="ambient-bg dark:opacity-10" />
+        <div className="grain-overlay opacity-30" />
         <div className="relative z-10 flex min-h-screen flex-col">
-          <AuthProvider>
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </AuthProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <AuthProvider>
+              <Header />
+              <main className="flex-1 text-novraux-charcoal dark:text-novraux-cream transition-colors duration-300">
+                {children}
+              </main>
+              <Footer />
+            </AuthProvider>
+          </ThemeProvider>
         </div>
       </body>
     </html>

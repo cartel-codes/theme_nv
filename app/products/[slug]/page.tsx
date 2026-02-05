@@ -88,7 +88,7 @@ export default async function ProductPage({ params }: PageProps) {
       id: 'details',
       label: 'Details',
       content: (
-        <div className="text-[15px] leading-relaxed tracking-[0.02em] text-[#5D5D5D] space-y-4">
+        <div className="text-[15px] leading-relaxed tracking-[0.02em] text-[#5D5D5D] dark:text-novraux-beige/80 space-y-4">
           {product.description ? (
             <p>{product.description}</p>
           ) : (
@@ -96,12 +96,12 @@ export default async function ProductPage({ params }: PageProps) {
           )}
           <div className="mt-6 grid grid-cols-2 gap-4 text-[13px]">
             <div>
-              <span className="block text-[#8B8B8B] uppercase tracking-[0.25em] mb-1.5 font-medium text-[11px]">SKU</span>
+              <span className="block text-[#8B8B8B] dark:text-novraux-beige/60 uppercase tracking-[0.25em] mb-1.5 font-medium text-[11px]">SKU</span>
               <span className="text-[#B8926A] font-medium">{product.id.slice(0, 8).toUpperCase()}</span>
             </div>
             <div>
-              <span className="block text-[#8B8B8B] uppercase tracking-[0.25em] mb-1.5 font-medium text-[11px]">Availability</span>
-              <span className="text-green-600 font-medium">In Stock</span>
+              <span className="block text-[#8B8B8B] dark:text-novraux-beige/60 uppercase tracking-[0.25em] mb-1.5 font-medium text-[11px]">Availability</span>
+              <span className="text-green-600 dark:text-green-400 font-medium">In Stock</span>
             </div>
           </div>
         </div>
@@ -111,7 +111,7 @@ export default async function ProductPage({ params }: PageProps) {
       id: 'care',
       label: 'Care',
       content: (
-        <div className="text-[15px] leading-relaxed tracking-[0.02em] text-[#5D5D5D] space-y-3">
+        <div className="text-[15px] leading-relaxed tracking-[0.02em] text-[#5D5D5D] dark:text-novraux-beige/80 space-y-3">
           <p>• Dry clean only for best results</p>
           <p>• Store in a cool, dry place away from direct sunlight</p>
           <p>• Handle with care to preserve fabric integrity</p>
@@ -123,7 +123,7 @@ export default async function ProductPage({ params }: PageProps) {
       id: 'shipping',
       label: 'Shipping',
       content: (
-        <div className="text-[15px] leading-relaxed tracking-[0.02em] text-[#5D5D5D] space-y-3">
+        <div className="text-[15px] leading-relaxed tracking-[0.02em] text-[#5D5D5D] dark:text-novraux-beige/80 space-y-3">
           <p>• Free standard shipping on orders over $200</p>
           <p>• Express shipping available (2-3 business days)</p>
           <p>• International shipping available to select countries</p>
@@ -142,11 +142,11 @@ export default async function ProductPage({ params }: PageProps) {
       <div className="container mx-auto px-4 py-16">
         {/* Breadcrumbs - Bottega Veneta inspired */}
         <nav className="mb-10 text-[13px] tracking-[0.15em] uppercase">
-          <Link href="/products" className="text-[#8B8B8B] transition-colors hover:text-[#B8926A]">
+          <Link href="/products" className="text-[#8B8B8B] dark:text-novraux-beige/60 transition-colors hover:text-[#B8926A]">
             Products
           </Link>
           <span className="mx-3 text-[#B8926A]">/</span>
-          <span className="text-[#2C2C2C] font-medium">{product.name}</span>
+          <span className="text-[#2C2C2C] dark:text-novraux-cream font-medium">{product.name}</span>
         </nav>
 
         {/* Main Product Section */}
@@ -167,7 +167,7 @@ export default async function ProductPage({ params }: PageProps) {
             )}
 
             {/* Title - Hermès-inspired rich dark */}
-            <h1 className="font-serif text-4xl font-light tracking-[0.08em] text-[#2C2C2C] md:text-5xl leading-tight">
+            <h1 className="font-serif text-4xl font-light tracking-[0.08em] text-[#2C2C2C] dark:text-novraux-cream md:text-5xl leading-tight">
               {product.name}
             </h1>
 
@@ -178,7 +178,7 @@ export default async function ProductPage({ params }: PageProps) {
 
             {/* Short Description - Warm gray */}
             {product.description && (
-              <p className="text-[15px] leading-relaxed tracking-[0.02em] text-[#5D5D5D] border-l-2 border-[#D4A574] pl-6 italic">
+              <p className="text-[15px] leading-relaxed tracking-[0.02em] text-[#5D5D5D] dark:text-novraux-beige/80 border-l-2 border-[#D4A574] pl-6 italic">
                 {product.description.slice(0, 200)}
                 {product.description.length > 200 ? '...' : ''}
               </p>
@@ -190,7 +190,7 @@ export default async function ProductPage({ params }: PageProps) {
             </div>
 
             {/* Additional Info - Refined badges */}
-            <div className="pt-6 flex flex-wrap gap-5 text-[11px] tracking-[0.25em] text-[#5D5D5D] uppercase">
+            <div className="pt-6 flex flex-wrap gap-5 text-[11px] tracking-[0.25em] text-[#5D5D5D] dark:text-novraux-beige/80 uppercase">
               <div className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-[#B8926A]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M5 13l4 4L19 7" />
@@ -212,8 +212,8 @@ export default async function ProductPage({ params }: PageProps) {
 
         {/* Related Products */}
         {relatedProducts.length > 0 && (
-          <div className="mt-24 border-t border-[#E8E8E8] pt-16">
-            <h2 className="mb-12 font-serif text-2xl font-normal tracking-[0.08em] text-[#2C2C2C] text-center">
+          <div className="mt-24 border-t border-[#E8E8E8] dark:border-white/10 pt-16">
+            <h2 className="mb-12 font-serif text-2xl font-normal tracking-[0.08em] text-[#2C2C2C] dark:text-novraux-cream text-center">
               You May Also Like
             </h2>
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
@@ -241,7 +241,7 @@ export default async function ProductPage({ params }: PageProps) {
                           {relatedProduct.category.name}
                         </p>
                       )}
-                      <h3 className="font-serif text-base tracking-[0.08em] text-[#e8e4df] group-hover:text-[#c9a96e] transition-colors">
+                      <h3 className="font-serif text-base tracking-[0.08em] text-[#2C2C2C] dark:text-[#e8e4df] group-hover:text-[#c9a96e] transition-colors">
                         {relatedProduct.name}
                       </h3>
                       <p className="text-sm text-[#9b8f82]">
