@@ -5,14 +5,19 @@ import { prisma } from '@/lib/prisma';
 export async function GET() {
   try {
     const cart = await getOrCreateCart();
+
+    if (!cart) {
+      return NextResponse.json({ items: [], totalItems: 0 });
+    }
+
     return NextResponse.json({
-      items: cart.items.map((item) => ({
+      items: cart.items?.map((item) => ({
         id: item.id,
         productId: item.productId,
         quantity: item.quantity,
         product: item.product,
-      })),
-      totalItems: cart.items.reduce((sum, item) => sum + item.quantity, 0),
+      })) || [],
+      totalItems: cart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0,
     });
   } catch (error) {
     console.error('Failed to fetch cart:', error);
@@ -91,13 +96,13 @@ export async function POST(request: Request) {
 
     const updatedCart = await getOrCreateCart();
     return NextResponse.json({
-      items: updatedCart.items.map((item) => ({
+      items: updatedCart.items?.map((item) => ({
         id: item.id,
         productId: item.productId,
         quantity: item.quantity,
         product: item.product,
-      })),
-      totalItems: updatedCart.items.reduce((sum, item) => sum + item.quantity, 0),
+      })) || [],
+      totalItems: updatedCart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0,
     });
   } catch (error) {
     console.error('Failed to add to cart:', error);
@@ -121,7 +126,7 @@ export async function PUT(request: Request) {
     }
 
     const cart = await getOrCreateCart();
-    const item = cart.items.find((i) => i.id === itemId);
+    const item = cart.items?.find((i) => i.id === itemId);
 
     if (!item) {
       return NextResponse.json({ error: 'Cart item not found' }, { status: 404 });
@@ -138,13 +143,13 @@ export async function PUT(request: Request) {
 
     const updatedCart = await getOrCreateCart();
     return NextResponse.json({
-      items: updatedCart.items.map((i) => ({
+      items: updatedCart.items?.map((i) => ({
         id: i.id,
         productId: i.productId,
         quantity: i.quantity,
         product: i.product,
-      })),
-      totalItems: updatedCart.items.reduce((sum, i) => sum + i.quantity, 0),
+      })) || [],
+      totalItems: updatedCart.items?.reduce((sum, i) => sum + i.quantity, 0) || 0,
     });
   } catch (error) {
     console.error('Failed to update cart:', error);
@@ -168,7 +173,7 @@ export async function DELETE(request: Request) {
     }
 
     const cart = await getOrCreateCart();
-    const item = cart.items.find((i) => i.id === itemId);
+    const item = cart.items?.find((i) => i.id === itemId);
 
     if (!item) {
       return NextResponse.json({ error: 'Cart item not found' }, { status: 404 });
@@ -178,13 +183,13 @@ export async function DELETE(request: Request) {
 
     const updatedCart = await getOrCreateCart();
     return NextResponse.json({
-      items: updatedCart.items.map((i) => ({
+      items: updatedCart.items?.map((i) => ({
         id: i.id,
         productId: i.productId,
         quantity: i.quantity,
         product: i.product,
-      })),
-      totalItems: updatedCart.items.reduce((sum, i) => sum + i.quantity, 0),
+      })) || [],
+      totalItems: updatedCart.items?.reduce((sum, i) => sum + i.quantity, 0) || 0,
     });
   } catch (error) {
     console.error('Failed to remove from cart:', error);

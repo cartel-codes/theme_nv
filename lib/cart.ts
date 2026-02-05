@@ -1,9 +1,16 @@
 import { prisma } from './prisma';
 import { cookies } from 'next/headers';
 import { getUserSession } from './user-auth';
+import type { Cart, CartItem, Product } from '@prisma/client';
 
 const CART_SESSION_COOKIE = 'cart_session_id';
 const USER_SESSION_COOKIE = 'userSession';
+
+type CartWithItems = Cart & {
+  items: (CartItem & {
+    product: Product;
+  })[];
+};
 
 export async function getCartSessionId(): Promise<string> {
   const cookieStore = await cookies();
@@ -23,7 +30,7 @@ export async function getCartSessionId(): Promise<string> {
   return sessionId;
 }
 
-export async function getOrCreateCart() {
+export async function getOrCreateCart(): Promise<CartWithItems> {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get(USER_SESSION_COOKIE)?.value;
   const sessionId = await getCartSessionId();
@@ -108,7 +115,7 @@ export async function getOrCreateCart() {
       });
 
       // Refresh user cart with merged items
-      userCart = await prisma.cart.findFirst({
+      userCart = (await prisma.cart.findFirst({
         where: { userId },
         include: {
           items: {
@@ -117,7 +124,7 @@ export async function getOrCreateCart() {
             },
           },
         },
-      }) as any;
+      }))!;
     }
 
     return userCart;
@@ -150,4 +157,3 @@ export async function getOrCreateCart() {
 
   return cart;
 }
-

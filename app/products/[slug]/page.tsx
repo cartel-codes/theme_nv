@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { generateMetadata as getSEO, generateJsonLd } from '@/lib/seo';
 import AddToCartButton from './AddToCartButton';
@@ -226,10 +227,11 @@ export default async function ProductPage({ params }: PageProps) {
                   >
                     <div className="relative aspect-square overflow-hidden border border-[rgba(201,169,110,0.12)] bg-[#0f0f0f] mb-4">
                       {relatedProduct.imageUrl && (
-                        <img
+                        <Image
                           src={relatedProduct.imageUrl}
                           alt={relatedProduct.name}
-                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                       )}
                     </div>
