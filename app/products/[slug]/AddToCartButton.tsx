@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import QuantitySelector from './QuantitySelector';
 
 interface AddToCartButtonProps {
   productId: string;
 }
 
 export default function AddToCartButton({ productId }: AddToCartButtonProps) {
+  const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
   const [error, setError] = useState('');
@@ -21,11 +23,10 @@ export default function AddToCartButton({ productId }: AddToCartButtonProps) {
       const res = await fetch('/api/cart', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId, quantity: 1 }),
+        body: JSON.stringify({ productId, quantity }),
       });
 
       if (res.status === 401) {
-        // Not authenticated - redirect to login
         const currentPath = window.location.pathname;
         router.push(`/auth/login?redirect=${encodeURIComponent(currentPath)}`);
         return;
@@ -33,6 +34,7 @@ export default function AddToCartButton({ productId }: AddToCartButtonProps) {
 
       if (res.ok) {
         setAdded(true);
+        setTimeout(() => setAdded(false), 3000);
         router.refresh();
       } else {
         const data = await res.json();
@@ -47,16 +49,34 @@ export default function AddToCartButton({ productId }: AddToCartButtonProps) {
   }
 
   return (
-    <div>
+    <div className="space-y-6">
+      <QuantitySelector
+        initialQuantity={quantity}
+        onChange={setQuantity}
+      />
+
       <button
         onClick={handleAddToCart}
         disabled={loading || added}
-        className="mt-10 w-full border border-[rgba(201,169,110,0.4)] px-8 py-4 text-xs font-light tracking-[0.25em] text-[#c9a96e] uppercase transition-all hover:bg-[rgba(201,169,110,0.08)] hover:border-[#c9a96e] disabled:opacity-50 disabled:hover:bg-transparent"
+        className={`
+          w-full border-2 px-8 py-4 text-[11px] font-semibold tracking-[0.3em] uppercase 
+          transition-all duration-300 relative overflow-hidden group
+          ${added
+            ? 'border-green-600 bg-green-50 text-green-700'
+            : 'border-[#B8926A] text-[#2C2C2C] bg-[#FAF8F5] hover:bg-[#B8926A] hover:text-white hover:shadow-[0_4px_16px_rgba(184,146,106,0.3)]'
+          }
+          disabled:opacity-50 disabled:cursor-not-allowed
+        `}
       >
-        {loading ? 'Adding...' : added ? 'Added to cart ✓' : 'Add to cart'}
+        <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+        <span className="relative">
+          {loading ? 'Adding...' : added ? '✓ Added to cart' : 'Add to cart'}
+        </span>
       </button>
+
       {error && (
-        <p className="mt-2 text-sm text-red-500">{error}</p>
+        <p className="text-sm text-red-600 text-center animate-fadeIn font-medium">{error}</p>
       )}
     </div>
   );
