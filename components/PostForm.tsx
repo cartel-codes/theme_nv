@@ -102,6 +102,12 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
                 throw new Error(data.error || 'Failed to save post');
             }
 
+            // If publishing (not draft), open the new article in a new window
+            if (!isDraft) {
+                const articleUrl = `/blog/${formData.slug}`;
+                window.open(articleUrl, '_blank');
+            }
+
             router.push('/admin/posts');
             router.refresh();
         } catch (err) {
