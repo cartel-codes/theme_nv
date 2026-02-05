@@ -123,6 +123,98 @@ export default function ProductForm({ productId }: ProductFormProps) {
     setFormData(prev => ({ ...prev, images }));
   };
 
+  const handleImageUploadedForAI = async (imageUrl: string) => {
+    // Auto-trigger AI generation when image is uploaded
+    console.log('📸 Image uploaded, triggering automatic AI generation...', { imageUrl });
+    setIsAiGenerating(true);
+    setError(null);
+
+    try {
+      const res = await fetch('/api/admin/seo/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          description: formData.description,
+          type: 'product',
+          imageUrl
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        console.error('❌ AI Generation failed:', data);
+        throw new Error(data.error || 'Failed to generate AI content');
+      }
+
+      const suggestion = await res.json();
+      console.log('✅ AI Generation successful:', {
+        hasGeneratedName: !!suggestion.generatedName,
+        suggestedCategory: suggestion.suggestedCategory,
+        hasGeneratedDescription: !!suggestion.generatedDescription,
+      });
+
+      // Check if we need to create a new category
+      let finalCategoryId = formData.categoryId;
+      if (suggestion.suggestedCategory) {
+        // Try to find existing category
+        const existingCategory = categories.find(
+          c => c.name.toLowerCase() === suggestion.suggestedCategory.toLowerCase()
+        );
+
+        if (existingCategory) {
+          finalCategoryId = existingCategory.id;
+          console.log('✅ Found existing category:', existingCategory.name);
+        } else {
+          // Auto-create the category
+          try {
+            console.log('🆕 Creating new category:', suggestion.suggestedCategory);
+            const categoryRes = await fetch('/api/admin/categories', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                name: suggestion.suggestedCategory,
+                slug: suggestion.suggestedCategory
+                  .toLowerCase()
+                  .replace(/\s+/g, '-')
+                  .replace(/[^\w-]/g, ''),
+                description: `Auto-created collection for ${suggestion.generatedName || formData.name}`,
+              }),
+            });
+
+            if (categoryRes.ok) {
+              const newCategory = await categoryRes.json();
+              finalCategoryId = newCategory.id;
+              setCategories([...categories, newCategory]);
+              console.log('✅ New category created:', newCategory.name);
+            }
+          } catch (err) {
+            console.warn('⚠️ Failed to auto-create category:', err);
+          }
+        }
+      }
+
+      // Update form with generated content
+      setFormData(prev => ({
+        ...prev,
+        name: (!prev.name && suggestion.generatedName) ? suggestion.generatedName : prev.name,
+        slug: (!prev.slug && suggestion.suggestedSlug) ? suggestion.suggestedSlug : prev.slug,
+        description: (!prev.description && suggestion.generatedDescription) ? suggestion.generatedDescription : prev.description,
+        metaTitle: suggestion.metaTitle,
+        metaDescription: suggestion.metaDescription,
+        keywords: suggestion.keywords,
+        focusKeyword: suggestion.focusKeyword,
+        categoryId: finalCategoryId,
+      }));
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : 'Auto-generation failed';
+      console.error('❌ handleImageUploadedForAI error:', errorMsg);
+      setError(errorMsg);
+    } finally {
+      setIsAiGenerating(false);
+    }
+  };
+
   const handleAutoGenerateSEO = () => {
     setFormData(prev => ({
       ...prev,
@@ -272,7 +364,12 @@ export default function ProductForm({ productId }: ProductFormProps) {
       {/* Images */}
       <div className="bg-white dark:bg-neutral-900 rounded border border-neutral-200 dark:border-neutral-700 p-6 space-y-4">
         <h2 className="font-serif text-xl dark:text-white">Product Images</h2>
-        <ImageUploader images={formData.images} onImagesChange={handleImagesUpdate} />
+        <p className="text-xs text-neutral-500 dark:text-neutral-400">💡 Uploading an image will automatically generate product name, description, and SEO fields using AI</p>
+        <ImageUploader 
+          images={formData.images} 
+          onImagesChange={handleImagesUpdate}
+          onImageUploadedForAI={handleImageUploadedForAI}
+        />
       </div>
 
       {/* SEO Settings */}

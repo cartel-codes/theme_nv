@@ -192,14 +192,14 @@ export function calculateSEOScore(product: SEOCheckInput): SEOScoreResult {
   checks.push({
     id: 'image-alt',
     label: 'Image Alt Text',
-    passed: allImagesHaveAlt || !hasImages,
+    passed: allImagesHaveAlt, // ✅ Only pass if images exist AND all have alt text
     message: !hasImages
-      ? 'Add product images'
+      ? '⚠️ Add product images' // Not green - action needed
       : allImagesHaveAlt
-        ? `All ${images.length} images have alt text`
-        : `${imagesWithAlt}/${images.length} images have alt text`,
+        ? `✅ All ${images.length} images have alt text`
+        : `⚠️ ${imagesWithAlt}/${images.length} images have alt text`,
   });
-  if (allImagesHaveAlt || !hasImages) passed++;
+  if (allImagesHaveAlt) passed++; // ✅ Only increment if truly complete
 
   // Calculate score
   const score = Math.round((passed / total) * 100);

@@ -73,9 +73,12 @@ export async function uploadToR2(
 
     await client.send(command);
 
-    // Return the proxy URL instead of direct R2 URL to bypass public access restrictions
+    // ✅ Use proxy URL for UI (works locally and on production)
+    // The proxy endpoint /api/images/[...key] handles R2 access
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3001';
-    return `${siteUrl}/api/images/${key}`;
+    const proxyUrl = `${siteUrl}/api/images/${key}`;
+    console.log('📸 Uploaded to R2:', { key, proxyUrl });
+    return proxyUrl;
 }
 
 /**

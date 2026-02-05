@@ -15,6 +15,8 @@ const mockProduct: Product = {
   metaTitle: null,
   metaDescription: null,
   keywords: null,
+  focusKeyword: null,
+  ogImage: null,
 };
 
 describe('ProductCard', () => {

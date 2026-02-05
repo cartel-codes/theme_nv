@@ -14,9 +14,10 @@ interface ImageItem {
 interface ImageUploaderProps {
   images: ImageItem[];
   onImagesChange: (images: ImageItem[]) => void;
+  onImageUploadedForAI?: (imageUrl: string) => void; // Callback for AI generation
 }
 
-export default function ImageUploader({ images, onImagesChange }: ImageUploaderProps) {
+export default function ImageUploader({ images, onImagesChange, onImageUploadedForAI }: ImageUploaderProps) {
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -92,7 +93,13 @@ export default function ImageUploader({ images, onImagesChange }: ImageUploaderP
         });
       }
 
-      onImagesChange([...images, ...newImages]);
+      const allImages = [...images, ...newImages];
+      onImagesChange(allImages);
+      
+      // Trigger AI generation callback for the first newly uploaded image
+      if (newImages.length > 0 && onImageUploadedForAI) {
+        onImageUploadedForAI(newImages[0].url);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to upload images');
     } finally {
