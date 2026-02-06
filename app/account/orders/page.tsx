@@ -20,7 +20,7 @@ export default async function OrdersPage() {
 
             {orders.length === 0 ? (
                 <div className="text-center py-12 border border-dashed border-novraux-grey/30 rounded-lg">
-                    <p className="text-novraux-grey mb-4">You haven't placed any orders yet.</p>
+                    <p className="text-novraux-grey mb-4">You haven&apos;t placed any orders yet.</p>
                     <Link href="/products" className="text-novraux-black underline underline-offset-4 hover:text-novraux-gold transition-colors">
                         Start Shopping
                     </Link>

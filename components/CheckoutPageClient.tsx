@@ -62,6 +62,7 @@ export default function CheckoutPageClient() {
     useEffect(() => {
         checkAuthAndLoadProfile();
         fetchCart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const checkAuthAndLoadProfile = async () => {

@@ -35,7 +35,7 @@ describe('POST /api/auth/signup', () => {
         body: JSON.stringify({
           email: 'newadmin@novraux.com',
           password: 'securePass123!',
-          name: 'New Admin',
+          username: 'New Admin',
         }),
       }
     );

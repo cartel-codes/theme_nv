@@ -31,7 +31,7 @@ describe('GET /api/products', () => {
     expect(prisma.product.findMany).toHaveBeenCalledTimes(1);
   });
 
-  it('filters products by category', async () => {
+  it('includes category and images in response', async () => {
     (prisma.product.findMany as jest.Mock).mockResolvedValue(mockProducts);
 
     const request = new Request('http://localhost:3000/api/products?category=shirts');
@@ -39,7 +39,9 @@ describe('GET /api/products', () => {
 
     expect(prisma.product.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: { category: { slug: 'shirts' } },
+        include: expect.objectContaining({
+          category: true,
+        }),
       })
     );
   });

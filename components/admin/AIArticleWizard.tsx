@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface WizardData {
     niche: string;
@@ -393,10 +394,13 @@ export default function AIArticleWizard() {
                                     <p className="text-xs font-normal uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 mb-2 transition-colors">
                                         Featured Image:
                                     </p>
-                                    <img
+                                    <Image
                                         src={imageUrl}
                                         alt="Generated"
+                                        width={800}
+                                        height={450}
                                         className="w-full rounded-sm border border-novraux-ash/20 dark:border-novraux-graphite transition-colors"
+                                        unoptimized
                                     />
                                 </div>
                             )}

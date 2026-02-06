@@ -34,6 +34,7 @@ export default function ProductVariantForm({ productId }: ProductVariantFormProp
 
     useEffect(() => {
         fetchVariants();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [productId]);
 
     const fetchVariants = async () => {

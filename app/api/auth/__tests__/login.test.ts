@@ -105,7 +105,7 @@ describe('POST /api/auth/login', () => {
     const mockUser = {
       id: 'user-123',
       email: 'admin@novraux.com',
-      name: 'Admin User',
+      username: 'Admin User',
       role: 'admin',
     };
 
@@ -134,6 +134,7 @@ describe('POST /api/auth/login', () => {
         status: 'success',
         metadata: expect.objectContaining({
           userName: 'Admin User',
+          userRole: 'admin',
         }),
       })
     );

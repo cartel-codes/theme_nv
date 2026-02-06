@@ -106,7 +106,7 @@ export default async function CartPage() {
           {/* Info message about account requirement */}
           <div className="bg-[#f0ede8] dark:bg-[#1a1a1a] border border-[rgba(201,169,110,0.2)] p-4 rounded max-w-md">
             <p className="text-xs tracking-[0.08em] text-[#6b6560] text-center">
-              You'll need to sign in or create an account to complete your purchase
+              You&apos;ll need to sign in or create an account to complete your purchase
             </p>
           </div>
           
