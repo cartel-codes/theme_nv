@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import Link from 'next/link';
+import { getUserAuditLogs } from '@/lib/user-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -55,6 +56,7 @@ export default async function AdminDashboard() {
         postCount,
         lowStockItems,
         last7DaysOrders,
+        auditLogsData,
     ] = await Promise.all([
         prisma.product.count(),
         prisma.category.count(),
@@ -87,6 +89,8 @@ export default async function AdminDashboard() {
             select: { total: true, createdAt: true, status: true },
             orderBy: { createdAt: 'asc' },
         }),
+        // Fetch real audit logs
+        getUserAuditLogs({ limit: 8 }),
     ]);
 
     /* ---- derived metrics ----------------------------------------- */
@@ -109,13 +113,38 @@ export default async function AdminDashboard() {
     const sparkData = Object.entries(dayBuckets);
     const sparkMax = Math.max(...sparkData.map(([, v]) => v), 1);
 
-    /* ---- static activity feed (for now) -------------------------- */
-    const activityFeed = [
-        { icon: '📦', text: 'Inventory sync completed', time: '2 hours ago' },
-        { icon: '🔒', text: 'Security audit passed', time: '5 hours ago' },
-        { icon: '🎨', text: 'Homepage banner updated', time: 'Yesterday' },
-        { icon: '📧', text: 'Newsletter campaign sent', time: '2 days ago' },
-    ];
+    /* ---- format activity feed ------------------------------------ */
+    // Helper to format action text and icon
+    function formatLogAction(log: any) {
+        switch (log.action) {
+            case 'LOGIN_SUCCESS': return { icon: '🔓', text: `Login successful: ${log.email}` };
+            case 'LOGIN_FAILED': return { icon: '🚫', text: `Failed login attempt: ${log.email}` };
+            case 'PASSWORD_RESET_REQUESTED': return { icon: '🔑', text: `Password reset requested: ${log.email}` };
+            case 'PASSWORD_RESET_COMPLETED': return { icon: '✅', text: `Password reset completed: ${log.email}` };
+            case 'EMAIL_VERIFIED': return { icon: '📧', text: `Email verified: ${log.email}` };
+            case 'USER_REGISTERED': // Fallthrough
+            case 'SIGNUP': return { icon: '👤', text: `New user registered: ${log.email}` };
+            case 'ORDER_PURCHASED': return { icon: '🛍️', text: `Order placed by ${log.email}` };
+            default: return { icon: '📝', text: `${log.action.replace(/_/g, ' ')}: ${log.email}` };
+        }
+    }
+
+    const activityFeed = auditLogsData.logs.map(log => {
+        const { icon, text } = formatLogAction(log);
+
+        // Calculate relative time (e.g., "2 hours ago")
+        const diffMs = now.getTime() - new Date(log.createdAt).getTime();
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMins / 60);
+        const diffDays = Math.floor(diffHours / 24);
+
+        let timeStr = 'Just now';
+        if (diffDays > 0) timeStr = `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+        else if (diffHours > 0) timeStr = `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+        else if (diffMins > 0) timeStr = `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+
+        return { icon, text, time: timeStr };
+    });
 
     return (
         <div className="space-y-8 max-w-[1400px]">

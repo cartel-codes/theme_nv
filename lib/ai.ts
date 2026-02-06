@@ -577,9 +577,7 @@ export async function generateArticleImage(prompt: string): Promise<ArrayBuffer>
 
     return await response.arrayBuffer();
 }
-import { NextRequest, NextResponse } from 'next/server';
 
-// Append to end of lib/ai.ts
 
 /**
  * Generate article angle/topic proposals based on a title.

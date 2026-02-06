@@ -9,23 +9,22 @@
 
 ### User Account & Orders (Customer-Facing)
 
-- [ ] User account page (`/account`) — view profile, edit details
-- [ ] User order history page (`/account/orders`) — list past orders with status
-- [ ] User order detail page (`/account/orders/[id]`) — items, tracking, payment info
-- [ ] Post-checkout email confirmation (or at least placeholder trigger)
+- [x] User account page (`/account`) — view profile, edit details
+- [x] User order history page (`/account/orders`) — list past orders with status
+- [x] User order detail page (`/account/orders/[id]`) — items, tracking, payment info
+- [x] Post-checkout email confirmation (triggered via PayPal webhook)
 - **Estimated**: 6-8 hours
-- **Owner**: TBD
-- **Status**: Ready to start
+- **Owner**: Active
+- **Status**: ✅ Complete
 
 ### Admin Panel Polish
-
-- [ ] Wire Activity Feed to real audit logs (replace static data)
-- [ ] Admin users list page — improve UI consistency
-- [ ] Admin products list — add product thumbnails and inventory badges
+- [x] Wire Activity Feed to real audit logs (replace static data)
+- [x] Admin users list page — improve UI consistency (Added filtering/search)
+- [x] Admin products list — add product thumbnails and inventory badges
 - [ ] Mobile-responsive admin sidebar (hamburger menu on small screens)
 - **Estimated**: 4-6 hours
 - **Owner**: TBD
-- **Status**: Ready to start
+- **Status**: In progress
 
 ---
 
@@ -33,8 +32,10 @@
 
 ### Checkout & Payment Enhancements
 
+### Checkout & Payment Enhancements
+
 - [ ] Cart quantity update + remove items on checkout step 1
-- [ ] Order confirmation email integration (e.g. Resend / Nodemailer)
+- [x] Order confirmation email integration (via PayPal Webhook)
 - [ ] PayPal webhook signature verification (security)
 - [ ] Coupon / discount code system
 - **Estimated**: 8-10 hours

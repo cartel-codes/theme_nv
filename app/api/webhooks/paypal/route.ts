@@ -46,9 +46,18 @@ export async function POST(request: NextRequest) {
                 return NextResponse.json({ error: 'Missing PayPal order id' }, { status: 400 });
             }
 
-            // Find the local order
+            // Find the local order with all necessary details for email and stock
             const order = await prisma.order.findFirst({
                 where: { paymentId: paypalOrderId },
+                include: {
+                    user: { select: { email: true } },
+                    items: {
+                        include: {
+                            product: true,
+                            variant: true
+                        }
+                    }
+                }
             });
 
             if (!order) {
@@ -63,6 +72,17 @@ export async function POST(request: NextRequest) {
                         paymentStatus: 'captured',
                     },
                 });
+
+                // Send Order Confirmation Email
+                try {
+                    const { sendOrderConfirmation } = await import('@/lib/email');
+                    if (order.user?.email) {
+                        await sendOrderConfirmation(order, order.user.email);
+                        console.log(`[PayPal Webhook] Sent confirmation email to ${order.user.email}`);
+                    }
+                } catch (emailError) {
+                    console.error('[PayPal Webhook] Failed to send confirmation email', emailError);
+                }
 
                 try {
                     await deductStockForOrder(order.id);

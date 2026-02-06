@@ -30,9 +30,18 @@ export async function GET(req: NextRequest) {
     // Update activity
     await updateUserSessionActivity(sessionToken);
 
+    // Fetch full user details to ensure we have phone, createdAt, etc.
+    // session.user is optimized for auth checks and doesn't contain all profile fields
+    const { getUserById } = await import('@/lib/user-auth');
+    const fullUser = await getUserById(session.userId);
+
+    if (!fullUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
     // Return user object directly as the response body for easier consumption
     return NextResponse.json({
-      ...session.user,
+      ...fullUser,
       session: {
         id: session.id,
         expiresAt: session.expiresAt,

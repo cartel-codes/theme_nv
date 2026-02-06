@@ -13,6 +13,7 @@ interface Product {
     imageUrl: string | null;
     category: { id: string; name: string } | null;
     images: { id: string; url: string; alt: string }[];
+    inventory?: { quantity: number; reserved: number }[];
     createdAt: string;
 }
 
@@ -163,12 +164,14 @@ export default function AdminProductsPage() {
                                     <th className="p-4 font-normal hidden sm:table-cell">SKU / ID</th>
                                     <th className="p-4 font-normal">Price</th>
                                     <th className="p-4 font-normal hidden md:table-cell">Category</th>
+                                    <th className="p-4 font-normal">Stock</th>
                                     <th className="p-4 font-normal text-right">Actions</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-novraux-ash/10 dark:divide-novraux-graphite transition-colors">
                                 {products.map((product) => {
                                     const displayImage = product.images[0]?.url || product.imageUrl;
+                                    const totalStock = product.inventory?.reduce((acc, item) => acc + item.quantity, 0) || 0;
 
                                     return (
                                         <tr key={product.id} className="hover:bg-novraux-obsidian/5 dark:hover:bg-novraux-obsidian/30 transition-colors">
@@ -210,6 +213,16 @@ export default function AdminProductsPage() {
                                                 ) : (
                                                     <span className="text-novraux-ash dark:text-novraux-bone/70 italic text-xs font-light transition-colors">Uncategorized</span>
                                                 )}
+                                            </td>
+                                            <td className="p-4">
+                                                <span className={`inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium ${totalStock === 0
+                                                        ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                                                        : totalStock <= 5
+                                                            ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                                            : 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
+                                                    }`}>
+                                                    {totalStock === 0 ? 'Out of Stock' : totalStock <= 5 ? `Low Stock: ${totalStock}` : `In Stock: ${totalStock}`}
+                                                </span>
                                             </td>
                                             <td className="p-4 text-right">
                                                 <div className="flex items-center justify-end gap-2">

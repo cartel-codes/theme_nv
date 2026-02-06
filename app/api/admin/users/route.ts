@@ -18,8 +18,21 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Fetch all admin users
+    // Parse search parameter
+    const search = req.nextUrl.searchParams.get('search');
+
+    // Build query
+    const whereClause: any = {};
+    if (search) {
+      whereClause.OR = [
+        { username: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    // Fetch admin users with optional search
     const users = await prisma.adminUser.findMany({
+      where: whereClause,
       select: {
         id: true,
         username: true,

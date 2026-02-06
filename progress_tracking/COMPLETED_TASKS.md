@@ -265,6 +265,24 @@
 
 ---
 
+## ✅ Phase 4.4: User Account & Orders (Completed Feb 6)
+
+**Completed**: February 6, 2026
+**Status**: ✅ COMPLETE
+
+### User Account Features
+- [x] **Profile Management**: `/account` page with real-time editing (first/last name, phone)
+- [x] **Order History**: `/account/orders` listing all past orders with status badges
+- [x] **Order Details**: `/account/orders/[id]` showing full item list, shipping info, and payment status
+- [x] **Profile API**: Fixed `GET /api/user/profile` to return full user data (including phone/dates)
+
+### Email Notifications
+- [x] **Order Confirmation**: Integrated `sendOrderConfirmation` into PayPal Webhook
+- [x] **Webhook Update**: Fetches full order+user details to ensure emails are sent reliably
+- [x] **Luxury Email Template**: HTML template with itemized receipt and shipping details
+
+---
+
 ## 🎯 What's Next?
 
 See [CURRENT_TASKS.md](./CURRENT_TASKS.md) for upcoming work items.

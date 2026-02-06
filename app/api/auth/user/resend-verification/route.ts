@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
     const token = await generateEmailVerificationToken(user.id);
 
     // Send verification email (don't await)
-    sendVerificationEmail(user.email, user.firstName, token).catch((err) => {
+    sendVerificationEmail(user.email, user.firstName || '', token).catch((err) => {
       console.error('Failed to send verification email:', err);
     });
 

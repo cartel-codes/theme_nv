@@ -22,17 +22,21 @@ export default function AdminUsersPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<AdminUser | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  async function fetchUsers() {
+  async function fetchUsers(search = '') {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/admin/users');
-      
+      const params = new URLSearchParams();
+      if (search) params.set('search', search);
+
+      const res = await fetch(`/api/admin/users?${params.toString()}`);
+
       if (!res.ok) {
         throw new Error('Failed to fetch admin users');
       }
@@ -46,6 +50,11 @@ export default function AdminUsersPage() {
       setLoading(false);
     }
   }
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchUsers(searchTerm);
+  };
 
   async function handleDelete(id: string) {
     if (deleting) return;
@@ -128,6 +137,35 @@ export default function AdminUsersPage() {
         </div>
       )}
 
+      {/* Search Bar */}
+      <form onSubmit={handleSearch} className="flex gap-2">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Search users..."
+          className="flex-1 px-4 py-2 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-graphite dark:text-novraux-bone bg-novraux-bone text-novraux-obsidian placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50 transition-colors"
+        />
+        <button
+          type="submit"
+          className="px-4 py-2 bg-novraux-obsidian dark:bg-novraux-graphite text-novraux-bone dark:text-novraux-bone rounded-sm text-sm hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-gold dark:hover:text-novraux-obsidian transition-colors font-normal uppercase tracking-novraux-medium"
+        >
+          Search
+        </button>
+        {searchTerm && (
+          <button
+            type="button"
+            onClick={() => {
+              setSearchTerm('');
+              fetchUsers('');
+            }}
+            className="px-4 py-2 text-novraux-ash dark:text-novraux-bone/70 hover:text-novraux-obsidian dark:hover:text-novraux-bone text-sm font-normal transition-colors"
+          >
+            Clear
+          </button>
+        )}
+      </form>
+
       {/* Users Table */}
       <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-sm border border-novraux-ash/10 dark:border-novraux-graphite overflow-hidden transition-colors">
         {users.length === 0 ? (
@@ -179,11 +217,10 @@ export default function AdminUsersPage() {
                     <td className="px-6 py-4 text-sm">
                       <button
                         onClick={() => toggleUserActive(user)}
-                        className={`px-3 py-1 rounded-sm text-xs font-normal uppercase tracking-novraux-medium transition-colors ${
-                          user.isActive
-                            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-200'
-                            : 'bg-novraux-ash/20 text-novraux-ash dark:bg-novraux-graphite dark:text-novraux-bone/70 hover:bg-novraux-ash/30'
-                        }`}
+                        className={`px-3 py-1 rounded-sm text-xs font-normal uppercase tracking-novraux-medium transition-colors ${user.isActive
+                          ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-200'
+                          : 'bg-novraux-ash/20 text-novraux-ash dark:bg-novraux-graphite dark:text-novraux-bone/70 hover:bg-novraux-ash/30'
+                          }`}
                       >
                         {user.isActive ? 'Active' : 'Inactive'}
                       </button>
@@ -220,39 +257,39 @@ export default function AdminUsersPage() {
         )}
       </div>
 
-    {/* Delete Confirmation Modal */}
-    {deleteModalOpen && userToDelete && (
-      <div className="fixed inset-0 bg-novraux-obsidian/50 dark:bg-black/70 flex items-center justify-center z-50 p-4 transition-colors">
-        <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-xl max-w-md w-full p-6 transition-colors">
-          <h2 className="text-xl font-serif font-light text-novraux-obsidian dark:text-novraux-bone mb-4 transition-colors">
-            Delete User
-          </h2>
-          <p className="text-novraux-ash dark:text-novraux-bone/70 mb-6 font-light transition-colors">
-            Are you sure you want to delete <strong>{userToDelete.username}</strong>?
-            This action cannot be undone.
-          </p>
-          <div className="flex gap-4 justify-end">
-            <button
-              onClick={() => {
-                setDeleteModalOpen(false);
-                setUserToDelete(null);
-              }}
-              disabled={deleting}
-              className="px-4 py-2 text-novraux-obsidian dark:text-novraux-bone hover:bg-novraux-ash/10 dark:hover:bg-novraux-obsidian rounded-sm transition-colors disabled:opacity-50 text-xs uppercase tracking-novraux-medium font-normal"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={() => userToDelete && handleDelete(userToDelete.id)}
-              disabled={deleting}
-              className="px-4 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700 transition-colors disabled:opacity-50 text-xs uppercase tracking-novraux-medium font-normal"
-            >
-              {deleting ? 'Deleting...' : 'Delete'}
-            </button>
+      {/* Delete Confirmation Modal */}
+      {deleteModalOpen && userToDelete && (
+        <div className="fixed inset-0 bg-novraux-obsidian/50 dark:bg-black/70 flex items-center justify-center z-50 p-4 transition-colors">
+          <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-xl max-w-md w-full p-6 transition-colors">
+            <h2 className="text-xl font-serif font-light text-novraux-obsidian dark:text-novraux-bone mb-4 transition-colors">
+              Delete User
+            </h2>
+            <p className="text-novraux-ash dark:text-novraux-bone/70 mb-6 font-light transition-colors">
+              Are you sure you want to delete <strong>{userToDelete.username}</strong>?
+              This action cannot be undone.
+            </p>
+            <div className="flex gap-4 justify-end">
+              <button
+                onClick={() => {
+                  setDeleteModalOpen(false);
+                  setUserToDelete(null);
+                }}
+                disabled={deleting}
+                className="px-4 py-2 text-novraux-obsidian dark:text-novraux-bone hover:bg-novraux-ash/10 dark:hover:bg-novraux-obsidian rounded-sm transition-colors disabled:opacity-50 text-xs uppercase tracking-novraux-medium font-normal"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => userToDelete && handleDelete(userToDelete.id)}
+                disabled={deleting}
+                className="px-4 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700 transition-colors disabled:opacity-50 text-xs uppercase tracking-novraux-medium font-normal"
+              >
+                {deleting ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
-  </div>
-);
+      )}
+    </div>
+  );
 }

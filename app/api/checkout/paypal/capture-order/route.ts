@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { callPayPalAPI } from '@/lib/paypal';
 import { deductStockForOrder } from '@/lib/inventory';
 import { sendOrderConfirmation } from '@/lib/email';
+import { logUserAuditEvent } from '@/lib/user-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -139,6 +140,21 @@ export async function POST(request: NextRequest) {
             // Non-blocking error
         }
 
+
+        // 6. Log Audit Event
+        await logUserAuditEvent({
+            userId: userSession.userId,
+            email: userSession.user.email,
+            action: 'ORDER_PURCHASED',
+            status: 'success',
+            ip: request.headers.get('x-forwarded-for') || 'unknown',
+            userAgent: request.headers.get('user-agent') || undefined,
+            metadata: {
+                orderId: updatedOrder.id,
+                total: updatedOrder.total,
+                paypalOrderId
+            }
+        });
 
         return NextResponse.json({
             success: true,

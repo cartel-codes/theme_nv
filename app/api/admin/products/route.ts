@@ -35,6 +35,7 @@ export async function GET(request: NextRequest) {
           images: {
             orderBy: { order: 'asc' },
           },
+          inventory: true,
         },
         skip,
         take: limit,
