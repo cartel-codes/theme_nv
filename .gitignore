@@ -32,5 +32,50 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
-.env.backup
+
+# Documentation & Internal Docs (not for production)
+/documentation/internal/
+ADMIN_QUICK_GUIDE.md
+AI_GENERATION_TEST_GUIDE.md
+AI_IMAGE_GENERATION_FIX.md
+AUTOMATIC_AI_GENERATION.md
+CHECKOUT_IMPLEMENTATION.md
+COMPLETION_SUMMARY.md
+DEPLOY-CHECKLIST.md
+DEPLOYMENT_GUIDE.md
+DEPLOYMENT.md
+DOCUMENTATION_INDEX.md
+EXECUTIVE_SUMMARY.md
+FEATURE_CHECKLIST.md
+IDEAS.md
+IMPLEMENTATION_SUMMARY.md
+PHASE2_IMPLEMENTATION_SUMMARY.md
+PHASE3_SEO_ROADMAP.md
+PRE_DEPLOYMENT_SUMMARY.md
+PROJECT_ANALYSIS.md
+PROJECT_REVALUATION_FEB5_2026.md
+PROJECT_STATUS_PHASE2.md
+QUICK_DEPLOY_REFERENCE.md
+QUICK_REFERENCE.md
+QUICK_STATUS.md
+SESSION_TRACKING_GUIDE.md
+STAKEHOLDER_SUMMARY.md
+USER_AUTH_GUIDE.md
+WORK_COMPLETION_SUMMARY.md
+
+# Design & Prototypes
+/design-prototype/
+*.html
 re-desing.zip
+re-design.zip
+
+# Test & Development Files
+test-db.ts
+test-index.html
+package.json.new
+.env.backup
+README_OLD.md
+
+# Progress Tracking
+/progress_tracking/
+/new_spec/

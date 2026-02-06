@@ -85,14 +85,12 @@ export async function getOrCreateCart(): Promise<CartWithItems> {
       // Merge anonymous cart items into user cart
       for (const item of anonymousCart.items) {
         // Check if the product already exists in user cart
-        const existingItem = await prisma.cartItem.findUnique({
+        // Use findFirst instead of findUnique to handle nullable variantId
+        const existingItem = await prisma.cartItem.findFirst({
           where: {
-            cartId_productId_variantId: {
-              cartId: userCart.id,
-              productId: item.productId,
-              // @ts-ignore - Prisma typing issue with nullable variantId in unique constraint
-              variantId: item.variantId || null,
-            },
+            cartId: userCart.id,
+            productId: item.productId,
+            variantId: item.variantId || null,
           },
         });
 
@@ -108,6 +106,7 @@ export async function getOrCreateCart(): Promise<CartWithItems> {
             data: {
               cartId: userCart.id,
               productId: item.productId,
+              // @ts-ignore - Prisma typing issue with nullable variantId
               variantId: item.variantId || null,
               quantity: item.quantity,
             },

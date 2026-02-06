@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 interface Variant {
@@ -24,17 +24,9 @@ export default function ProductPurchase({ productId, basePrice, variants }: Prod
     const router = useRouter();
     const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
     const [quantity, setQuantity] = useState(1);
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
-    // Check authentication status on mount
-    useEffect(() => {
-        fetch('/api/user/profile')
-            .then(res => setIsAuthenticated(res.ok))
-            .catch(() => setIsAuthenticated(false));
-    }, []);
 
     const selectedVariant = variants.find(v => v.id === selectedVariantId);
     const currentPrice = selectedVariant?.price ? Number(selectedVariant.price) : basePrice;
@@ -44,11 +36,6 @@ export default function ProductPurchase({ productId, basePrice, variants }: Prod
 
     const handleQuantityChange = (delta: number) => {
         setQuantity(prev => Math.max(1, Math.min(maxQuantity, prev + delta)));
-    };
-
-    const handleLoginRedirect = () => {
-        const currentPath = window.location.pathname;
-        router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
     };
 
     const handleAddToCart = async () => {
@@ -71,12 +58,6 @@ export default function ProductPurchase({ productId, basePrice, variants }: Prod
                 }),
             });
 
-            if (res.status === 401) {
-                // User not authenticated - redirect to login
-                handleLoginRedirect();
-                return;
-            }
-
             if (!res.ok) {
                 const data = await res.json();
                 throw new Error(data.error || 'Failed to add to cart');
@@ -94,22 +75,6 @@ export default function ProductPurchase({ productId, basePrice, variants }: Prod
             setLoading(false);
         }
     };
-
-    // Show loading state while checking authentication
-    if (isAuthenticated === null) {
-        return (
-            <div className="space-y-6">
-                <div className="border-b border-neutral-100 pb-6 mb-6">
-                    <p className="font-serif text-3xl text-[#B8926A] font-normal">
-                        ${currentPrice.toFixed(2)}
-                    </p>
-                </div>
-                <div className="animate-pulse">
-                    <div className="h-12 bg-neutral-200 rounded"></div>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="space-y-6">
@@ -154,8 +119,8 @@ export default function ProductPurchase({ productId, basePrice, variants }: Prod
                 </div>
             )}
 
-            {/* Quantity Selector - only show for authenticated users */}
-            {isAuthenticated && !isOutOfStock && (
+            {/* Quantity Selector - Always visible */}
+            {!isOutOfStock && (
                 <div className="flex items-center space-x-4">
                     <span className="text-sm text-neutral-600 uppercase tracking-wider">Quantity</span>
                     <div className="flex items-center border border-neutral-200">
@@ -194,30 +159,21 @@ export default function ProductPurchase({ productId, basePrice, variants }: Prod
                 </div>
             )}
 
-            {/* Add To Cart or Login Button */}
-            {!isAuthenticated ? (
-                <button
-                    onClick={handleLoginRedirect}
-                    className="w-full py-4 text-sm uppercase tracking-[0.2em] font-medium transition-all duration-300 bg-[#2C2C2C] text-white hover:bg-[#B8926A]"
-                >
-                    Login to Purchase
-                </button>
-            ) : (
-                <button
-                    onClick={handleAddToCart}
-                    disabled={loading || isOutOfStock || (variants.length > 0 && !selectedVariantId)}
-                    className={`
-            w-full py-4 text-sm uppercase tracking-[0.2em] font-medium transition-all duration-300
-            ${success
-                            ? 'bg-green-600 text-white'
-                            : 'bg-[#2C2C2C] text-white hover:bg-[#B8926A]'
-                        }
-            disabled:opacity-50 disabled:cursor-not-allowed
-          `}
-                >
-                    {loading ? 'Adding...' : success ? 'Added to Cart ✓' : isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
-                </button>
-            )}
+            {/* Add To Cart Button - Always visible */}
+            <button
+                onClick={handleAddToCart}
+                disabled={loading || isOutOfStock || (variants.length > 0 && !selectedVariantId)}
+                className={`
+          w-full py-4 text-sm uppercase tracking-[0.2em] font-medium transition-all duration-300
+          ${success
+                        ? 'bg-green-600 text-white'
+                        : 'bg-[#2C2C2C] text-white hover:bg-[#B8926A]'
+                    }
+          disabled:opacity-50 disabled:cursor-not-allowed
+        `}
+            >
+                {loading ? 'Adding...' : success ? 'Added to Cart ✓' : isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+            </button>
         </div>
     );
 }

@@ -2,46 +2,87 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Novraux Brand Variables - Dark Luxury */
 :root {
-  --cream: #FAF8F5;
-  --charcoal: #2B2B2B;
-  --grey: #55524F;
-  --beige: #E8E3DC;
-  --terracotta: #C97D60;
-  --navy: #1A3A52;
+  /* Primary Colors */
+  --color-obsidian: #0a0a0a;
+  --color-bone: #e8e4df;
+  --color-graphite: #1a1a1a;
+  --color-ash: #6b6560;
+  
+  /* Accent Colors */
+  --color-gold: #c9a96e;
+  --color-bronze: #8b7355;
+  --color-charcoal: #2a2a2a;
+  
+  /* Utility Colors */
+  --color-success: #5a7a5a;
+  --color-warning: #9a8a6a;
+  --color-error: #8a5a5a;
 
-  --bg: var(--cream);
-  --text: var(--charcoal);
-  --text-dim: var(--grey);
-  --border: var(--beige);
+  /* Typography */
+  --font-serif: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  --font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+
+  /* Spacing (8px base) */
+  --space-xs: 0.5rem;   /* 8px */
+  --space-sm: 1rem;     /* 16px */
+  --space-md: 1.5rem;   /* 24px */
+  --space-lg: 2.5rem;   /* 40px */
+  --space-xl: 4rem;     /* 64px */
+  --space-2xl: 6rem;    /* 96px */
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 300ms ease;
+  --transition-slow: 500ms ease;
+  
+  /* Theme-dependent colors */
+  --bg: var(--color-bone);
+  --text: var(--color-obsidian);
+  --text-dim: var(--color-ash);
+  --border: var(--color-ash);
+}
+
+.dark {
+  --bg: var(--color-obsidian);
+  --text: var(--color-bone);
+  --text-dim: var(--color-ash);
+  --border: var(--color-graphite);
 }
 
 html {
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-cormorant), "Cormorant Garamond", serif;
-  font-weight: 400;
+  font-family: var(--font-sans);
+  font-weight: 300;
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background-color var(--transition-base), color var(--transition-base);
 }
 
-/* Grain overlay */
+/* Grain overlay - Subtle texture for depth */
 .grain-overlay {
   position: fixed;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  opacity: 0.15;
+  opacity: 0.08;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
   background-size: 200px 200px;
 }
 
-/* Ambient background */
+.dark .grain-overlay {
+  opacity: 0.15;
+}
+
+/* Ambient background - Subtle atmosphere */
 .ambient-bg::before {
   content: "";
   position: fixed;
@@ -50,11 +91,17 @@ body {
   width: 70%;
   height: 70%;
   background: radial-gradient(ellipse,
-      rgba(201, 169, 110, 0.05) 0%,
+      rgba(201, 169, 110, 0.04) 0%,
       transparent 70%);
-  filter: blur(60px);
+  filter: blur(80px);
   pointer-events: none;
   z-index: 0;
+}
+
+.dark .ambient-bg::before {
+  background: radial-gradient(ellipse,
+      rgba(201, 169, 110, 0.08) 0%,
+      transparent 70%);
 }
 
 .ambient-bg::after {
@@ -65,15 +112,31 @@ body {
   width: 60%;
   height: 60%;
   background: radial-gradient(ellipse,
-      rgba(100, 80, 60, 0.06) 0%,
+      rgba(139, 115, 85, 0.03) 0%,
       transparent 70%);
-  filter: blur(80px);
+  filter: blur(90px);
   pointer-events: none;
   z-index: 0;
+}
+
+.dark .ambient-bg::after {
+  background: radial-gradient(ellipse,
+      rgba(139, 115, 85, 0.06) 0%,
+      transparent 70%);
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+  
+  /* Brand Typography Utilities */
+  .font-editorial {
+    font-family: var(--font-serif);
+    letter-spacing: 0.05em;
+  }
+  
+  .tracking-novraux {
+    letter-spacing: 0.28em;
   }
 }

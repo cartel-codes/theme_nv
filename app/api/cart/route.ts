@@ -42,29 +42,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Check if user is authenticated
-    const { cookies } = await import('next/headers');
-    const cookieStore = await cookies();
-    const sessionToken = cookieStore.get('userSession')?.value;
-
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Authentication required. Please log in to add items to cart.' },
-        { status: 401 }
-      );
-    }
-
-    // Verify session is valid
-    const { getUserSession } = await import('@/lib/user-auth');
-    const userSession = await getUserSession(sessionToken);
-
-    if (!userSession || !userSession.user) {
-      return NextResponse.json(
-        { error: 'Invalid or expired session. Please log in again.' },
-        { status: 401 }
-      );
-    }
-
     const product = await prisma.product.findUnique({
       where: { id: productId },
     });
@@ -94,13 +71,13 @@ export async function POST(request: Request) {
     // Actually, let's try to use the unique key logic if we can, but safely.
     // If we changed the unique key, we MUST match it.
 
-    const existingItem = await prisma.cartItem.findUnique({
+    // Use findFirst instead of findUnique because the unique constraint
+    // doesn't handle NULL variantIds properly in PostgreSQL
+    const existingItem = await prisma.cartItem.findFirst({
       where: {
-        cartId_productId_variantId: {
-          cartId: cart.id,
-          productId,
-          variantId: variantId || null // Explicitly handle null/undefined
-        },
+        cartId: cart.id,
+        productId,
+        variantId: variantId || null,
       },
     });
 
@@ -114,6 +91,7 @@ export async function POST(request: Request) {
         data: {
           cartId: cart.id,
           productId,
+          // @ts-ignore - Prisma typing issue with nullable variantId
           variantId: variantId || null,
           quantity,
         },
@@ -131,9 +109,9 @@ export async function POST(request: Request) {
       totalItems: updatedCart.items?.reduce((sum, item) => sum + item.quantity, 0) || 0,
     });
   } catch (error) {
-    console.error('Failed to add to cart:', error);
+    console.error('Cart add error:', error);
     return NextResponse.json(
-      { error: 'Failed to add to cart' },
+      { error: error instanceof Error ? error.message : 'Failed to add item to cart' },
       { status: 500 }
     );
   }
