@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { getOrCreateCart } from '@/lib/cart';
 import { prisma } from '@/lib/prisma';
 
@@ -99,6 +100,7 @@ export async function POST(request: Request) {
     }
 
     const updatedCart = await getOrCreateCart();
+    revalidatePath('/cart');
     return NextResponse.json({
       items: updatedCart.items?.map((item) => ({
         id: item.id,
@@ -146,6 +148,7 @@ export async function PUT(request: Request) {
     }
 
     const updatedCart = await getOrCreateCart();
+    revalidatePath('/cart');
     return NextResponse.json({
       items: updatedCart.items?.map((i) => ({
         id: i.id,
@@ -186,6 +189,7 @@ export async function DELETE(request: Request) {
     await prisma.cartItem.delete({ where: { id: itemId } });
 
     const updatedCart = await getOrCreateCart();
+    revalidatePath('/cart');
     return NextResponse.json({
       items: updatedCart.items?.map((i) => ({
         id: i.id,

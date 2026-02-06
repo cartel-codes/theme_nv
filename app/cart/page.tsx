@@ -5,6 +5,8 @@ import { getOrCreateCart } from '@/lib/cart';
 import { generateMetadata as getSEO } from '@/lib/seo';
 import CartActions from './CartActions';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = getSEO({
   title: 'Shopping Cart',
   description: 'Review your cart and continue shopping.',

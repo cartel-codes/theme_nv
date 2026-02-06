@@ -120,6 +120,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         refreshCart();
+
+        // Re-fetch cart when user logs in/out (cart may change)
+        const handleAuthChange = () => refreshCart();
+        window.addEventListener('auth-change', handleAuthChange);
+        return () => window.removeEventListener('auth-change', handleAuthChange);
     }, [refreshCart]);
 
     return (

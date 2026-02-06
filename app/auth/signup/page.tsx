@@ -86,6 +86,7 @@ export default function SignupPage() {
 
       // Signup and login successful - redirect to original destination or home
       const destination = redirectUrl || '/';
+      window.dispatchEvent(new Event('auth-change'));
       router.push(destination);
       router.refresh();
     } catch (err) {

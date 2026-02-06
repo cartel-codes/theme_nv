@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma';
 import ProductCard from '@/components/ProductCard';
 import { generateMetadata as getSEO } from '@/lib/seo';
 
+// Revalidate every 60 seconds so new products show without manual refresh
+export const revalidate = 60;
+
 export const metadata: Metadata = getSEO({
   title: 'Products',
   description: 'Browse our full catalog of quality products.',

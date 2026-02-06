@@ -18,7 +18,7 @@ export default function UserMenu() {
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  // Check user session on mount
+  // Check user session on mount and on auth changes
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -38,6 +38,11 @@ export default function UserMenu() {
     };
 
     checkAuth();
+
+    // Re-check auth when login/logout/signup happens
+    const handleAuthChange = () => checkAuth();
+    window.addEventListener('auth-change', handleAuthChange);
+    return () => window.removeEventListener('auth-change', handleAuthChange);
   }, []);
 
   // Close menu when clicking outside
@@ -59,6 +64,7 @@ export default function UserMenu() {
       });
       setUser(null);
       setIsOpen(false);
+      window.dispatchEvent(new Event('auth-change'));
       router.push('/');
       router.refresh();
     } catch (error) {
