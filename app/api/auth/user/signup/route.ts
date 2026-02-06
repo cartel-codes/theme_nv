@@ -1,12 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createUser, getUserByEmail, createUserSession, logUserAuditEvent } from '@/lib/user-auth';
+import { checkRateLimit, SIGNUP_RATE_LIMIT } from '@/lib/rate-limit';
+import { validatePassword } from '@/lib/password-validation';
+
+function getClientIP(req: NextRequest): string {
+  return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    || req.headers.get('x-real-ip')
+    || 'unknown';
+}
 
 /**
  * POST /api/auth/user/signup
  * Create a new user account with email and password
  */
 export async function POST(req: NextRequest) {
+  const ip = getClientIP(req);
+  const userAgent = req.headers.get('user-agent') || undefined;
+
   try {
+    // ── IP-level rate limit ──
+    const ipLimit = checkRateLimit(`signup:ip:${ip}`, SIGNUP_RATE_LIMIT);
+    if (!ipLimit.allowed) {
+      const retryAfterSec = Math.ceil(ipLimit.retryAfterMs / 1000);
+      return NextResponse.json(
+        { error: 'Too many signup attempts. Please try again later.', retryAfter: retryAfterSec },
+        { status: 429, headers: { 'Retry-After': String(retryAfterSec) } }
+      );
+    }
+
     const { email, password, firstName, lastName } = await req.json();
 
     // Validate input
@@ -16,8 +37,8 @@ export async function POST(req: NextRequest) {
         action: 'SIGNUP',
         status: 'failed',
         errorMessage: 'Missing email or password',
-        ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown',
-        userAgent: req.headers.get('user-agent') || undefined,
+        ip,
+        userAgent,
       });
 
       return NextResponse.json(
@@ -34,8 +55,8 @@ export async function POST(req: NextRequest) {
         action: 'SIGNUP',
         status: 'failed',
         errorMessage: 'Invalid email format',
-        ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown',
-        userAgent: req.headers.get('user-agent') || undefined,
+        ip,
+        userAgent,
       });
 
       return NextResponse.json(
@@ -44,19 +65,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate password strength
-    if (password.length < 8) {
+    // ── Password strength validation ──
+    const passwordCheck = validatePassword(password);
+    if (!passwordCheck.valid) {
       await logUserAuditEvent({
         email,
         action: 'SIGNUP',
         status: 'failed',
         errorMessage: 'Password too weak',
-        ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown',
-        userAgent: req.headers.get('user-agent') || undefined,
+        ip,
+        userAgent,
       });
 
       return NextResponse.json(
-        { error: 'Password must be at least 8 characters long' },
+        { error: passwordCheck.errors[0], errors: passwordCheck.errors },
         { status: 400 }
       );
     }
@@ -69,8 +91,8 @@ export async function POST(req: NextRequest) {
         action: 'SIGNUP',
         status: 'failed',
         errorMessage: 'User already exists',
-        ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown',
-        userAgent: req.headers.get('user-agent') || undefined,
+        ip,
+        userAgent,
       });
 
       return NextResponse.json(
@@ -85,8 +107,8 @@ export async function POST(req: NextRequest) {
     // Create session
     const session = await createUserSession(
       user.id,
-      req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || undefined,
-      req.headers.get('user-agent') || undefined
+      ip !== 'unknown' ? ip : undefined,
+      userAgent
     );
 
     // Log successful signup
@@ -95,8 +117,8 @@ export async function POST(req: NextRequest) {
       email: user.email,
       action: 'SIGNUP',
       status: 'success',
-      ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown',
-      userAgent: req.headers.get('user-agent') || undefined,
+      ip,
+      userAgent,
       metadata: {
         firstName,
         lastName,
@@ -135,8 +157,8 @@ export async function POST(req: NextRequest) {
       action: 'SIGNUP',
       status: 'failed',
       errorMessage: error instanceof Error ? error.message : 'Unknown error',
-      ip: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown',
-      userAgent: req.headers.get('user-agent') || undefined,
+      ip,
+      userAgent,
     });
 
     return NextResponse.json(

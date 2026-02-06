@@ -47,6 +47,21 @@ export default function SignupPage() {
       return;
     }
 
+    if (!/[A-Z]/.test(formData.password)) {
+      setError('Password must contain at least one uppercase letter');
+      return;
+    }
+
+    if (!/[a-z]/.test(formData.password)) {
+      setError('Password must contain at least one lowercase letter');
+      return;
+    }
+
+    if (!/[0-9]/.test(formData.password)) {
+      setError('Password must contain at least one number');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -173,7 +188,7 @@ export default function SignupPage() {
                 className="w-full px-4 py-3 border border-novraux-beige rounded-lg focus:outline-none focus:border-novraux-terracotta focus:ring-1 focus:ring-novraux-terracotta/30"
                 placeholder="••••••••"
               />
-              <p className="text-xs text-novraux-charcoal/60 mt-1">At least 8 characters</p>
+              <p className="text-xs text-novraux-charcoal/60 mt-1">Min 8 characters, with uppercase, lowercase, and a number</p>
             </div>
 
             <div>

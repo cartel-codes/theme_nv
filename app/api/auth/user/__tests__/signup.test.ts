@@ -4,6 +4,10 @@ import { createUser, getUserByEmail } from '@/lib/user-auth';
 import { logUserAuditEvent } from '@/lib/user-auth';
 
 jest.mock('@/lib/user-auth');
+jest.mock('@/lib/rate-limit', () => ({
+  checkRateLimit: () => ({ allowed: true, remaining: 10, retryAfterMs: 0 }),
+  SIGNUP_RATE_LIMIT: { maxAttempts: 3, windowMs: 3600000 },
+}));
 
 describe('POST /api/auth/user/signup', () => {
   beforeEach(() => {
@@ -42,7 +46,7 @@ describe('POST /api/auth/user/signup', () => {
         },
         body: JSON.stringify({
           email: 'user@example.com',
-          password: 'password123',
+          password: 'Password123',
           firstName: 'John',
           lastName: 'Doe',
         }),
@@ -58,7 +62,7 @@ describe('POST /api/auth/user/signup', () => {
     expect(data.sessionToken).toBe('session-token-123');
     expect(createUser).toHaveBeenCalledWith(
       'user@example.com',
-      'password123',
+      'Password123',
       'John',
       'Doe'
     );
@@ -82,7 +86,7 @@ describe('POST /api/auth/user/signup', () => {
         },
         body: JSON.stringify({
           email: 'user@example.com',
-          password: 'password123',
+          password: 'Password123',
         }),
       }
     );
@@ -181,7 +185,7 @@ describe('POST /api/auth/user/signup', () => {
         },
         body: JSON.stringify({
           email: 'user@example.com',
-          password: 'password123',
+          password: 'Password123',
         }),
       }
     );

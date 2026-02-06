@@ -52,7 +52,50 @@
 
 ---
 
-## 🟢 Low Priority - Later
+## � High Priority - Auth Security Hardening
+
+### Phase 1 — Critical Security Fixes
+- [x] 1.1 Rate limiting on auth endpoints (5 login/15min, 3 signup/hr)
+- [x] 1.2 Account lockout after 5 failed attempts (15 min cooldown)
+- [x] 1.3 Middleware protection for `/account/*` user routes
+- [x] 1.4 Replace `jwt.ts` base64 with proper signed JWTs (`jose`)
+- [x] 1.5 Session token rotation on sensitive actions
+- [x] 1.6 Password strength validation (min 8, upper/lower/number)
+- **Estimated**: 4-6 hours
+- **Owner**: Active
+- **Status**: ✅ Complete
+
+### Phase 2 — Password Recovery & Email Verification
+- [ ] 2.1 Forgot password flow (`/auth/forgot-password` + API + email)
+- [ ] 2.2 Password reset token (time-limited, signed, DB-stored)
+- [ ] 2.3 Email verification on signup (enforce before checkout)
+- [ ] 2.4 Resend verification email endpoint
+- **Estimated**: 4-6 hours
+- **Owner**: TBD
+- **Status**: Not started
+
+### Phase 3 — OAuth / Social Login Providers
+- [ ] 3.1 Google OAuth ("Sign in with Google")
+- [ ] 3.2 Schema update — add `provider` / `providerId` to User model
+- [ ] 3.3 Account linking (existing email users can link Google)
+- [ ] 3.4 Optional: GitHub OAuth
+- **Estimated**: 4-6 hours
+- **Owner**: TBD
+- **Status**: Not started
+
+### Phase 4 — Advanced Hardening
+- [ ] 4.1 CSRF tokens for state-changing requests
+- [ ] 4.2 Security headers (CSP, HSTS, X-Frame-Options)
+- [ ] 4.3 Session management UI (view/revoke active sessions)
+- [ ] 4.4 Admin 2FA (TOTP authenticator app)
+- [ ] 4.5 Suspicious login alerts (email on new IP/device)
+- **Estimated**: 6-8 hours
+- **Owner**: TBD
+- **Status**: Not started
+
+---
+
+## �🟢 Low Priority - Later
 
 ### Advanced Features
 

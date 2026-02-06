@@ -1,18 +1,51 @@
 /**
- * Simple JWT-like encoding/decoding using JSON and Base64
- * Note: This is not cryptographically signed. For production, use a proper JWT library.
+ * Proper JWT signing & verification using the `jose` library.
+ * Uses HS256 (HMAC-SHA256) with a server-side secret.
  */
 
-export function jwtEncode(payload: any): string {
-    const json = JSON.stringify(payload);
-    return Buffer.from(json).toString('base64');
+import { SignJWT, jwtVerify, JWTPayload } from 'jose';
+
+const JWT_SECRET = process.env.JWT_SECRET || process.env.PAYPAL_CLIENT_SECRET || 'novraux-fallback-secret-change-me';
+const secret = new TextEncoder().encode(JWT_SECRET);
+
+const DEFAULT_EXPIRATION = '24h';
+
+/**
+ * Sign a payload into a JWT string.
+ */
+export async function jwtEncode(
+  payload: Record<string, unknown>,
+  expiresIn: string = DEFAULT_EXPIRATION
+): Promise<string> {
+  return new SignJWT(payload)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
+    .setIssuer('novraux')
+    .setExpirationTime(expiresIn)
+    .sign(secret);
 }
 
-export function jwtDecode(token: string): any {
-    try {
-        const json = Buffer.from(token, 'base64').toString('utf-8');
-        return JSON.parse(json);
-    } catch (error) {
-        throw new Error('Invalid token');
-    }
+/**
+ * Verify and decode a JWT string. Throws if invalid or expired.
+ */
+export async function jwtDecode<T extends JWTPayload = JWTPayload>(
+  token: string
+): Promise<T> {
+  const { payload } = await jwtVerify(token, secret, {
+    issuer: 'novraux',
+  });
+  return payload as T;
+}
+
+/**
+ * Verify a JWT without throwing — returns null if invalid.
+ */
+export async function jwtVerifySafe<T extends JWTPayload = JWTPayload>(
+  token: string
+): Promise<T | null> {
+  try {
+    return await jwtDecode<T>(token);
+  } catch {
+    return null;
+  }
 }

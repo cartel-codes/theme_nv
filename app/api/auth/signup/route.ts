@@ -3,9 +3,13 @@ import { createAdminUser } from '@/lib/auth';
 import { createSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import { logAuditEvent } from '@/lib/audit';
+import { checkRateLimit, SIGNUP_RATE_LIMIT } from '@/lib/rate-limit';
+import { validatePassword } from '@/lib/password-validation';
 
-function getClientIP(req: NextRequest): string | undefined {
-    return req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+function getClientIP(req: NextRequest): string {
+    return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+        || req.headers.get('x-real-ip')
+        || 'unknown';
 }
 
 function getUserAgent(req: NextRequest): string | undefined {
@@ -17,6 +21,16 @@ export async function POST(req: NextRequest) {
     const userAgent = getUserAgent(req);
 
     try {
+        // ── IP-level rate limit ──
+        const ipLimit = checkRateLimit(`admin:signup:ip:${ip}`, SIGNUP_RATE_LIMIT);
+        if (!ipLimit.allowed) {
+            const retryAfterSec = Math.ceil(ipLimit.retryAfterMs / 1000);
+            return NextResponse.json(
+                { error: 'Too many signup attempts. Please try again later.', retryAfter: retryAfterSec },
+                { status: 429, headers: { 'Retry-After': String(retryAfterSec) } }
+            );
+        }
+
         const { email, password, username } = await req.json();
 
         if (!email || !password) {
@@ -32,6 +46,24 @@ export async function POST(req: NextRequest) {
 
             return NextResponse.json(
                 { error: 'Email and password are required' },
+                { status: 400 }
+            );
+        }
+
+        // ── Password strength validation ──
+        const passwordCheck = validatePassword(password);
+        if (!passwordCheck.valid) {
+            await logAuditEvent({
+                email,
+                action: 'SIGNUP_FAILED',
+                ip,
+                userAgent,
+                status: 'failed',
+                errorMessage: 'Password too weak',
+            });
+
+            return NextResponse.json(
+                { error: passwordCheck.errors[0], errors: passwordCheck.errors },
                 { status: 400 }
             );
         }
