@@ -193,8 +193,8 @@ model AdminSession {
 
 model User {
   id            String         @id @default(cuid())
-  email         String         @unique
-  password      String
+  email         String?        @unique
+  password      String?
   firstName     String?
   lastName      String?
   avatar        String?
@@ -210,10 +210,31 @@ model User {
   orders        Order[]
   auditLogs     UserAuditLog[]
   sessions      UserSession[]
+  oauthAccounts OAuthAccount[]
 
   @@index([email])
   @@index([emailVerificationToken])
   @@index([passwordResetToken])
+}
+
+model OAuthAccount {
+  id           String   @id @default(cuid())
+  userId       String
+  provider     String   // 'google', 'twitter', 'facebook'
+  providerId   String   // The user ID from the OAuth provider
+  name         String?
+  email        String?
+  picture      String?
+  accessToken  String?
+  refreshToken String?
+  expiresAt    DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerId])
+  @@index([userId])
+  @@index([provider])
 }
 
 model UserSession {

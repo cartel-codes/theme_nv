@@ -3,6 +3,7 @@
 import { FormEvent, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { OAuthButtonGroup } from '@/components/OAuthButton';
 
 export default function SignupPage() {
   const router = useRouter();
@@ -215,6 +216,11 @@ export default function SignupPage() {
               {isLoading ? 'Creating account...' : 'Create Account'}
             </button>
           </form>
+
+          {/* OAuth Sign Up Options */}
+          <div className="mt-8">
+            <OAuthButtonGroup />
+          </div>
 
           <div className="mt-8 pt-8 border-t border-novraux-beige text-center text-sm">
             <p className="text-novraux-charcoal/60 mb-4">

@@ -248,6 +248,7 @@ export async function getUserSession(sessionToken: string) {
           lastName: true,
           avatar: true,
           emailVerified: true,
+          password: true, // Will be filtered out before sending to client
         },
       },
     },

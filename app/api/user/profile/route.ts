@@ -30,9 +30,14 @@ export async function GET(req: NextRequest) {
     // Update activity
     await updateUserSessionActivity(sessionToken);
 
+    // Don't send password hash to client, just indicate if password is set
+    const { password, ...userWithoutPassword } = session.user;
+    const hasPassword = !!password;
+
     // Return user object directly as the response body for easier consumption
     return NextResponse.json({
-      ...session.user,
+      ...userWithoutPassword,
+      hasPassword,
       session: {
         id: session.id,
         expiresAt: session.expiresAt,

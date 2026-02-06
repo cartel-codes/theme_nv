@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FormEvent, useState, useEffect } from 'react';
 import EmailVerificationBanner from '@/components/EmailVerificationBanner';
+import { LinkedOAuthAccounts } from '@/components/LinkedOAuthAccounts';
 
 interface UserProfile {
   id: string;
@@ -13,6 +14,7 @@ interface UserProfile {
   phone: string | null;
   createdAt: string;
   emailVerified: boolean;
+  hasPassword: boolean;
 }
 
 export default function AccountPage() {
@@ -252,6 +254,17 @@ export default function AccountPage() {
               Change Password
             </Link>
           </div>
+
+          {/* Connected Accounts */}
+          {profile && (
+            <div className="mb-8 pb-8 border-b border-novraux-beige">
+              <LinkedOAuthAccounts 
+                userId={profile.id} 
+                currentEmail={profile.email || undefined}
+                hasPassword={profile.hasPassword}
+              />
+            </div>
+          )}
 
           {/* Orders Section */}
           <div>
