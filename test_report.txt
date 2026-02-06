@@ -1,0 +1,699 @@
+
+> novraux-ecommerce@0.1.0 test
+> jest
+
+FAIL lib/__tests__/r2.test.ts
+  ● Console
+
+    console.log
+      📸 Uploaded to R2: {
+        key: 'products/1770396971335-test.jpg',
+        proxyUrl: '/api/images/products/1770396971335-test.jpg'
+      }
+
+      at lib/r2.ts:81:13
+
+    console.log
+      🗑️ Deleting from R2: {
+        url: 'https://test-public-url.com/products/test-key.jpg',
+        key: 'products/test-key.jpg'
+      }
+
+      at lib/r2.ts:119:13
+
+    console.log
+      ✅ Deleted from R2: products/test-key.jpg
+
+      at lib/r2.ts:127:13
+
+    console.warn
+      R2 configuration is incomplete. Check your environment variables.
+
+      14 |
+      15 |     if (!endpoint || !accessKeyId || !secretAccessKey || !bucketName || !publicUrl) {
+    > 16 |         console.warn('R2 configuration is incomplete. Check your environment variables.');
+         |                 ^
+      17 |     }
+      18 |
+      19 |     return {
+
+      at getR2Config (lib/r2.ts:16:17)
+      at lib/r2.ts:58:20
+      at lib/r2.ts:8:71
+      at __awaiter (lib/r2.ts:4:12)
+      at uploadToR2 (lib/r2.ts:61:12)
+      at lib/__tests__/r2.test.ts:62:32
+      at lib/__tests__/r2.test.ts:8:71
+      at __awaiter (lib/__tests__/r2.test.ts:4:12)
+      at Object.<anonymous> (lib/__tests__/r2.test.ts:58:62)
+
+    console.warn
+      R2 configuration is incomplete. Check your environment variables.
+
+      14 |
+      15 |     if (!endpoint || !accessKeyId || !secretAccessKey || !bucketName || !publicUrl) {
+    > 16 |         console.warn('R2 configuration is incomplete. Check your environment variables.');
+         |                 ^
+      17 |     }
+      18 |
+      19 |     return {
+
+      at getR2Config (lib/r2.ts:16:17)
+      at getR2Client (lib/r2.ts:33:20)
+      at lib/r2.ts:59:20
+      at lib/r2.ts:8:71
+      at __awaiter (lib/r2.ts:4:12)
+      at uploadToR2 (lib/r2.ts:61:12)
+      at lib/__tests__/r2.test.ts:62:32
+      at lib/__tests__/r2.test.ts:8:71
+      at __awaiter (lib/__tests__/r2.test.ts:4:12)
+      at Object.<anonymous> (lib/__tests__/r2.test.ts:58:62)
+
+  ● R2 Utility Library › should upload a file and return the public URL
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: "https://test-public-url.com/products/"
+    Received string:    "/api/images/products/1770396971335-test.jpg"
+
+      40 |         const url = await uploadToR2(buffer, filename, contentType);
+      41 |
+    > 42 |         expect(url).toContain('https://test-public-url.com/products/');
+         |                     ^
+      43 |         expect(url).toContain(filename);
+      44 |         expect(PutObjectCommand).toHaveBeenCalled();
+      45 |     });
+
+      at lib/__tests__/r2.test.ts:42:21
+      at fulfilled (lib/__tests__/r2.test.ts:5:58)
+
+FAIL lib/__tests__/cart-auth.test.ts
+  ● Cart Authentication Scenarios › Scenario 3: User Login with Existing Guest Cart › should merge guest cart items into user cart when user logs in
+
+    TypeError: prisma_1.prisma.cartItem.findFirst is not a function
+
+      88 |         // Check if the product already exists in user cart
+      89 |         // Use findFirst instead of findUnique to handle nullable variantId
+    > 90 |         const existingItem = await prisma.cartItem.findFirst({
+         |                                                    ^
+      91 |           where: {
+      92 |             cartId: userCart.id,
+      93 |             productId: item.productId,
+
+      at lib/cart.ts:90:52
+      at fulfilled (lib/cart.ts:5:58)
+
+  ● Cart Authentication Scenarios › Scenario 3: User Login with Existing Guest Cart › should merge quantities when product already exists in user cart
+
+    TypeError: prisma_1.prisma.cartItem.findFirst is not a function
+
+      88 |         // Check if the product already exists in user cart
+      89 |         // Use findFirst instead of findUnique to handle nullable variantId
+    > 90 |         const existingItem = await prisma.cartItem.findFirst({
+         |                                                    ^
+      91 |           where: {
+      92 |             cartId: userCart.id,
+      93 |             productId: item.productId,
+
+      at lib/cart.ts:90:52
+      at fulfilled (lib/cart.ts:5:58)
+
+FAIL app/api/cart/__tests__/add-to-cart-auth.test.ts
+  ● Console
+
+    console.error
+      Cart add error: TypeError: prisma_1.prisma.cartItem.findFirst is not a function
+          at /home/aghilas/Desktop/novraux/app/api/cart/route.ts:76:48
+          at Generator.next (<anonymous>)
+          at fulfilled (/home/aghilas/Desktop/novraux/app/api/cart/route.ts:5:58)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+      110 |     });
+      111 |   } catch (error) {
+    > 112 |     console.error('Cart add error:', error);
+          |             ^
+      113 |     return NextResponse.json(
+      114 |       { error: error instanceof Error ? error.message : 'Failed to add item to cart' },
+      115 |       { status: 500 }
+
+      at app/api/cart/route.ts:112:13
+      at fulfilled (app/api/cart/route.ts:5:58)
+
+    console.error
+      Cart add error: TypeError: prisma_1.prisma.cartItem.findFirst is not a function
+          at /home/aghilas/Desktop/novraux/app/api/cart/route.ts:76:48
+          at Generator.next (<anonymous>)
+          at fulfilled (/home/aghilas/Desktop/novraux/app/api/cart/route.ts:5:58)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+      110 |     });
+      111 |   } catch (error) {
+    > 112 |     console.error('Cart add error:', error);
+          |             ^
+      113 |     return NextResponse.json(
+      114 |       { error: error instanceof Error ? error.message : 'Failed to add item to cart' },
+      115 |       { status: 500 }
+
+      at app/api/cart/route.ts:112:13
+      at fulfilled (app/api/cart/route.ts:5:58)
+
+    console.error
+      Cart add error: TypeError: prisma_1.prisma.cartItem.findFirst is not a function
+          at /home/aghilas/Desktop/novraux/app/api/cart/route.ts:76:48
+          at Generator.next (<anonymous>)
+          at fulfilled (/home/aghilas/Desktop/novraux/app/api/cart/route.ts:5:58)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+      110 |     });
+      111 |   } catch (error) {
+    > 112 |     console.error('Cart add error:', error);
+          |             ^
+      113 |     return NextResponse.json(
+      114 |       { error: error instanceof Error ? error.message : 'Failed to add item to cart' },
+      115 |       { status: 500 }
+
+      at app/api/cart/route.ts:112:13
+      at fulfilled (app/api/cart/route.ts:5:58)
+
+  ● Add to Cart API - Authentication Scenarios › Scenario 1: Unauthenticated User Attempts to Add to Cart › should return 401 when no session token is present
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 401
+    Received: 404
+
+      46 |             const data = await response.json();
+      47 |
+    > 48 |             expect(response.status).toBe(401);
+         |                                     ^
+      49 |             expect(data.error).toContain('Authentication required');
+      50 |             expect(prisma.product.findUnique).not.toHaveBeenCalled();
+      51 |         });
+
+      at app/api/cart/__tests__/add-to-cart-auth.test.ts:48:37
+      at fulfilled (app/api/cart/__tests__/add-to-cart-auth.test.ts:38:58)
+
+  ● Add to Cart API - Authentication Scenarios › Scenario 1: Unauthenticated User Attempts to Add to Cart › should return 401 with helpful message for guest users
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Authentication required. Please log in to add items to cart."
+    Received: "Product not found"
+
+      65 |             const data = await response.json();
+      66 |
+    > 67 |             expect(data.error).toBe('Authentication required. Please log in to add items to cart.');
+         |                                ^
+      68 |         });
+      69 |     });
+      70 |
+
+      at app/api/cart/__tests__/add-to-cart-auth.test.ts:67:32
+      at fulfilled (app/api/cart/__tests__/add-to-cart-auth.test.ts:38:58)
+
+  ● Add to Cart API - Authentication Scenarios › Scenario 2: Expired Session Token › should return 401 when session token is expired/invalid
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 401
+    Received: 404
+
+      88 |             const data = await response.json();
+      89 |
+    > 90 |             expect(response.status).toBe(401);
+         |                                     ^
+      91 |             expect(data.error).toContain('Invalid or expired session');
+      92 |         });
+      93 |     });
+
+      at app/api/cart/__tests__/add-to-cart-auth.test.ts:90:37
+      at fulfilled (app/api/cart/__tests__/add-to-cart-auth.test.ts:38:58)
+
+  ● Add to Cart API - Authentication Scenarios › Scenario 3: Valid Authenticated User › should successfully add product to cart when user is authenticated
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      134 |             const response = await POST(request);
+      135 |
+    > 136 |             expect(response.status).toBe(200);
+          |                                     ^
+      137 |             expect(prisma.cartItem.create).toHaveBeenCalledWith({
+      138 |                 data: {
+      139 |                     cartId: 'cart_123',
+
+      at app/api/cart/__tests__/add-to-cart-auth.test.ts:136:37
+      at fulfilled (app/api/cart/__tests__/add-to-cart-auth.test.ts:38:58)
+
+  ● Add to Cart API - Authentication Scenarios › Scenario 3: Valid Authenticated User › should update quantity when adding existing product
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: {"data": {"quantity": 3}, "where": {"id": "item_1"}}
+
+    Number of calls: 0
+
+      173 |             await POST(request);
+      174 |
+    > 175 |             expect(prisma.cartItem.update).toHaveBeenCalledWith({
+          |                                            ^
+      176 |                 where: { id: 'item_1' },
+      177 |                 data: { quantity: 3 }, // 2 + 1
+      178 |             });
+
+      at app/api/cart/__tests__/add-to-cart-auth.test.ts:175:44
+      at fulfilled (app/api/cart/__tests__/add-to-cart-auth.test.ts:38:58)
+
+  ● Add to Cart API - Authentication Scenarios › Scenario 5: Multiple Quantity › should add multiple quantities of same product
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: {"data": {"cartId": "cart_123", "productId": "product_123", "quantity": 5}}
+
+    Number of calls: 0
+
+      243 |             await POST(request);
+      244 |
+    > 245 |             expect(prisma.cartItem.create).toHaveBeenCalledWith({
+          |                                            ^
+      246 |                 data: {
+      247 |                     cartId: 'cart_123',
+      248 |                     productId: mockProductId,
+
+      at app/api/cart/__tests__/add-to-cart-auth.test.ts:245:44
+      at fulfilled (app/api/cart/__tests__/add-to-cart-auth.test.ts:38:58)
+
+FAIL app/api/products/__tests__/route.test.ts
+  ● Console
+
+    console.error
+      Failed to fetch products: Error: DB Error
+          at /home/aghilas/Desktop/novraux/app/api/products/__tests__/route.test.ts:61:62
+          at Generator.next (<anonymous>)
+          at /home/aghilas/Desktop/novraux/app/api/products/__tests__/route.test.ts:8:71
+          at new Promise (<anonymous>)
+          at __awaiter (/home/aghilas/Desktop/novraux/app/api/products/__tests__/route.test.ts:4:12)
+          at Object.<anonymous> (/home/aghilas/Desktop/novraux/app/api/products/__tests__/route.test.ts:60:50)
+          at Promise.finally.completed (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+          at _runTest (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/home/aghilas/Desktop/novraux/node_modules/jest-runner/build/testWorker.js:275:16)
+          at runTest (/home/aghilas/Desktop/novraux/node_modules/jest-runner/build/testWorker.js:343:7)
+          at Object.worker (/home/aghilas/Desktop/novraux/node_modules/jest-runner/build/testWorker.js:497:12)
+
+      29 |     return NextResponse.json(products);
+      30 |   } catch (error) {
+    > 31 |     console.error('Failed to fetch products:', error);
+         |             ^
+      32 |     return NextResponse.json(
+      33 |       { error: 'Failed to fetch products' },
+      34 |       { status: 500 }
+
+      at app/api/products/route.ts:31:13
+          at Generator.throw (<anonymous>)
+      at rejected (app/api/products/route.ts:6:65)
+
+  ● GET /api/products › filters products by category
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"where": {"category": {"slug": "shirts"}}}
+    Received: {"include": {"category": true, "images": {"orderBy": {"order": "asc"}, "take": 1}}, "orderBy": {"name": "asc"}}
+
+    Number of calls: 1
+
+      38 |     const response = await GET(request);
+      39 |
+    > 40 |     expect(prisma.product.findMany).toHaveBeenCalledWith(
+         |                                     ^
+      41 |       expect.objectContaining({
+      42 |         where: { category: { slug: 'shirts' } },
+      43 |       })
+
+      at app/api/products/__tests__/route.test.ts:40:37
+      at fulfilled (app/api/products/__tests__/route.test.ts:5:58)
+
+FAIL app/api/auth/__tests__/signup.test.ts
+  ● POST /api/auth/signup › should create account successfully with valid data
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "newadmin@novraux.com", "securePass123!", "New Admin"
+    Received: "newadmin@novraux.com", "securePass123!", "newadmin"
+
+    Number of calls: 1
+
+      46 |     expect(response.status).toBe(201);
+      47 |     expect(data.success).toBe(true);
+    > 48 |     expect(createAdminUser).toHaveBeenCalledWith(
+         |                             ^
+      49 |       'newadmin@novraux.com',
+      50 |       'securePass123!',
+      51 |       'New Admin'
+
+      at app/api/auth/__tests__/signup.test.ts:48:29
+      at fulfilled (app/api/auth/__tests__/signup.test.ts:5:58)
+
+FAIL app/api/auth/__tests__/login.test.ts
+  ● POST /api/auth/login › should log audit event on success
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"action": "LOGIN_SUCCESS", "email": "admin@novraux.com", "metadata": ObjectContaining {"userName": "Admin User"}, "status": "success", "userId": "user-123"}
+    Received: {"action": "LOGIN_SUCCESS", "email": "admin@novraux.com", "ip": "unknown", "metadata": {"userName": undefined, "userRole": "admin"}, "status": "success", "userAgent": undefined, "userId": "user-123"}
+
+    Number of calls: 1
+
+      127 |     await POST(req);
+      128 |
+    > 129 |     expect(logAuditEvent).toHaveBeenCalledWith(
+          |                           ^
+      130 |       expect.objectContaining({
+      131 |         userId: 'user-123',
+      132 |         email: 'admin@novraux.com',
+
+      at app/api/auth/__tests__/login.test.ts:129:27
+      at fulfilled (app/api/auth/__tests__/login.test.ts:5:58)
+
+PASS lib/__tests__/auth.test.ts
+PASS app/api/auth/__tests__/logout.test.ts
+  ● Console
+
+    console.error
+      Logout error: Error: Session error
+          at /home/aghilas/Desktop/novraux/app/api/auth/__tests__/logout.test.ts:101:49
+          at Generator.next (<anonymous>)
+          at /home/aghilas/Desktop/novraux/app/api/auth/__tests__/logout.test.ts:8:71
+          at new Promise (<anonymous>)
+          at __awaiter (/home/aghilas/Desktop/novraux/app/api/auth/__tests__/logout.test.ts:4:12)
+          at Object.<anonymous> (/home/aghilas/Desktop/novraux/app/api/auth/__tests__/logout.test.ts:100:52)
+          at Promise.finally.completed (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+          at _runTest (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/home/aghilas/Desktop/novraux/node_modules/jest-runner/build/testWorker.js:275:16)
+          at runTest (/home/aghilas/Desktop/novraux/node_modules/jest-runner/build/testWorker.js:343:7)
+          at Object.worker (/home/aghilas/Desktop/novraux/node_modules/jest-runner/build/testWorker.js:497:12)
+
+      41 |         );
+      42 |     } catch (error) {
+    > 43 |         console.error('Logout error:', error);
+         |                 ^
+      44 |
+      45 |         // Log error
+      46 |         await logAuditEvent({
+
+      at app/api/auth/logout/route.ts:43:17
+          at Generator.throw (<anonymous>)
+      at rejected (app/api/auth/logout/route.ts:6:65)
+
+PASS lib/__tests__/user-auth.test.ts
+PASS components/__tests__/Header.test.tsx
+  ● Console
+
+    console.error
+      Warning: An update to UserMenu inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at UserMenu (/home/aghilas/Desktop/novraux/components/UserMenu.tsx:15:39)
+          at div
+          at div
+          at header
+          at Header
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      26 |         if (response.ok) {
+      27 |           const userData = await response.json();
+    > 28 |           setUser(userData);
+         |           ^
+      29 |         } else {
+      30 |           setUser(null);
+      31 |         }
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at components/UserMenu.tsx:28:11
+      at fulfilled (components/UserMenu.tsx:6:58)
+
+    console.error
+      Warning: An update to UserMenu inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at UserMenu (/home/aghilas/Desktop/novraux/components/UserMenu.tsx:15:39)
+          at div
+          at div
+          at header
+          at Header
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      34 |         setUser(null);
+      35 |       } finally {
+    > 36 |         setIsLoading(false);
+         |         ^
+      37 |       }
+      38 |     };
+      39 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at components/UserMenu.tsx:36:9
+      at fulfilled (components/UserMenu.tsx:6:58)
+
+    console.error
+      Warning: An update to CartProvider inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      48 |             if (res.ok) {
+      49 |                 const data = await res.json();
+    > 50 |                 setItems(data.items || []);
+         |                 ^
+      51 |             }
+      52 |         } catch (error) {
+      53 |             console.error('Failed to fetch cart:', error);
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at contexts/CartContext.tsx:50:17
+      at fulfilled (contexts/CartContext.tsx:6:58)
+
+    console.error
+      Warning: An update to CartProvider inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      53 |             console.error('Failed to fetch cart:', error);
+      54 |         } finally {
+    > 55 |             setIsLoading(false);
+         |             ^
+      56 |         }
+      57 |     }, []);
+      58 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at contexts/CartContext.tsx:55:13
+      at fulfilled (contexts/CartContext.tsx:6:58)
+
+    console.error
+      Warning: An update to UserMenu inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at UserMenu (/home/aghilas/Desktop/novraux/components/UserMenu.tsx:15:39)
+          at div
+          at div
+          at header
+          at Header
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      26 |         if (response.ok) {
+      27 |           const userData = await response.json();
+    > 28 |           setUser(userData);
+         |           ^
+      29 |         } else {
+      30 |           setUser(null);
+      31 |         }
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at components/UserMenu.tsx:28:11
+      at fulfilled (components/UserMenu.tsx:6:58)
+
+    console.error
+      Warning: An update to UserMenu inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at UserMenu (/home/aghilas/Desktop/novraux/components/UserMenu.tsx:15:39)
+          at div
+          at div
+          at header
+          at Header
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      34 |         setUser(null);
+      35 |       } finally {
+    > 36 |         setIsLoading(false);
+         |         ^
+      37 |       }
+      38 |     };
+      39 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at components/UserMenu.tsx:36:9
+      at fulfilled (components/UserMenu.tsx:6:58)
+
+    console.error
+      Warning: An update to CartProvider inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      48 |             if (res.ok) {
+      49 |                 const data = await res.json();
+    > 50 |                 setItems(data.items || []);
+         |                 ^
+      51 |             }
+      52 |         } catch (error) {
+      53 |             console.error('Failed to fetch cart:', error);
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at contexts/CartContext.tsx:50:17
+      at fulfilled (contexts/CartContext.tsx:6:58)
+
+    console.error
+      Warning: An update to CartProvider inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      53 |             console.error('Failed to fetch cart:', error);
+      54 |         } finally {
+    > 55 |             setIsLoading(false);
+         |             ^
+      56 |         }
+      57 |     }, []);
+      58 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at contexts/CartContext.tsx:55:13
+      at fulfilled (contexts/CartContext.tsx:6:58)
+
+PASS components/__tests__/ProductCard.test.tsx
+PASS app/api/auth/user/__tests__/signup.test.ts
+PASS lib/__tests__/cart.test.ts
+PASS lib/__tests__/session-tracking.test.ts
+PASS app/api/auth/user/__tests__/logout.test.ts
+PASS app/api/upload/__tests__/route.test.ts
+PASS lib/__tests__/inventory.test.ts
+PASS lib/__tests__/audit.test.ts
+PASS app/api/auth/user/__tests__/login.test.ts
+
+Test Suites: 6 failed, 13 passed, 19 total
+Tests:       12 failed, 87 passed, 99 total
+Snapshots:   0 total
+Time:        7.907 s
+Ran all test suites.

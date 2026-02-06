@@ -55,6 +55,9 @@ export default function ProductPurchase({ productId, basePrice, variants }: Prod
             if (result.success) {
                 setSuccess(true);
                 setTimeout(() => setSuccess(false), 2000);
+            } else if (result.error === 'auth_required') {
+                // Redirect to login with current page as redirect
+                router.push(`/auth/login?redirect=${encodeURIComponent(window.location.pathname)}`);
             } else {
                 setError(result.error || 'Failed to add to cart');
             }

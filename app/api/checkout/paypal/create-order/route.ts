@@ -11,7 +11,7 @@ import { callPayPalAPI } from '@/lib/paypal';
 export async function POST(request: NextRequest) {
     try {
         // 1. Authenticate User
-        const sessionToken = request.cookies.get('sessionToken')?.value;
+        const sessionToken = request.cookies.get('userSession')?.value;
         if (!sessionToken) {
             return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });
         }
@@ -147,8 +147,11 @@ export async function POST(request: NextRequest) {
 
     } catch (error) {
         console.error('PayPal Order Creation Error:', error);
+        if (error instanceof Error) {
+            console.error('Stack:', error.stack);
+        }
         return NextResponse.json(
-            { error: error instanceof Error ? error.message : 'Failed to create PayPal order' },
+            { error: error instanceof Error ? error.message : 'Failed to create PayPal order', details: String(error) },
             { status: 500 }
         );
     }

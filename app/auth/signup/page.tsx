@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -15,6 +15,16 @@ export default function SignupPage() {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+
+  // Get redirect URL from query params on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get('redirect');
+    if (redirect) {
+      setRedirectUrl(redirect);
+    }
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -74,8 +84,9 @@ export default function SignupPage() {
         return;
       }
 
-      // Signup and login successful
-      router.push('/');
+      // Signup and login successful - redirect to original destination or home
+      const destination = redirectUrl || '/';
+      router.push(destination);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -89,7 +100,9 @@ export default function SignupPage() {
       <div className="container mx-auto max-w-md px-4">
         <div className="bg-white rounded-lg border border-novraux-beige p-8">
           <h1 className="text-3xl font-serif font-medium text-novraux-charcoal mb-2">Create Account</h1>
-          <p className="text-sm text-novraux-charcoal/60 mb-8">Join Novraux and start shopping</p>
+          <p className="text-sm text-novraux-charcoal/60 mb-8">
+            {redirectUrl === '/checkout' ? 'Create an account to complete your purchase' : 'Join Novraux and start shopping'}
+          </p>
 
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded text-sm text-red-600">
@@ -190,7 +203,10 @@ export default function SignupPage() {
           <div className="mt-8 pt-8 border-t border-novraux-beige text-center text-sm">
             <p className="text-novraux-charcoal/60 mb-4">
               Already have an account?{' '}
-              <Link href="/auth/login" className="text-novraux-terracotta font-medium hover:underline">
+              <Link
+                href={redirectUrl ? `/auth/login?redirect=${encodeURIComponent(redirectUrl)}` : '/auth/login'}
+                className="text-novraux-terracotta font-medium hover:underline"
+              >
                 Sign in
               </Link>
             </p>

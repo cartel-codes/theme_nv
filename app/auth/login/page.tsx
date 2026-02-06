@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -10,6 +10,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+
+  // Get redirect URL from query params on mount
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get('redirect');
+    if (redirect) {
+      setRedirectUrl(redirect);
+    }
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,8 +42,9 @@ export default function LoginPage() {
         return;
       }
 
-      // Login successful
-      router.push('/');
+      // Login successful - redirect to original destination or home
+      const destination = redirectUrl || '/';
+      router.push(destination);
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -47,7 +58,9 @@ export default function LoginPage() {
       <div className="container mx-auto max-w-md px-4">
         <div className="bg-white rounded-lg border border-novraux-beige p-8">
           <h1 className="text-3xl font-serif font-medium text-novraux-charcoal mb-2">Sign In</h1>
-          <p className="text-sm text-novraux-charcoal/60 mb-8">Welcome back to Novraux</p>
+          <p className="text-sm text-novraux-charcoal/60 mb-8">
+            {redirectUrl === '/checkout' ? 'Please sign in to complete your purchase' : 'Welcome back to Novraux'}
+          </p>
 
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded text-sm text-red-600">

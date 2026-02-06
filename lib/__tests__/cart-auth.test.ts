@@ -15,6 +15,7 @@ jest.mock('../prisma', () => ({
         },
         cartItem: {
             findUnique: jest.fn(),
+            findFirst: jest.fn(),
             update: jest.fn(),
             create: jest.fn(),
         },
@@ -151,7 +152,7 @@ describe('Cart Authentication Scenarios', () => {
             });
             (prisma.cart.findFirst as jest.Mock).mockResolvedValue(userCart);
             (prisma.cart.findUnique as jest.Mock).mockResolvedValue(guestCart);
-            (prisma.cartItem.findUnique as jest.Mock).mockResolvedValue(null);
+            (prisma.cartItem.findFirst as jest.Mock).mockResolvedValue(null);
 
             await getOrCreateCart();
 
@@ -197,7 +198,7 @@ describe('Cart Authentication Scenarios', () => {
             });
             (prisma.cart.findFirst as jest.Mock).mockResolvedValue(userCart);
             (prisma.cart.findUnique as jest.Mock).mockResolvedValue(guestCart);
-            (prisma.cartItem.findUnique as jest.Mock).mockResolvedValue(userCart.items[0]);
+            (prisma.cartItem.findFirst as jest.Mock).mockResolvedValue(userCart.items[0]);
 
             await getOrCreateCart();
 

@@ -10,7 +10,7 @@ import { deductStockForOrder } from '@/lib/inventory';
  */
 export async function POST(request: NextRequest) {
     try {
-        const sessionToken = request.cookies.get('sessionToken')?.value;
+        const sessionToken = request.cookies.get('userSession')?.value;
         if (!sessionToken) {
             return NextResponse.json({ error: 'User not authenticated' }, { status: 401 });
         }

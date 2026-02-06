@@ -39,7 +39,7 @@ describe('R2 Utility Library', () => {
 
         const url = await uploadToR2(buffer, filename, contentType);
 
-        expect(url).toContain('https://test-public-url.com/products/');
+        expect(url).toContain('/api/images/products/');
         expect(url).toContain(filename);
         expect(PutObjectCommand).toHaveBeenCalled();
     });
