@@ -31,14 +31,15 @@ export async function getCartSessionId(): Promise<string> {
   return sessionId;
 }
 
-export async function getOrCreateCart(): Promise<CartWithItems> {
+export async function getOrCreateCart(explicitUserId?: string): Promise<CartWithItems> {
   const cookieStore = await cookies();
   const sessionToken = cookieStore.get(USER_SESSION_COOKIE)?.value;
   const sessionId = await getCartSessionId();
 
   // Check if user is logged in
-  let userId: string | null = null;
-  if (sessionToken) {
+  let userId: string | null = explicitUserId || null;
+
+  if (!userId && sessionToken) {
     const userSession = await getUserSession(sessionToken);
     if (userSession && userSession.user) {
       userId = userSession.user.id;

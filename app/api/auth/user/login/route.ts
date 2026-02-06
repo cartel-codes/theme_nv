@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authenticateUser, createUserSession, logUserAuditEvent } from '@/lib/user-auth';
+import { getOrCreateCart } from '@/lib/cart';
 
 /**
  * POST /api/auth/user/login
@@ -51,6 +52,9 @@ export async function POST(req: NextRequest) {
       req.headers.get('user-agent') || undefined,
       deviceName
     );
+
+    // Trigger cart merge (Guest -> User)
+    await getOrCreateCart(user.id);
 
     // Log successful login
     await logUserAuditEvent({

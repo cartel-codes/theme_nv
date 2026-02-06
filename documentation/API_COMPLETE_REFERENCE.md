@@ -792,12 +792,75 @@ Finalize payment and complete order.
 - TODO: Confirmation email sent
 - TODO: Fulfillment request created
 
-**Response** (400 Bad Request):
+### 4. Create PayPal Order
+
+**POST** `/api/checkout/paypal/create-order`
+
+Creates a PayPal order and syncs it with the local database.
+
+**Authentication**: Required
+
+**Request Body**:
 ```json
 {
-  "success": false,
-  "error": {
-    "code": "PAYMENT_FAILED",
+  "items": [
+    {
+      "productId": "prod_1",
+      "variantId": "var_1",
+      "quantity": 2
+    }
+  ],
+  "shippingAddress": {
+    "street": "123 Main St",
+    "city": "San Francisco",
+    "state": "CA",
+    "zip": "94102",
+    "country": "US"
+  }
+}
+```
+
+**Response** (200 OK):
+```json
+{
+  "id": "PAYPAL_ORDER_ID",
+  "localOrderId": "order_abc123",
+  "total": 449.97
+}
+```
+
+---
+
+### 5. Capture PayPal Order
+
+**POST** `/api/checkout/paypal/capture-order`
+
+Captures the payment on PayPal and finalizes the order locally.
+
+**Authentication**: Required
+
+**Request Body**:
+```json
+{
+  "paypalOrderId": "PAYPAL_ORDER_ID"
+}
+```
+
+**Response** (200 OK):
+```json
+{
+  "success": true,
+  "orderId": "order_abc123",
+  "status": "paid"
+}
+```
+
+**Side Effects**:
+- Order status updated to "paid"
+- Inventory deducted for all items
+- User's cart cleared
+
+---
     "message": "Payment was not successful"
   }
 }

@@ -31,11 +31,11 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Fetch product details for all items
+        // Fetch product details for all items with variants
         const productIds = cartItems.map((item: any) => item.productId);
         const products = await prisma.product.findMany({
             where: { id: { in: productIds } },
-            select: { id: true, name: true, price: true, slug: true },
+            include: { variants: true },
         });
 
         // Map products and validate
@@ -45,14 +45,27 @@ export async function POST(request: NextRequest) {
                 throw new Error(`Product ${item.productId} not found`);
             }
 
-            const quantity = Math.max(1, Math.min(999, item.quantity || 1)); // 1-999
-            const itemTotal = Number(product.price) * quantity;
+            let price = Number(product.price);
+            let variantName = '';
+
+            if (item.variantId) {
+                const variant = product.variants.find(v => v.id === item.variantId);
+                if (variant) {
+                    if (variant.price) price = Number(variant.price);
+                    variantName = `${variant.name}: ${variant.value}`;
+                }
+            }
+
+            const quantity = Math.max(1, Math.min(999, item.quantity || 1));
+            const itemTotal = price * quantity;
 
             return {
                 productId: product.id,
+                variantId: item.variantId || null,
                 name: product.name,
+                variantName,
                 slug: product.slug,
-                price: Number(product.price),
+                price: price,
                 quantity,
                 total: itemTotal,
             };
