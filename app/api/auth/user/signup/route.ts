@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createUser, getUserByEmail, createUserSession, logUserAuditEvent } from '@/lib/user-auth';
+import { createUser, getUserByEmail, createUserSession, logUserAuditEvent, generateEmailVerificationToken } from '@/lib/user-auth';
 import { checkRateLimit, SIGNUP_RATE_LIMIT } from '@/lib/rate-limit';
 import { validatePassword } from '@/lib/password-validation';
+import { sendVerificationEmail } from '@/lib/email';
 
 function getClientIP(req: NextRequest): string {
   return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
@@ -111,6 +112,14 @@ export async function POST(req: NextRequest) {
       userAgent
     );
 
+    // Generate email verification token
+    const verificationToken = await generateEmailVerificationToken(user.id);
+
+    // Send verification email (async, don't block response)
+    sendVerificationEmail(user.email, user.firstName, verificationToken).catch((err) => {
+      console.error('Failed to send verification email:', err);
+    });
+
     // Log successful signup
     await logUserAuditEvent({
       userId: user.id,
@@ -122,6 +131,7 @@ export async function POST(req: NextRequest) {
       metadata: {
         firstName,
         lastName,
+        emailVerificationSent: true,
       },
     });
 
@@ -133,8 +143,10 @@ export async function POST(req: NextRequest) {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          emailVerified: false,
         },
         sessionToken: session.sessionToken,
+        notice: 'Please check your email to verify your account.',
       },
       { status: 201 }
     );

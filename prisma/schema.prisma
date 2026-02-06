@@ -201,6 +201,10 @@ model User {
   phone         String?
   isActive      Boolean        @default(true)
   emailVerified Boolean        @default(false)
+  emailVerificationToken String?
+  emailVerificationExpires DateTime?
+  passwordResetToken String?
+  passwordResetExpires DateTime?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   orders        Order[]
@@ -208,6 +212,8 @@ model User {
   sessions      UserSession[]
 
   @@index([email])
+  @@index([emailVerificationToken])
+  @@index([passwordResetToken])
 }
 
 model UserSession {

@@ -1,6 +1,11 @@
 import bcrypt from 'bcryptjs';
 import { prisma } from './prisma';
 import crypto from 'crypto';
+import { jwtEncode, jwtDecode } from './jwt';
+
+// Token expiration times
+const EMAIL_VERIFICATION_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+const PASSWORD_RESET_EXPIRY = 60 * 60 * 1000; // 1 hour
 
 /**
  * Hash a password using bcryptjs with 10 salt rounds
@@ -242,6 +247,7 @@ export async function getUserSession(sessionToken: string) {
           firstName: true,
           lastName: true,
           avatar: true,
+          emailVerified: true,
         },
       },
     },
@@ -508,4 +514,196 @@ export async function getUserAuditLogStats(userId?: string) {
     failedLogins,
     uniqueIPs: 0, // Would need groupBy in a real implementation
   };
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Password Reset & Email Verification Token Management
+// ─────────────────────────────────────────────────────────────────────
+
+/**
+ * Generate and store email verification token for a user
+ */
+export async function generateEmailVerificationToken(userId: string): Promise<string> {
+  const token = await jwtEncode(
+    { userId, type: 'email-verification' },
+    '24h'
+  );
+
+  const expiresAt = new Date(Date.now() + EMAIL_VERIFICATION_EXPIRY);
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: {
+      emailVerificationToken: token,
+      emailVerificationExpires: expiresAt,
+    },
+  });
+
+  return token;
+}
+
+/**
+ * Verify email verification token and mark email as verified
+ */
+export async function verifyEmailToken(token: string): Promise<{ success: boolean; email?: string; error?: string }> {
+  try {
+    // Decode token
+    const payload = await jwtDecode<{ userId: string; type: string }>(token);
+
+    if (payload.type !== 'email-verification') {
+      return { success: false, error: 'Invalid token type' };
+    }
+
+    // Find user with matching token   
+    const user = await prisma.user.findFirst({
+      where: {
+        id: payload.userId,
+        emailVerificationToken: token,
+        emailVerificationExpires: {
+          gt: new Date(),
+        },
+      },
+    });
+
+    if (!user) {
+      return { success: false, error: 'Invalid or expired verification token' };
+    }
+
+    // Mark email as verified and clear token
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerified: true,
+        emailVerificationToken: null,
+        emailVerificationExpires: null,
+      },
+    });
+
+    await logUserAuditEvent({
+      userId: user.id,
+      email: user.email,
+      action: 'EMAIL_VERIFIED',
+      status: 'success',
+    });
+
+    return { success: true, email: user.email };
+  } catch (error) {
+    console.error('Email verification error:', error);
+    return { success: false, error: 'Token verification failed' };
+  }
+}
+
+/**
+ * Generate and store password reset token for a user
+ */
+export async function generatePasswordResetToken(email: string): Promise<{ success: boolean; token?: string; error?: string }> {
+  const user = await prisma.user.findUnique({
+    where: { email: email.toLowerCase() },
+  });
+
+  if (!user) {
+    // Don't reveal whether the email exists
+    return { success: false, error: 'If that email exists, a reset link has been sent' };
+  }
+
+  const token = await jwtEncode(
+    { userId: user.id, email: user.email, type: 'password-reset' },
+    '1h'
+  );
+
+  const expiresAt = new Date(Date.now() + PASSWORD_RESET_EXPIRY);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: {
+      passwordResetToken: token,
+      passwordResetExpires: expiresAt,
+    },
+  });
+
+  await logUserAuditEvent({
+    userId: user.id,
+    email: user.email,
+    action: 'PASSWORD_RESET_REQUESTED',
+    status: 'success',
+  });
+
+  return { success: true, token };
+}
+
+/**
+ * Verify password reset token and return user
+ */
+export async function verifyPasswordResetToken(token: string): Promise<{ success: boolean; userId?: string; error?: string }> {
+  try {
+    // Decode token
+    const payload = await jwtDecode<{ userId: string; type: string }>(token);
+
+    if (payload.type !== 'password-reset') {
+      return { success: false, error: 'Invalid token type' };
+    }
+
+    // Find user with matching token
+    const user = await prisma.user.findFirst({
+      where: {
+        id: payload.userId,
+        passwordResetToken: token,
+        passwordResetExpires: {
+          gt: new Date(),
+        },
+      },
+    });
+
+    if (!user) {
+      return { success: false, error: 'Invalid or expired reset token' };
+    }
+
+    return { success: true, userId: user.id };
+  } catch (error) {
+    console.error('Password reset token verification error:', error);
+    return { success: false, error: 'Token verification failed' };
+  }
+}
+
+/**
+ * Reset password using verified token
+ */
+export async function resetPasswordWithToken(token: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
+  const verification = await verifyPasswordResetToken(token);
+
+  if (!verification.success ||!verification.userId) {
+    return { success: false, error: verification.error };
+  }
+
+  // Hash new password
+  const hashedPassword = await hashPassword(newPassword);
+
+  // Update password and clear reset token
+  await prisma.user.update({
+    where: { id: verification.userId },
+    data: {
+      password: hashedPassword,
+      passwordResetToken: null,
+      passwordResetExpires: null,
+    },
+  });
+
+  // Invalidate all existing sessions for security
+  await invalidateAllUserSessions(verification.userId);
+
+  const user = await prisma.user.findUnique({
+    where: { id: verification.userId },
+    select: { email: true },
+  });
+
+  if (user) {
+    await logUserAuditEvent({
+      userId: verification.userId,
+      email: user.email,
+      action: 'PASSWORD_RESET_COMPLETED',
+      status: 'success',
+    });
+  }
+
+  return { success: true };
 }

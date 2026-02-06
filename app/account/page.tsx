@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FormEvent, useState, useEffect } from 'react';
+import EmailVerificationBanner from '@/components/EmailVerificationBanner';
 
 interface UserProfile {
   id: string;
@@ -11,6 +12,7 @@ interface UserProfile {
   lastName: string | null;
   phone: string | null;
   createdAt: string;
+  emailVerified: boolean;
 }
 
 export default function AccountPage() {
@@ -125,6 +127,9 @@ export default function AccountPage() {
               {success}
             </div>
           )}
+
+          {/* Email Verification Banner */}
+          {profile && !profile.emailVerified && <EmailVerificationBanner />}
 
           {/* Profile Section */}
           <div className="mb-8 pb-8 border-b border-novraux-beige">

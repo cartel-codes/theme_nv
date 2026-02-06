@@ -66,13 +66,17 @@
 - **Status**: ✅ Complete
 
 ### Phase 2 — Password Recovery & Email Verification
-- [ ] 2.1 Forgot password flow (`/auth/forgot-password` + API + email)
-- [ ] 2.2 Password reset token (time-limited, signed, DB-stored)
-- [ ] 2.3 Email verification on signup (enforce before checkout)
-- [ ] 2.4 Resend verification email endpoint
+- [x] 2.1 Update Prisma schema with token fields (emailVerificationToken, passwordResetToken + expiry)
+- [x] 2.2 Extend email utility with sendPasswordResetEmail() and sendVerificationEmail()
+- [x] 2.3 Forgot password page + API route (`/auth/forgot-password`)
+- [x] 2.4 Password reset page + API route (`/auth/reset-password`)
+- [x] 2.5 Email verification on signup (send verification email)
+- [x] 2.6 Verify email endpoint (`/api/auth/user/verify-email`)
+- [x] 2.7 Resend verification email API (`/api/auth/user/resend-verification`)
+- [x] 2.8 Email verification banner on account page for unverified users
 - **Estimated**: 4-6 hours
-- **Owner**: TBD
-- **Status**: Not started
+- **Owner**: Active
+- **Status**: ✅ Complete
 
 ### Phase 3 — OAuth / Social Login Providers
 - [ ] 3.1 Google OAuth ("Sign in with Google")
