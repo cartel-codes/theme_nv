@@ -79,13 +79,19 @@
 - **Status**: ✅ Complete
 
 ### Phase 3 — OAuth / Social Login Providers
-- [ ] 3.1 Google OAuth ("Sign in with Google")
-- [ ] 3.2 Schema update — add `provider` / `providerId` to User model
-- [ ] 3.3 Account linking (existing email users can link Google)
-- [ ] 3.4 Optional: GitHub OAuth
-- **Estimated**: 4-6 hours
-- **Owner**: TBD
-- **Status**: Not started
+- [x] 3.1 Google OAuth ("Sign in with Google") - Implemented
+- [x] 3.2 Twitter/X OAuth ("Sign in with X") - Implemented
+- [x] 3.3 Facebook OAuth ("Sign in with Facebook") - Implemented
+- [x] 3.4 Schema update — add `OAuthAccount` model to Prisma
+- [x] 3.5 Account linking (existing users can link social accounts)
+- [x] 3.6 Account unlinking with safety checks
+- [x] 3.7 OAuth button components
+- [x] 3.8 Linked accounts UI in account page
+- [ ] 3.9 Configure OAuth credentials in .env
+- [ ] 3.10 Test OAuth flows end-to-end
+- **Branch**: `feature/oauth-social-auth` (pushed to GitHub)
+- **Files**: 17 files, 1,171 insertions
+- **Status**: 🟡 Paused - Awaiting OAuth credentials
 
 ### Phase 4 — Advanced Hardening
 - [ ] 4.1 CSRF tokens for state-changing requests

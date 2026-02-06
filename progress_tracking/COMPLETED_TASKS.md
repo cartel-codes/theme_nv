@@ -104,6 +104,9 @@
 | Phase 4.1: PayPal | ✅ Complete | Feb 6, 2026 | Feb 6, 2026 | 1 day |
 | Phase 4.2: Security | ✅ Complete | Feb 6, 2026 | Feb 6, 2026 | 1 day |
 | Phase 4.3: Admin UI | ✅ Complete | Feb 6, 2026 | Feb 6, 2026 | 1 day |
+| Auth Security Phase 1 | ✅ Complete | Feb 6, 2026 | Feb 6, 2026 | 1 day |
+| Auth Security Phase 2 | ✅ Complete | Feb 6, 2026 | Feb 6, 2026 | 1 day |
+| Auth Security Phase 3 | 🟡 Paused | Feb 6, 2026 | TBD | Branch created |
 
 ---
 
@@ -197,6 +200,68 @@
 ### Data Layer
 - [x] `getAdminOrders` updated: includes `imageUrl`, `slug`, variant `name`/`value`
 - [x] `getAdminOrder` updated: includes first `ProductImage`, user `avatar`
+
+---
+
+## ✅ Auth Security Hardening - Phase 1 & 2
+
+**Completed**: February 6, 2026
+**Status**: ✅ COMPLETE
+
+### Phase 1: Critical Security Fixes
+- [x] Rate limiting on auth endpoints (5 login/15min, 3 signup/hr)
+- [x] Account lockout after 5 failed attempts (15 min cooldown)
+- [x] Middleware protection for `/account/*` user routes
+- [x] Replace `jwt.ts` base64 with proper signed JWTs (`jose`)
+- [x] Session token rotation on sensitive actions
+- [x] Password strength validation (min 8, upper/lower/number)
+
+### Phase 2: Password Recovery & Email Verification
+- [x] Update Prisma schema with token fields (emailVerificationToken, passwordResetToken + expiry)
+- [x] Extend email utility with sendPasswordResetEmail() and sendVerificationEmail()
+- [x] Forgot password page + API route (`/auth/forgot-password`)
+- [x] Password reset page + API route (`/auth/reset-password`)
+- [x] Email verification on signup (send verification email)
+- [x] Verify email endpoint (`/api/auth/user/verify-email`)
+- [x] Resend verification email API (`/api/auth/user/resend-verification`)
+- [x] Email verification banner on account page for unverified users
+- [x] Professional email templates (HTML + plain text)
+
+### Test Suite
+- [x] 90 tests passing across all modules
+- [x] Password validation tests
+- [x] Rate limiting tests
+- [x] JWT signing tests
+
+---
+
+## 🟡 Auth Security Phase 3: OAuth Social Login (Paused)
+
+**Status**: 🟡 PAUSED - Branch Created
+**Branch**: `feature/oauth-social-auth`
+**Commit**: 621519b
+**Files**: 17 files, 1,171 insertions
+
+### Implemented (Ready for Testing)
+- [x] OAuthAccount model added to Prisma schema
+- [x] OAuth utility library (`lib/oauth.ts`)
+- [x] Google OAuth callback handler
+- [x] Twitter (X) OAuth callback handler
+- [x] Facebook OAuth callback handler
+- [x] OAuth sign-in URL generation endpoint
+- [x] Account linking endpoint
+- [x] Account unlinking endpoint
+- [x] OAuthButton component
+- [x] LinkedOAuthAccounts component
+- [x] Login/signup pages integrated with OAuth buttons
+- [x] Account page with linked accounts section
+
+### Pending (To Resume)
+- [ ] Configure OAuth credentials in .env
+- [ ] Test OAuth flows end-to-end
+- [ ] Merge to main when ready
+
+**To Resume**: `git checkout feature/oauth-social-auth`
 
 ---
 

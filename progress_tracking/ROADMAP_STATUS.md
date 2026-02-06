@@ -218,6 +218,59 @@ Phase 4: Content & Launch      🟡 ████████████░░�
 - [x] Order detail: product images, clickable links, variant info, SKU, PayPal card
 - [x] Full dark-mode support across all admin pages
 
+---
+
+## Auth Security Hardening ✅
+
+**Status**: ✅ PHASE 1 & 2 COMPLETE | 🟡 PHASE 3 PAUSED
+**Completion Date**: February 6, 2026
+
+### Auth Security Phase 1: Critical Fixes ✅
+- [x] Rate limiting on auth endpoints (5 login/15min, 3 signup/hr)
+- [x] Account lockout after 5 failed attempts (15 min cooldown)
+- [x] Middleware protection for `/account/*` user routes
+- [x] Replace base64 JWT with properly signed JWTs (`jose`)
+- [x] Session token rotation on sensitive actions
+- [x] Password strength validation (min 8, upper/lower/number)
+- [x] 90 tests passing across all modules
+
+### Auth Security Phase 2: Password Recovery & Email ✅
+- [x] Prisma schema updated (emailVerificationToken, passwordResetToken + expiry)
+- [x] Email utility with sendPasswordResetEmail() and sendVerificationEmail()
+- [x] Forgot password page + API (`/auth/forgot-password`)
+- [x] Password reset page + API (`/auth/reset-password`)
+- [x] Email verification on signup
+- [x] Verify email endpoint (`/api/auth/user/verify-email`)
+- [x] Resend verification email API
+- [x] Email verification banner on account page
+- [x] Professional HTML + plain text email templates
+
+### Auth Security Phase 3: OAuth Social Login 🟡 (Paused)
+**Status**: 🟡 Paused - Implementation Complete, Awaiting Credentials
+**Branch**: `feature/oauth-social-auth` (pushed to GitHub)
+**Commit**: 621519b (17 files, 1,171 insertions)
+
+#### Implemented (Ready for Testing)
+- [x] OAuthAccount model in Prisma schema
+- [x] OAuth utility library (`lib/oauth.ts`)
+- [x] Google OAuth callback handler
+- [x] Twitter (X) OAuth callback handler
+- [x] Facebook OAuth callback handler
+- [x] OAuth sign-in URL generation endpoint
+- [x] Account linking/unlinking endpoints
+- [x] OAuthButton + LinkedOAuthAccounts components
+- [x] Login/signup pages integrated
+- [x] Account page with linked accounts section
+
+#### Pending
+- [ ] Configure OAuth credentials in .env
+- [ ] Test end-to-end flows
+- [ ] Merge to main
+
+**To Resume**: `git checkout feature/oauth-social-auth`
+
+---
+
 ### Phase 4.4: User Account & Polish 🟡 (Next)
 - [ ] User account page (profile, edit)
 - [ ] User order history page
