@@ -121,14 +121,14 @@ export default function UserMenu() {
                 My Account
               </Link>
               <Link
-                href="/orders"
+                href="/account/orders"
                 className="block px-4 py-2 text-sm text-novraux-charcoal hover:bg-novraux-cream/50 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 Order History
               </Link>
               <Link
-                href="/account/settings"
+                href="/account"
                 className="block px-4 py-2 text-sm text-novraux-charcoal hover:bg-novraux-cream/50 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
