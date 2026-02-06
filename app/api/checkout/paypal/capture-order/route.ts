@@ -4,6 +4,8 @@ import { callPayPalAPI } from '@/lib/paypal';
 import { deductStockForOrder } from '@/lib/inventory';
 import { sendOrderConfirmation } from '@/lib/email';
 
+export const dynamic = 'force-dynamic';
+
 
 /**
  * POST /api/checkout/paypal/capture-order

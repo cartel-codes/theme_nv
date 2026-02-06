@@ -6,6 +6,8 @@ import {
   invalidateAllUserSessions,
 } from '@/lib/user-auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/auth/user/logout
  * Logout user by invalidating the session

@@ -8,6 +8,8 @@ import {
   logUserAuditEvent,
 } from '@/lib/user-auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/user/sessions
  * Get all active sessions for the current user

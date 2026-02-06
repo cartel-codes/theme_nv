@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getUserSession, updateUserSessionActivity, updateUserProfile } from '@/lib/user-auth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/user/profile
  * Get current user profile

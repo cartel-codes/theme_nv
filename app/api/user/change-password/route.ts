@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getUserSession, updateUserSessionActivity, updateUserPassword, comparePassword } from '@/lib/user-auth';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/user/change-password
  * Change user password
