@@ -101,6 +101,9 @@
 | Phase 2: Admin UI | ✅ Complete | Feb 3, 2026 | Feb 5, 2026 | 2-3 days |
 | Phase 3.1: SEO Config | ✅ Complete | Feb 5, 2026 | Feb 5, 2026 | 1 day |
 | Phase 3.2: SEO UX | 🟡 Planned | Feb 6, 2026 | TBD | ~1 week |
+| Phase 4.1: PayPal | ✅ Complete | Feb 6, 2026 | Feb 6, 2026 | 1 day |
+| Phase 4.2: Security | ✅ Complete | Feb 6, 2026 | Feb 6, 2026 | 1 day |
+| Phase 4.3: Admin UI | ✅ Complete | Feb 6, 2026 | Feb 6, 2026 | 1 day |
 
 ---
 
@@ -117,9 +120,89 @@
 
 ---
 
+## ✅ Phase 4.1: PayPal Checkout & Order System
+
+**Completed**: February 6, 2026
+**Status**: ✅ COMPLETE
+
+### PayPal Integration
+- [x] PayPal REST API client (`lib/paypal.ts`) — token auth + generic API helper
+- [x] Create Order endpoint (`/api/checkout/paypal/create-order`) — server-side cart validation, pricing, stock check, local order + PayPal order creation
+- [x] Capture Order endpoint (`/api/checkout/paypal/capture-order`) — payment capture, order status update, inventory deduction
+- [x] PayPal webhook handler (`/api/webhooks/paypal`) — `PAYMENT.CAPTURE.COMPLETED` idempotent processing
+- [x] `PayPalCheckoutButtons` component with `@paypal/react-paypal-js`
+
+### Multi-Step Checkout
+- [x] 4-step checkout flow (Cart Review → Shipping → Review → Payment)
+- [x] `CheckoutPageClient` extracted as client component with PayPalScriptProvider
+- [x] Auth check with redirect to login
+- [x] Cart validation via `/api/checkout/validate`
+- [x] Success page redirect
+
+### Inventory Management
+- [x] `deductStockForOrder()` in `lib/inventory.ts`
+- [x] Stock-fix utility script (`prisma/fix-stock.ts`)
+- [x] Inventory tests
+
+---
+
+## ✅ Phase 4.2: Security Hardening & PayPal Defensive Logging
+
+**Completed**: February 6, 2026
+**Status**: ✅ COMPLETE
+
+### Capture Endpoint Hardening
+- [x] DB-backed user session validation on capture
+- [x] Order-user ownership check (403 on mismatch)
+- [x] Amount + currency validation against local order
+- [x] Strict vs relaxed validation toggle (`PAYPAL_STRICT_VALIDATION` / `NODE_ENV`)
+- [x] Structured logging with `[PayPal]` prefix
+
+### Webhook Hardening
+- [x] Payload validation (event_type, resource required)
+- [x] Defensive PayPal order ID extraction
+- [x] Wrapped stock deduction in try/catch
+- [x] Graceful handling of unknown event types
+- [x] Structured logging with `[PayPal Webhook]` prefix
+
+### Documentation
+- [x] API docs updated in `API_COMPLETE_REFERENCE.md` (capture validation, env flags, webhook)
+- [x] Security Hardening Plan created (`documentation/SECURITY_HARDENING_PLAN.md`)
+
+---
+
+## ✅ Phase 4.3: Admin Dashboard & Orders UI Overhaul
+
+**Completed**: February 6, 2026
+**Status**: ✅ COMPLETE
+
+### Admin Dashboard Rewrite
+- [x] 8 KPI cards: Revenue, Orders Today, Avg Order, Customers, Products, Collections, Articles, Total Orders
+- [x] 7-day revenue sparkline bar chart
+- [x] Recent Orders table (8 latest, customer avatars, status badges, totals)
+- [x] Low-Stock Alerts panel (inventory ≤ 5)
+- [x] Activity Feed (static, ready for real audit log wiring)
+- [x] Latest Products list
+- [x] Quick Actions grid (6 tiles)
+
+### Header/Footer Isolation
+- [x] Wrapped `<Header />` in `<PublicOnly>` — admin pages no longer show website header/footer
+
+### Orders UI Overhaul
+- [x] Orders list: summary KPI row, customer avatars, product thumbnails (stacked), status badges, formatted currency/dates
+- [x] Order detail: real product images, clickable product links, variant name+value, SKU line, customer avatar, PayPal info card
+- [x] Full dark-mode support across all admin order pages
+- [x] Consistent design system (novraux-obsidian/bone/ash/graphite/gold)
+
+### Data Layer
+- [x] `getAdminOrders` updated: includes `imageUrl`, `slug`, variant `name`/`value`
+- [x] `getAdminOrder` updated: includes first `ProductImage`, user `avatar`
+
+---
+
 ## 🎯 What's Next?
 
-See [CURRENT_TASKS.md](./CURRENT_TASKS.md) for Phase 3 work items.
+See [CURRENT_TASKS.md](./CURRENT_TASKS.md) for upcoming work items.
 
 ---
 

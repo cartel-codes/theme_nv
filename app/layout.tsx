@@ -44,7 +44,9 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <AuthProvider>
               <CartProvider>
-                <Header />
+                <PublicOnly>
+                  <Header />
+                </PublicOnly>
                 <main className="flex-1 text-novraux-obsidian dark:text-novraux-bone transition-colors duration-300">
                   {children}
                 </main>

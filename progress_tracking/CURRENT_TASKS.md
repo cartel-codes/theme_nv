@@ -1,21 +1,28 @@
-# Current Tasks - Phase 3 Kickoff
+# Current Tasks - Phase 4 Continued
 
-**Period**: February 5, 2026 onwards  
-**Status**: 🟡 In Planning  
+**Period**: February 6, 2026 onwards  
+**Status**: 🟡 Active Development  
 
 ---
 
 ## 🔴 High Priority - This Week
 
-## 🔴 High Priority - This Week
+### User Account & Orders (Customer-Facing)
 
-### Phase 3.2: Category & Content SEO
+- [ ] User account page (`/account`) — view profile, edit details
+- [ ] User order history page (`/account/orders`) — list past orders with status
+- [ ] User order detail page (`/account/orders/[id]`) — items, tracking, payment info
+- [ ] Post-checkout email confirmation (or at least placeholder trigger)
+- **Estimated**: 6-8 hours
+- **Owner**: TBD
+- **Status**: Ready to start
 
-- [ ] Add SEO fields to Category Editor form
-- [ ] Implement SEO field support in Category API (GET/PUT)
-- [ ] Add character counters and health indicator to Category Form
-- [ ] Add validation warnings (length checks) to all forms
-- [ ] Polish UI to match Novraux luxury design
+### Admin Panel Polish
+
+- [ ] Wire Activity Feed to real audit logs (replace static data)
+- [ ] Admin users list page — improve UI consistency
+- [ ] Admin products list — add product thumbnails and inventory badges
+- [ ] Mobile-responsive admin sidebar (hamburger menu on small screens)
 - **Estimated**: 4-6 hours
 - **Owner**: TBD
 - **Status**: Ready to start
@@ -24,15 +31,22 @@
 
 ## 🟡 Medium Priority - Next 2 Weeks
 
-### Phase 3.2: UX Enhancements
+### Checkout & Payment Enhancements
 
-- [ ] Create SEO preview component (Google results preview)
-- [ ] Add validation warnings (length checks)
-- [ ] Add auto-generate suggestions button
-- [ ] Create SEO health indicator component
-- [ ] Add helpful tooltips and documentation
-- [ ] Polish UI to match Novraux design
-- **Estimated**: 6-8 hours
+- [ ] Cart quantity update + remove items on checkout step 1
+- [ ] Order confirmation email integration (e.g. Resend / Nodemailer)
+- [ ] PayPal webhook signature verification (security)
+- [ ] Coupon / discount code system
+- **Estimated**: 8-10 hours
+- **Owner**: TBD
+- **Status**: Not started
+
+### SEO UX Improvements (Phase 3.2 Carry-Over)
+
+- [ ] Add SEO fields to Category Editor form
+- [ ] Character counters and health indicator on Category Form
+- [ ] Validation warnings (length checks) across all content forms
+- **Estimated**: 4-6 hours
 - **Owner**: TBD
 - **Status**: Not started
 
@@ -40,13 +54,15 @@
 
 ## 🟢 Low Priority - Later
 
-### Phase 3.3: Advanced Tools (Phase 4)
+### Advanced Features
 
 - [ ] Bulk SEO editor UI
 - [ ] SEO audit dashboard
 - [ ] Duplicate finder (meta descriptions)
-- [ ] Auto-generate for missing products
-- [ ] Reports & analytics
+- [ ] Wishlist / Save for Later
+- [ ] Product reviews & ratings
+- [ ] Analytics dashboard (Google Analytics integration)
+- [ ] Multi-currency support
 
 ---
 

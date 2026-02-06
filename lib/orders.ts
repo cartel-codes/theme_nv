@@ -81,7 +81,8 @@ export async function getAdminOrders(filter?: OrderFilter) {
             },
             items: {
                 include: {
-                    product: { select: { name: true } },
+                    product: { select: { name: true, imageUrl: true, slug: true } },
+                    variant: { select: { name: true, value: true } }
                 }
             }
         }
@@ -96,11 +97,15 @@ export async function getAdminOrder(orderId: string) {
         where: { id: orderId },
         include: {
             user: {
-                select: { id: true, email: true, firstName: true, lastName: true }
+                select: { id: true, email: true, firstName: true, lastName: true, avatar: true }
             },
             items: {
                 include: {
-                    product: true,
+                    product: {
+                        include: {
+                            images: { orderBy: { order: 'asc' }, take: 1 }
+                        }
+                    },
                     variant: true
                 }
             }

@@ -1,7 +1,7 @@
 # Roadmap Status by Phase
 
-**Last Updated**: February 5, 2026  
-**Overall Project Status**: 🟡 PHASE 3 PLANNING
+**Last Updated**: February 6, 2026  
+**Overall Project Status**: 🟡 PHASE 4 ACTIVE
 
 ---
 
@@ -10,8 +10,8 @@
 ```
 Phase 1: Authentication        ✅ ████████████████████ 100% COMPLETE
 Phase 2: Admin Backoffice      ✅ ████████████████████ 100% COMPLETE  
-Phase 3: SEO Management        🟡 ██████▒▒▒▒▒▒▒▒▒▒▒▒▒▒  15% PLANNING
-Phase 4: Content & Launch      🔮 ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒   0% FUTURE
+Phase 3: SEO Management        ✅ ████████████████████ 100% COMPLETE
+Phase 4: Content & Launch      🟡 ████████████░░░░░░░░  60% ACTIVE
 ```
 
 ---
@@ -188,51 +188,82 @@ Phase 4: Content & Launch      🔮 ▒▒▒▒▒▒▒▒▒▒▒▒▒▒�
 
 ---
 
-## Phase 4: Content & Launch 🔮
+## Phase 4: Checkout, Admin UI & Launch 🟡
 
-**Status**: 🔮 FUTURE  
-**Target Timeline**: Late February / March  
-**Quality**: To Be Determined  
+**Status**: 🟡 ACTIVE  
+**Start Date**: February 6, 2026  
+**Target Completion**: Late February 2026  
+**Quality**: Production-Ready (PayPal + Admin UI)  
 
-### Planned Activities
+### Phase 4.1: PayPal Checkout ✅ (Feb 6)
+- [x] PayPal REST API integration (`lib/paypal.ts`)
+- [x] Create Order + Capture Order API routes
+- [x] PayPal webhook handler (`PAYMENT.CAPTURE.COMPLETED`)
+- [x] `PayPalCheckoutButtons` component
+- [x] Multi-step checkout flow (4 steps)
+- [x] Inventory deduction on capture
+- [x] Stock-fix utility script
+
+### Phase 4.2: Security Hardening ✅ (Feb 6)
+- [x] Capture endpoint: user ownership check, amount/currency validation
+- [x] Strict vs relaxed validation toggle (env-based)
+- [x] Webhook: payload validation, structured logging, safe stock deduction
+- [x] Security Hardening Plan doc (`documentation/SECURITY_HARDENING_PLAN.md`)
+- [x] API docs updated with validation details
+
+### Phase 4.3: Admin Dashboard & Orders UI ✅ (Feb 6)
+- [x] Dashboard: 8 KPIs, 7-day revenue chart, recent orders, low-stock alerts, activity feed, quick actions
+- [x] Header/Footer isolated from admin (PublicOnly wrapper)
+- [x] Orders list: summary cards, customer avatars, product thumbnails, status badges
+- [x] Order detail: product images, clickable links, variant info, SKU, PayPal card
+- [x] Full dark-mode support across all admin pages
+
+### Phase 4.4: User Account & Polish 🟡 (Next)
+- [ ] User account page (profile, edit)
+- [ ] User order history page
+- [ ] Order confirmation email
+- [ ] Cart quantity update on checkout
+- [ ] Coupon / discount code system
+- [ ] PayPal webhook signature verification
+
+### Phase 4.5: Content & Launch 🔮 (Future)
 - [ ] Create initial product catalog (50-100 products)
 - [ ] Write blog content (10-20 articles)
-- [ ] Build landing page content
-- [ ] Optimize site for SEO (robots.txt, sitemap, schema)
 - [ ] Deploy to production (Vercel)
 - [ ] Set up analytics (Google Analytics, Search Console)
 - [ ] Monitor rankings and traffic
 
 ### Success Criteria
-- [ ] 50+ products published
-- [ ] 10+ blog articles published
-- [ ] Sitemap submitted to Google
-- [ ] First organic traffic received
+- [x] PayPal end-to-end working (sandbox)
+- [x] Admin dashboard is a real dashboard
+- [x] Security documented and enforced
+- [ ] User account pages live
+- [ ] Email confirmation working
 - [ ] Zero critical errors in production
 
 ---
 
 ## 🎯 Current Focus & Next Steps
 
-### This Week (Feb 5-9)
-**Focus**: Phase 3.1 Kickoff
+### This Week (Feb 6-9)
+**Focus**: User Account & Order History
 
-- [ ] Finalize database schema
-- [ ] Create Prisma migration
-- [ ] Build admin SEO panel
-- [ ] Integrate frontend
+- [ ] User account page (`/account`)
+- [ ] Order history with status tracking
+- [ ] Wire admin activity feed to real data
+- [ ] Admin panel mobile responsiveness
 
 **Owner**: TBD  
 **Risk Level**: Low  
 **Blocker**: None
 
 ### Next Week (Feb 10-16)
-**Focus**: Phase 3.1 Testing & Phase 3.2 Planning
+**Focus**: Checkout Polish & Email
 
-- [ ] Complete Phase 3.1 implementation
-- [ ] Comprehensive testing
-- [ ] Plan Phase 3.2 UX work
-- [ ] Prepare design specs
+- [ ] Cart quantity editing on checkout
+- [ ] Order confirmation email
+- [ ] PayPal webhook signature verification
+- [ ] Coupon / discount code MVP
 
 **Owner**: TBD  
 **Risk Level**: Low  
@@ -242,14 +273,14 @@ Phase 4: Content & Launch      🔮 ▒▒▒▒▒▒▒▒▒▒▒▒▒▒�
 
 ## 📊 Overall Statistics
 
-| Metric | Phase 1 | Phase 2 | Phase 3 | Total |
-|--------|---------|---------|---------|-------|
-| **Duration** | ~30 days | 2-3 days | ~3 weeks | 5+ weeks |
-| **API Endpoints** | 6 | 8 | 8 (planned) | 22+ |
-| **New Files** | 17 | 12 | 6 (planned) | 35+ |
-| **Modified Files** | 6 | 8 | 5 (planned) | 19+ |
-| **Code Lines** | 2,000+ | 2,500+ | 2,000+ (est) | 6,500+ |
-| **Documentation** | 2,450 | 1,000+ | 500+ (est) | 3,950+ |
+| Metric | Phase 1 | Phase 2 | Phase 3 | Phase 4 | Total |
+|--------|---------|---------|---------|---------|-------|
+| **Duration** | ~30 days | 2-3 days | ~3 weeks | 1 day (so far) | 6+ weeks |
+| **API Endpoints** | 6 | 8 | 8 | 6 | 28+ |
+| **New Files** | 17 | 12 | 6 | 8 | 43+ |
+| **Modified Files** | 6 | 8 | 5 | 12 | 31+ |
+| **Code Lines** | 2,000+ | 2,500+ | 2,000+ | 2,500+ | 9,000+ |
+| **Documentation** | 2,450 | 1,000+ | 500+ | 600+ | 4,550+ |
 
 ---
 
@@ -273,4 +304,4 @@ Phase 4: Content & Launch      🔮 ▒▒▒▒▒▒▒▒▒▒▒▒▒▒�
 
 ---
 
-*Last Updated: February 5, 2026*
+*Last Updated: February 6, 2026*
