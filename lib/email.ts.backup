@@ -20,7 +20,6 @@ async function sendEmail(config: {
     subject: string;
     html: string;
     text?: string;
-    reply_to?: string;
 }) {
     const apiKey = process.env.RESEND_API_KEY;
 
@@ -41,7 +40,7 @@ async function sendEmail(config: {
                     subject: config.subject,
                     html: config.html,
                     text: config.text,
-                    reply_to: config.reply_to || FROM_EMAIL,
+                    reply_to: FROM_EMAIL,
                 })
             });
 
@@ -187,7 +186,8 @@ export async function sendOrderConfirmation(order: OrderWithItems, userEmail: st
 export async function sendPasswordResetEmail(email: string, resetToken: string) {
     const resetUrl = `${SITE_URL}/auth/reset-password?token=${resetToken}`;
     
-    const html = `<!DOCTYPE html>
+    const html = `
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -246,82 +246,7 @@ export async function sendPasswordResetEmail(email: string, resetToken: string) 
                         <td style="padding: 20px 40px;">
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #faf9f7; border-left: 4px solid #d4a574; border-radius: 4px;">
                                 <tr>
-                                    <td style="padding: 16px 20px;">
-                                        <p style="margin: 0; font-size: 14px; color: #666666; line-height: 1.5;">
-                                            <strong style="color: #1a1a1a;">Important:</strong> This link will expire in <strong>1 hour</strong> for security reasons. If you didn't request a password reset, please ignore this email.
-                                        </p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    
-                    <!-- Fallback Link -->
-                    <tr>
-                        <td style="padding: 30px 40px; border-top: 1px solid #eeeeee;">
-                            <p style="margin: 0 0 10px; font-size: 12px; color: #999999;">
-                                If the button above doesn't work, copy and paste this link into your browser:
-                            </p>
-                            <p style="margin: 0; font-size: 12px;">
-                                <a href="${resetUrl}" style="color: #666666; word-break: break-all; text-decoration: underline;">${resetUrl}</a>
-                            </p>
-                        </td>
-                    </tr>
-                    
-                    <!-- Footer -->
-                    <tr>
-                        <td style="padding: 30px 40px; background-color: #fafafa; text-align: center; border-top: 1px solid #eeeeee;">
-                            <p style="margin: 0 0 10px; font-size: 13px; color: #666666;">This email was sent to ${email}</p>
-                            <p style="margin: 0 0 15px; font-size: 12px; color: #999999;">
-                                Novraux &copy; ${new Date().getFullYear()}. All rights reserved.
-                            </p>
-                            <p style="margin: 0; font-size: 11px; color: #999999;">
-                                <a href="${SITE_URL}" style="color: #999999; text-decoration: underline;">Visit our website</a> | 
-                                <a href="${SITE_URL}/contact" style="color: #999999; text-decoration: underline;">Contact support</a>
-                            </p>
-                        </td>
-                    </tr>
-                    
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>`;
-
-    const text = `NOVRAUX - Reset Your Password
-
-We received a request to reset your password for your Novraux account.
-
-Click the link below to create a new password:
-${resetUrl}
-
-This link will expire in 1 hour for security reasons.
-
-If you didn't request a password reset, you can safely ignore this email.
-
----
-This email was sent to ${email}
-Novraux © ${new Date().getFullYear()}. All rights reserved.
-Visit our website: ${SITE_URL}`;
-
-    return sendEmail({
-        to: email,
-        subject: 'Reset Your Novraux Password',
-        html,
-        text,
-        reply_to: 'support@novraux.com',
-    });
-}
-
-/**
- * Send email verification link to new users
- */
-export async function sendVerificationEmail(email: string, name: string, verificationToken: string) {
-    const verifyUrl = `${SITE_URL}/auth/verify-email?token=${verificationToken}`;
-    
-    const html = `<!DOCTYPE html>
-<html lang="en">
+      lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -334,7 +259,7 @@ export async function sendVerificationEmail(email: string, name: string, verific
     <![endif]-->
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333333; background-color: #f5f5f5;">
-    <!--Preheader text -->
+    <!-- Preheader text -->
     <div style="display: none; max-height: 0; overflow: hidden; opacity: 0;">
         Welcome to Novraux! Please verify your email to get started.
     </div>
@@ -354,9 +279,9 @@ export async function sendVerificationEmail(email: string, name: string, verific
                     <!-- Main Content -->
                     <tr>
                         <td style="padding: 20px 40px;">
-                            <h2 style="margin: 0 0 20px; font-size: 24px; font-weight: 600; color: #1a1a1a;">Welcome${name ? `, ${name}` : ''}!</h2>
+                            <h2 style="margin: 0 0 10px; font-size: 24px; font-weight: 600; color: #1a1a1a;">Welcome, ${name}! 👋</h2>
                             <p style="margin: 0 0 24px; font-size: 16px; color: #4a4a4a; line-height: 1.6;">
-                                Thank you for joining Novraux. To complete your registration and unlock all features, please verify your email address:
+                                Thank you for joining Novraux. We're excited to have you! To complete your registration and unlock all features, please verify your email address:
                             </p>
                         </td>
                     </tr>
@@ -367,44 +292,36 @@ export async function sendVerificationEmail(email: string, name: string, verific
                             <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                                 <tr>
                                     <td style="border-radius: 6px; background-color: #1a1a1a;">
-                                        <a href="${verifyUrl}" target="_blank" style="display: inline-block; padding: 16px 40px; font-size: 16px; color: #ffffff; text-decoration: none; font-weight: 600; letter-spacing: 0.5px;">Verify Email</a>
+                                        <a href="${verifyUrl}" target="_blank" style="display: inline-block; padding: 16px 40px; font-size: 16px; color: #ffffff; text-decoration: none; font-weight: 600; letter-spacing: 0.5px;">Verify Email Address</a>
                                     </td>
                                 </tr>
                             </table>
                         </td>
                     </tr>
                     
-                    <!-- Benefits List -->
+                    <!-- Benefits Section -->
                     <tr>
                         <td style="padding: 20px 40px;">
                             <p style="margin: 0 0 16px; font-size: 15px; color: #1a1a1a; font-weight: 600;">Once verified, you'll be able to:</p>
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
                                 <tr>
                                     <td style="padding: 8px 0;">
-                                        <p style="margin: 0; font-size: 15px; color: #4a4a4a; line-height: 1.6;">
-                                            <span style="color: #d4a574; margin-right: 8px;">✓</span> Browse our exclusive collection
-                                        </p>
+                                        <p style="margin: 0; font-size: 14px; color: #666666;">✓ Browse our exclusive collection</p>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 8px 0;">
-                                        <p style="margin: 0; font-size: 15px; color: #4a4a4a; line-height: 1.6;">
-                                            <span style="color: #d4a574; margin-right: 8px;">✓</span> Save items to your wishlist
-                                        </p>
+                                        <p style="margin: 0; font-size: 14px; color: #666666;">✓ Save items to your wishlist</p>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 8px 0;">
-                                        <p style="margin: 0; font-size: 15px; color: #4a4a4a; line-height: 1.6;">
-                                            <span style="color: #d4a574; margin-right: 8px;">✓</span> Complete secure checkout
-                                        </p>
+                                        <p style="margin: 0; font-size: 14px; color: #666666;">✓ Complete secure checkout</p>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 8px 0;">
-                                        <p style="margin: 0; font-size: 15px; color: #4a4a4a; line-height: 1.6;">
-                                            <span style="color: #d4a574; margin-right: 8px;">✓</span> Track your orders
-                                        </p>
+                                        <p style="margin: 0; font-size: 14px; color: #666666;">✓ Track your orders</p>
                                     </td>
                                 </tr>
                             </table>
@@ -416,9 +333,10 @@ export async function sendVerificationEmail(email: string, name: string, verific
                         <td style="padding: 20px 40px;">
                             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #faf9f7; border-left: 4px solid #d4a574; border-radius: 4px;">
                                 <tr>
-                                    <td style="padding: 16px 20px;">
+                                    <td style="padding: 20px;">
                                         <p style="margin: 0; font-size: 14px; color: #666666; line-height: 1.5;">
-                                            <strong style="color: #1a1a1a;">Important:</strong> This verification link will expire in <strong>24 hours</strong>. If you didn't create an account with Novraux, please ignore this email.
+                                            <strong style="color: #1a1a1a;">⏱️ This link will expire in 24 hours.</strong><br>
+                                            If you didn't create an account with Novraux, please ignore this email.
                                         </p>
                                     </td>
                                 </tr>
@@ -457,7 +375,8 @@ export async function sendVerificationEmail(email: string, name: string, verific
         </tr>
     </table>
 </body>
-</html>`;
+</html>
+    `;
 
     const text = `NOVRAUX - Welcome!
 
@@ -478,13 +397,13 @@ This link will expire in 24 hours. If you didn't create an account with Novraux,
 ---
 This email was sent to ${email}
 Novraux © ${new Date().getFullYear()}. All rights reserved.
-Visit our website: ${SITE_URL}`;
+Visit our website: ${SITE_URL}
+`;
 
     return sendEmail({
         to: email,
         subject: 'Welcome to Novraux - Verify Your Email',
         html,
         text,
-        reply_to: 'support@novraux.com',
     });
 }
