@@ -1,0 +1,900 @@
+
+> novraux-ecommerce@0.1.0 test
+> jest
+
+FAIL lib/__tests__/cart-auth.test.ts
+  ● Cart Authentication Scenarios › Scenario 3: User Login with Existing Guest Cart › should merge guest cart items into user cart when user logs in
+
+    TypeError: prisma_1.prisma.cartItem.findFirst is not a function
+
+      87 |         // Check if the product already exists in user cart
+      88 |         // Use findFirst instead of findUnique to handle nullable variantId
+    > 89 |         const existingItem = await prisma.cartItem.findFirst({
+         |                                                    ^
+      90 |           where: {
+      91 |             cartId: userCart.id,
+      92 |             productId: item.productId,
+
+      at lib/cart.ts:89:52
+      at fulfilled (lib/cart.ts:5:58)
+
+  ● Cart Authentication Scenarios › Scenario 3: User Login with Existing Guest Cart › should merge quantities when product already exists in user cart
+
+    TypeError: prisma_1.prisma.cartItem.findFirst is not a function
+
+      87 |         // Check if the product already exists in user cart
+      88 |         // Use findFirst instead of findUnique to handle nullable variantId
+    > 89 |         const existingItem = await prisma.cartItem.findFirst({
+         |                                                    ^
+      90 |           where: {
+      91 |             cartId: userCart.id,
+      92 |             productId: item.productId,
+
+      at lib/cart.ts:89:52
+      at fulfilled (lib/cart.ts:5:58)
+
+FAIL app/api/products/__tests__/route.test.ts
+  ● Console
+
+    console.error
+      Failed to fetch products: Error: DB Error
+          at /home/aghilas/Desktop/novraux/app/api/products/__tests__/route.test.ts:61:62
+          at Generator.next (<anonymous>)
+          at /home/aghilas/Desktop/novraux/app/api/products/__tests__/route.test.ts:8:71
+          at new Promise (<anonymous>)
+          at __awaiter (/home/aghilas/Desktop/novraux/app/api/products/__tests__/route.test.ts:4:12)
+          at Object.<anonymous> (/home/aghilas/Desktop/novraux/app/api/products/__tests__/route.test.ts:60:50)
+          at Promise.finally.completed (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+          at _runTest (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/home/aghilas/Desktop/novraux/node_modules/jest-runner/build/testWorker.js:275:16)
+          at runTest (/home/aghilas/Desktop/novraux/node_modules/jest-runner/build/testWorker.js:343:7)
+          at Object.worker (/home/aghilas/Desktop/novraux/node_modules/jest-runner/build/testWorker.js:497:12)
+
+      29 |     return NextResponse.json(products);
+      30 |   } catch (error) {
+    > 31 |     console.error('Failed to fetch products:', error);
+         |             ^
+      32 |     return NextResponse.json(
+      33 |       { error: 'Failed to fetch products' },
+      34 |       { status: 500 }
+
+      at app/api/products/route.ts:31:13
+          at Generator.throw (<anonymous>)
+      at rejected (app/api/products/route.ts:6:65)
+
+  ● GET /api/products › filters products by category
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"where": {"category": {"slug": "shirts"}}}
+    Received: {"include": {"category": true, "images": {"orderBy": {"order": "asc"}, "take": 1}}, "orderBy": {"name": "asc"}}
+
+    Number of calls: 1
+
+      38 |     const response = await GET(request);
+      39 |
+    > 40 |     expect(prisma.product.findMany).toHaveBeenCalledWith(
+         |                                     ^
+      41 |       expect.objectContaining({
+      42 |         where: { category: { slug: 'shirts' } },
+      43 |       })
+
+      at app/api/products/__tests__/route.test.ts:40:37
+      at fulfilled (app/api/products/__tests__/route.test.ts:5:58)
+
+FAIL app/api/auth/__tests__/signup.test.ts
+  ● POST /api/auth/signup › should create account successfully with valid data
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "newadmin@novraux.com", "securePass123!", "New Admin"
+    Received: "newadmin@novraux.com", "securePass123!", "newadmin"
+
+    Number of calls: 1
+
+      46 |     expect(response.status).toBe(201);
+      47 |     expect(data.success).toBe(true);
+    > 48 |     expect(createAdminUser).toHaveBeenCalledWith(
+         |                             ^
+      49 |       'newadmin@novraux.com',
+      50 |       'securePass123!',
+      51 |       'New Admin'
+
+      at app/api/auth/__tests__/signup.test.ts:48:29
+      at fulfilled (app/api/auth/__tests__/signup.test.ts:5:58)
+
+FAIL app/api/cart/__tests__/add-to-cart-auth.test.ts
+  ● Console
+
+    console.error
+      Cart add error: TypeError: prisma_1.prisma.cartItem.findFirst is not a function
+          at /home/aghilas/Desktop/novraux/app/api/cart/route.ts:76:48
+          at Generator.next (<anonymous>)
+          at fulfilled (/home/aghilas/Desktop/novraux/app/api/cart/route.ts:5:58)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+      110 |     });
+      111 |   } catch (error) {
+    > 112 |     console.error('Cart add error:', error);
+          |             ^
+      113 |     return NextResponse.json(
+      114 |       { error: error instanceof Error ? error.message : 'Failed to add item to cart' },
+      115 |       { status: 500 }
+
+      at app/api/cart/route.ts:112:13
+      at fulfilled (app/api/cart/route.ts:5:58)
+
+    console.error
+      Cart add error: TypeError: prisma_1.prisma.cartItem.findFirst is not a function
+          at /home/aghilas/Desktop/novraux/app/api/cart/route.ts:76:48
+          at Generator.next (<anonymous>)
+          at fulfilled (/home/aghilas/Desktop/novraux/app/api/cart/route.ts:5:58)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+      110 |     });
+      111 |   } catch (error) {
+    > 112 |     console.error('Cart add error:', error);
+          |             ^
+      113 |     return NextResponse.json(
+      114 |       { error: error instanceof Error ? error.message : 'Failed to add item to cart' },
+      115 |       { status: 500 }
+
+      at app/api/cart/route.ts:112:13
+      at fulfilled (app/api/cart/route.ts:5:58)
+
+    console.error
+      Cart add error: TypeError: prisma_1.prisma.cartItem.findFirst is not a function
+          at /home/aghilas/Desktop/novraux/app/api/cart/route.ts:76:48
+          at Generator.next (<anonymous>)
+          at fulfilled (/home/aghilas/Desktop/novraux/app/api/cart/route.ts:5:58)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+      110 |     });
+      111 |   } catch (error) {
+    > 112 |     console.error('Cart add error:', error);
+          |             ^
+      113 |     return NextResponse.json(
+      114 |       { error: error instanceof Error ? error.message : 'Failed to add item to cart' },
+      115 |       { status: 500 }
+
+      at app/api/cart/route.ts:112:13
+      at fulfilled (app/api/cart/route.ts:5:58)
+
+  ● Add to Cart API - Authentication Scenarios › Scenario 1: Unauthenticated User Attempts to Add to Cart › should return 401 when no session token is present
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 401
+    Received: 404
+
+      46 |             const data = await response.json();
+      47 |
+    > 48 |             expect(response.status).toBe(401);
+         |                                     ^
+      49 |             expect(data.error).toContain('Authentication required');
+      50 |             expect(prisma.product.findUnique).not.toHaveBeenCalled();
+      51 |         });
+
+      at app/api/cart/__tests__/add-to-cart-auth.test.ts:48:37
+      at fulfilled (app/api/cart/__tests__/add-to-cart-auth.test.ts:38:58)
+
+  ● Add to Cart API - Authentication Scenarios › Scenario 1: Unauthenticated User Attempts to Add to Cart › should return 401 with helpful message for guest users
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Authentication required. Please log in to add items to cart."
+    Received: "Product not found"
+
+      65 |             const data = await response.json();
+      66 |
+    > 67 |             expect(data.error).toBe('Authentication required. Please log in to add items to cart.');
+         |                                ^
+      68 |         });
+      69 |     });
+      70 |
+
+      at app/api/cart/__tests__/add-to-cart-auth.test.ts:67:32
+      at fulfilled (app/api/cart/__tests__/add-to-cart-auth.test.ts:38:58)
+
+  ● Add to Cart API - Authentication Scenarios › Scenario 2: Expired Session Token › should return 401 when session token is expired/invalid
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 401
+    Received: 404
+
+      88 |             const data = await response.json();
+      89 |
+    > 90 |             expect(response.status).toBe(401);
+         |                                     ^
+      91 |             expect(data.error).toContain('Invalid or expired session');
+      92 |         });
+      93 |     });
+
+      at app/api/cart/__tests__/add-to-cart-auth.test.ts:90:37
+      at fulfilled (app/api/cart/__tests__/add-to-cart-auth.test.ts:38:58)
+
+  ● Add to Cart API - Authentication Scenarios › Scenario 3: Valid Authenticated User › should successfully add product to cart when user is authenticated
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 500
+
+      134 |             const response = await POST(request);
+      135 |
+    > 136 |             expect(response.status).toBe(200);
+          |                                     ^
+      137 |             expect(prisma.cartItem.create).toHaveBeenCalledWith({
+      138 |                 data: {
+      139 |                     cartId: 'cart_123',
+
+      at app/api/cart/__tests__/add-to-cart-auth.test.ts:136:37
+      at fulfilled (app/api/cart/__tests__/add-to-cart-auth.test.ts:38:58)
+
+  ● Add to Cart API - Authentication Scenarios › Scenario 3: Valid Authenticated User › should update quantity when adding existing product
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: {"data": {"quantity": 3}, "where": {"id": "item_1"}}
+
+    Number of calls: 0
+
+      173 |             await POST(request);
+      174 |
+    > 175 |             expect(prisma.cartItem.update).toHaveBeenCalledWith({
+          |                                            ^
+      176 |                 where: { id: 'item_1' },
+      177 |                 data: { quantity: 3 }, // 2 + 1
+      178 |             });
+
+      at app/api/cart/__tests__/add-to-cart-auth.test.ts:175:44
+      at fulfilled (app/api/cart/__tests__/add-to-cart-auth.test.ts:38:58)
+
+  ● Add to Cart API - Authentication Scenarios › Scenario 5: Multiple Quantity › should add multiple quantities of same product
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: {"data": {"cartId": "cart_123", "productId": "product_123", "quantity": 5}}
+
+    Number of calls: 0
+
+      243 |             await POST(request);
+      244 |
+    > 245 |             expect(prisma.cartItem.create).toHaveBeenCalledWith({
+          |                                            ^
+      246 |                 data: {
+      247 |                     cartId: 'cart_123',
+      248 |                     productId: mockProductId,
+
+      at app/api/cart/__tests__/add-to-cart-auth.test.ts:245:44
+      at fulfilled (app/api/cart/__tests__/add-to-cart-auth.test.ts:38:58)
+
+FAIL app/api/auth/__tests__/login.test.ts
+  ● POST /api/auth/login › should log audit event on success
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: ObjectContaining {"action": "LOGIN_SUCCESS", "email": "admin@novraux.com", "metadata": ObjectContaining {"userName": "Admin User"}, "status": "success", "userId": "user-123"}
+    Received: {"action": "LOGIN_SUCCESS", "email": "admin@novraux.com", "ip": "unknown", "metadata": {"userName": undefined, "userRole": "admin"}, "status": "success", "userAgent": undefined, "userId": "user-123"}
+
+    Number of calls: 1
+
+      127 |     await POST(req);
+      128 |
+    > 129 |     expect(logAuditEvent).toHaveBeenCalledWith(
+          |                           ^
+      130 |       expect.objectContaining({
+      131 |         userId: 'user-123',
+      132 |         email: 'admin@novraux.com',
+
+      at app/api/auth/__tests__/login.test.ts:129:27
+      at fulfilled (app/api/auth/__tests__/login.test.ts:5:58)
+
+FAIL lib/__tests__/r2.test.ts
+  ● Console
+
+    console.log
+      📸 Uploaded to R2: {
+        key: 'products/1770344001871-test.jpg',
+        proxyUrl: '/api/images/products/1770344001871-test.jpg'
+      }
+
+      at lib/r2.ts:81:13
+
+    console.log
+      🗑️ Deleting from R2: {
+        url: 'https://test-public-url.com/products/test-key.jpg',
+        key: 'products/test-key.jpg'
+      }
+
+      at lib/r2.ts:119:13
+
+    console.log
+      ✅ Deleted from R2: products/test-key.jpg
+
+      at lib/r2.ts:127:13
+
+    console.warn
+      R2 configuration is incomplete. Check your environment variables.
+
+      14 |
+      15 |     if (!endpoint || !accessKeyId || !secretAccessKey || !bucketName || !publicUrl) {
+    > 16 |         console.warn('R2 configuration is incomplete. Check your environment variables.');
+         |                 ^
+      17 |     }
+      18 |
+      19 |     return {
+
+      at getR2Config (lib/r2.ts:16:17)
+      at lib/r2.ts:58:20
+      at lib/r2.ts:8:71
+      at __awaiter (lib/r2.ts:4:12)
+      at uploadToR2 (lib/r2.ts:61:12)
+      at lib/__tests__/r2.test.ts:62:32
+      at lib/__tests__/r2.test.ts:8:71
+      at __awaiter (lib/__tests__/r2.test.ts:4:12)
+      at Object.<anonymous> (lib/__tests__/r2.test.ts:58:62)
+
+    console.warn
+      R2 configuration is incomplete. Check your environment variables.
+
+      14 |
+      15 |     if (!endpoint || !accessKeyId || !secretAccessKey || !bucketName || !publicUrl) {
+    > 16 |         console.warn('R2 configuration is incomplete. Check your environment variables.');
+         |                 ^
+      17 |     }
+      18 |
+      19 |     return {
+
+      at getR2Config (lib/r2.ts:16:17)
+      at getR2Client (lib/r2.ts:33:20)
+      at lib/r2.ts:59:20
+      at lib/r2.ts:8:71
+      at __awaiter (lib/r2.ts:4:12)
+      at uploadToR2 (lib/r2.ts:61:12)
+      at lib/__tests__/r2.test.ts:62:32
+      at lib/__tests__/r2.test.ts:8:71
+      at __awaiter (lib/__tests__/r2.test.ts:4:12)
+      at Object.<anonymous> (lib/__tests__/r2.test.ts:58:62)
+
+  ● R2 Utility Library › should upload a file and return the public URL
+
+    expect(received).toContain(expected) // indexOf
+
+    Expected substring: "https://test-public-url.com/products/"
+    Received string:    "/api/images/products/1770344001871-test.jpg"
+
+      40 |         const url = await uploadToR2(buffer, filename, contentType);
+      41 |
+    > 42 |         expect(url).toContain('https://test-public-url.com/products/');
+         |                     ^
+      43 |         expect(url).toContain(filename);
+      44 |         expect(PutObjectCommand).toHaveBeenCalled();
+      45 |     });
+
+      at lib/__tests__/r2.test.ts:42:21
+      at fulfilled (lib/__tests__/r2.test.ts:5:58)
+
+PASS lib/__tests__/audit.test.ts
+FAIL components/__tests__/Header.test.tsx
+  ● Console
+
+    console.error
+      Warning: An update to UserMenu inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at UserMenu (/home/aghilas/Desktop/novraux/components/UserMenu.tsx:15:39)
+          at div
+          at div
+          at header
+          at Header
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      26 |         if (response.ok) {
+      27 |           const userData = await response.json();
+    > 28 |           setUser(userData);
+         |           ^
+      29 |         } else {
+      30 |           setUser(null);
+      31 |         }
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at components/UserMenu.tsx:28:11
+      at fulfilled (components/UserMenu.tsx:6:58)
+
+    console.error
+      Warning: An update to UserMenu inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at UserMenu (/home/aghilas/Desktop/novraux/components/UserMenu.tsx:15:39)
+          at div
+          at div
+          at header
+          at Header
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      34 |         setUser(null);
+      35 |       } finally {
+    > 36 |         setIsLoading(false);
+         |         ^
+      37 |       }
+      38 |     };
+      39 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at components/UserMenu.tsx:36:9
+      at fulfilled (components/UserMenu.tsx:6:58)
+
+    console.error
+      Warning: An update to CartProvider inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      48 |             if (res.ok) {
+      49 |                 const data = await res.json();
+    > 50 |                 setItems(data.items || []);
+         |                 ^
+      51 |             }
+      52 |         } catch (error) {
+      53 |             console.error('Failed to fetch cart:', error);
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at contexts/CartContext.tsx:50:17
+      at fulfilled (contexts/CartContext.tsx:6:58)
+
+    console.error
+      Warning: An update to CartProvider inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      53 |             console.error('Failed to fetch cart:', error);
+      54 |         } finally {
+    > 55 |             setIsLoading(false);
+         |             ^
+      56 |         }
+      57 |     }, []);
+      58 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at contexts/CartContext.tsx:55:13
+      at fulfilled (contexts/CartContext.tsx:6:58)
+
+    console.error
+      Warning: An update to UserMenu inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at UserMenu (/home/aghilas/Desktop/novraux/components/UserMenu.tsx:15:39)
+          at div
+          at div
+          at header
+          at Header
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      26 |         if (response.ok) {
+      27 |           const userData = await response.json();
+    > 28 |           setUser(userData);
+         |           ^
+      29 |         } else {
+      30 |           setUser(null);
+      31 |         }
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at components/UserMenu.tsx:28:11
+      at fulfilled (components/UserMenu.tsx:6:58)
+
+    console.error
+      Warning: An update to UserMenu inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at UserMenu (/home/aghilas/Desktop/novraux/components/UserMenu.tsx:15:39)
+          at div
+          at div
+          at header
+          at Header
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      34 |         setUser(null);
+      35 |       } finally {
+    > 36 |         setIsLoading(false);
+         |         ^
+      37 |       }
+      38 |     };
+      39 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at components/UserMenu.tsx:36:9
+      at fulfilled (components/UserMenu.tsx:6:58)
+
+    console.error
+      Warning: An update to CartProvider inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      48 |             if (res.ok) {
+      49 |                 const data = await res.json();
+    > 50 |                 setItems(data.items || []);
+         |                 ^
+      51 |             }
+      52 |         } catch (error) {
+      53 |             console.error('Failed to fetch cart:', error);
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at contexts/CartContext.tsx:50:17
+      at fulfilled (contexts/CartContext.tsx:6:58)
+
+    console.error
+      Warning: An update to CartProvider inside a test was not wrapped in act(...).
+      
+      When testing, code that causes React state updates should be wrapped into act(...):
+      
+      act(() => {
+        /* fire events that update state */
+      });
+      /* assert on the output */
+      
+      This ensures that you're testing the behavior the user would see in the browser. Learn more at https://reactjs.org/link/wrap-tests-with-act
+          at CartProvider (/home/aghilas/Desktop/novraux/contexts/CartContext.tsx:34:32)
+
+      53 |             console.error('Failed to fetch cart:', error);
+      54 |         } finally {
+    > 55 |             setIsLoading(false);
+         |             ^
+      56 |         }
+      57 |     }, []);
+      58 |
+
+      at printWarning (node_modules/react-dom/cjs/react-dom.development.js:86:30)
+      at error (node_modules/react-dom/cjs/react-dom.development.js:60:7)
+      at warnIfUpdatesNotWrappedWithActDEV (node_modules/react-dom/cjs/react-dom.development.js:27628:9)
+      at scheduleUpdateOnFiber (node_modules/react-dom/cjs/react-dom.development.js:25547:5)
+      at dispatchSetState (node_modules/react-dom/cjs/react-dom.development.js:16708:7)
+      at contexts/CartContext.tsx:55:13
+      at fulfilled (contexts/CartContext.tsx:6:58)
+
+  ● Header › renders the logo
+
+    TestingLibraryElementError: Unable to find an element with the text: Novraux. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+    Ignored nodes: comments, script, style
+    [36m<body>[39m
+      [36m<div>[39m
+        [36m<header[39m
+          [33mclass[39m=[32m"sticky top-0 z-50 w-full border-b border-novraux-ash/20 dark:border-novraux-graphite bg-novraux-bone/95 dark:bg-novraux-obsidian/95 backdrop-blur-md transition-all duration-300"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"container mx-auto flex h-20 items-center justify-between px-6 lg:px-8"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex-1"[39m
+            [36m>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"font-serif text-2xl font-light tracking-novraux-wide text-novraux-obsidian dark:text-novraux-bone uppercase transition-colors hover:text-novraux-gold dark:hover:text-novraux-gold"[39m
+                [33mhref[39m=[32m"/"[39m
+              [36m>[39m
+                [0mNOVRAUX[0m
+              [36m</a>[39m
+            [36m</div>[39m
+            [36m<nav[39m
+              [33mclass[39m=[32m"hidden lg:flex flex-[2] items-center justify-center gap-8"[39m
+            [36m>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"font-sans text-xs font-normal tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/80 uppercase transition-colors hover:text-novraux-obsidian dark:hover:text-novraux-bone"[39m
+                [33mhref[39m=[32m"/products"[39m
+              [36m>[39m
+                [0mCollection[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"font-sans text-xs font-normal tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/80 uppercase transition-colors hover:text-novraux-obsidian dark:hover:text-novraux-bone"[39m
+                [33mhref[39m=[32m"/blog"[39m
+              [36m>[39m
+                [0mJournal[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"font-sans text-xs font-normal tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/80 uppercase transition-colors hover:text-novraux-obsidian dark:hover:text-novraux-bone"[39m
+                [33mhref[39m=[32m"/about"[39m
+              [36m>[39m
+                [0mAbout[0m
+              [36m</a>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"font-sans text-xs font-normal tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/80 uppercase transition-colors hover:text-novraux-obsidian dark:hover:text-novraux-bone"[39m
+                [33mhref[39m=[32m"/contact"[39m
+              [36m>[39m
+                [0mContact[0m
+              [36m</a>[39m
+            [36m</nav>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex flex-1 items-center justify-end gap-5 text-novraux-obsidian dark:text-novraux-bone"[39m
+            [36m>[39m
+              [36m<button[39m
+                [33maria-label[39m=[32m"Toggle theme"[39m
+                [33mclass[39m=[32m"p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors duration-200 group"[39m
+              [36m>[39m
+                [36m<div[39m
+                  [33mclass[39m=[32m"relative w-5 h-5"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-5 h-5 absolute inset-0 transform transition-all duration-300 rotate-0 scale-100 dark:-rotate-90 dark:scale-0 text-novraux-charcoal group-hover:text-novraux-terracotta"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"1.5"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-5 h-5 absolute inset-0 transform transition-all duration-300 rotate-90 scale-0 dark:rotate-0 dark:scale-100 text-novraux-cream group-hover:text-novraux-terracotta"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"1.5"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</div>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33maria-label[39m=[32m"Search"[39m
+                [33mclass[39m=[32m"hidden sm:block hover:text-novraux-gold transition-colors"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-5 h-5"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"1.5"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</button>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"relative"[39m
+              [36m>[39m
+                [36m<button[39m
+                  [33maria-label[39m=[32m"User menu"[39m
+                  [33mclass[39m=[32m"hidden sm:block hover:text-novraux-terracotta transition-colors"[39m
+                [36m>[39m
+                  [36m<svg[39m
+                    [33mclass[39m=[32m"w-5 h-5"[39m
+                    [33mfill[39m=[32m"none"[39m
+                    [33mstroke[39m=[32m"currentColor"[39m
+                    [33mstroke-width[39m=[32m"1.5"[39m
+                    [33mviewBox[39m=[32m"0 0 24 24"[39m
+                    [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                  [36m>[39m
+                    [36m<path[39m
+                      [33md[39m=[32m"M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"[39m
+                      [33mstroke-linecap[39m=[32m"round"[39m
+                      [33mstroke-linejoin[39m=[32m"round"[39m
+                    [36m/>[39m
+                  [36m</svg>[39m
+                [36m</button>[39m
+              [36m</div>[39m
+              [36m<button[39m
+                [33maria-label[39m=[32m"Cart with 0 items"[39m
+                [33mclass[39m=[32m"relative p-2 text-current hover:text-[#c9a96e] transition-colors"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mheight[39m=[32m"22"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-linecap[39m=[32m"round"[39m
+                  [33mstroke-linejoin[39m=[32m"round"[39m
+                  [33mstroke-width[39m=[32m"1.5"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mwidth[39m=[32m"22"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<circle[39m
+                    [33mcx[39m=[32m"8"[39m
+                    [33mcy[39m=[32m"21"[39m
+                    [33mr[39m=[32m"1"[39m
+                  [36m/>[39m
+                  [36m<circle[39m
+                    [33mcx[39m=[32m"19"[39m
+                    [33mcy[39m=[32m"21"[39m
+                    [33mr[39m=[32m"1"[39m
+                  [36m/>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</button>[39m
+              [36m<button[39m
+                [33maria-label[39m=[32m"Menu"[39m
+                [33mclass[39m=[32m"lg:hidden ml-2 hover:text-novraux-gold transition-colors"[39m
+              [36m>[39m
+                [36m<svg[39m
+                  [33mclass[39m=[32m"w-6 h-6"[39m
+                  [33mfill[39m=[32m"none"[39m
+                  [33mstroke[39m=[32m"currentColor"[39m
+                  [33mstroke-width[39m=[32m"1.5"[39m
+                  [33mviewBox[39m=[32m"0 0 24 24"[39m
+                  [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+                [36m>[39m
+                  [36m<path[39m
+                    [33md[39m=[32m"M3.75 9h16.5m-16.5 6.75h16.5"[39m
+                    [33mstroke-linecap[39m=[32m"round"[39m
+                    [33mstroke-linejoin[39m=[32m"round"[39m
+                  [36m/>[39m
+                [36m</svg>[39m
+              [36m</button>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</header>[39m
+      [36m</div>[39m
+    [36m</body>[39m
+
+      22 |   it('renders the logo', () => {
+      23 |     renderWithProviders(<Header />);
+    > 24 |     const logo = screen.getByText('Novraux');
+         |                         ^
+      25 |     expect(logo).toBeInTheDocument();
+      26 |   });
+      27 |
+
+      at Object.getElementError (node_modules/@testing-library/dom/dist/config.js:37:19)
+      at node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+      at node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+      at node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+      at Object.<anonymous> (components/__tests__/Header.test.tsx:24:25)
+
+PASS lib/__tests__/auth.test.ts
+PASS lib/__tests__/user-auth.test.ts
+PASS app/api/auth/__tests__/logout.test.ts
+  ● Console
+
+    console.error
+      Logout error: Error: Session error
+          at /home/aghilas/Desktop/novraux/app/api/auth/__tests__/logout.test.ts:101:49
+          at Generator.next (<anonymous>)
+          at /home/aghilas/Desktop/novraux/app/api/auth/__tests__/logout.test.ts:8:71
+          at new Promise (<anonymous>)
+          at __awaiter (/home/aghilas/Desktop/novraux/app/api/auth/__tests__/logout.test.ts:4:12)
+          at Object.<anonymous> (/home/aghilas/Desktop/novraux/app/api/auth/__tests__/logout.test.ts:100:52)
+          at Promise.finally.completed (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1557:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1497:10)
+          at _callCircusTest (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1007:40)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+          at _runTest (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:947:3)
+          at /home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:849:7
+          at _runTestsForDescribeBlock (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:862:11)
+          at _runTestsForDescribeBlock (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:857:11)
+          at run (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:761:3)
+          at runAndTransformResultsToJestFormat (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/jestAdapterInit.js:1918:21)
+          at jestAdapter (/home/aghilas/Desktop/novraux/node_modules/jest-circus/build/runner.js:101:19)
+          at runTestInternal (/home/aghilas/Desktop/novraux/node_modules/jest-runner/build/testWorker.js:275:16)
+          at runTest (/home/aghilas/Desktop/novraux/node_modules/jest-runner/build/testWorker.js:343:7)
+          at Object.worker (/home/aghilas/Desktop/novraux/node_modules/jest-runner/build/testWorker.js:497:12)
+
+      41 |         );
+      42 |     } catch (error) {
+    > 43 |         console.error('Logout error:', error);
+         |                 ^
+      44 |
+      45 |         // Log error
+      46 |         await logAuditEvent({
+
+      at app/api/auth/logout/route.ts:43:17
+          at Generator.throw (<anonymous>)
+      at rejected (app/api/auth/logout/route.ts:6:65)
+
+PASS components/__tests__/ProductCard.test.tsx
+PASS app/api/auth/user/__tests__/signup.test.ts
+PASS app/api/auth/user/__tests__/login.test.ts
+PASS lib/__tests__/cart.test.ts
+PASS lib/__tests__/session-tracking.test.ts
+PASS app/api/upload/__tests__/route.test.ts
+PASS app/api/auth/user/__tests__/logout.test.ts
+
+Test Suites: 7 failed, 11 passed, 18 total
+Tests:       13 failed, 83 passed, 96 total
+Snapshots:   0 total
+Time:        7.774 s
+Ran all test suites.

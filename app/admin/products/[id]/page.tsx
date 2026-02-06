@@ -17,8 +17,8 @@ export default async function EditProductPage({ params }: PageProps) {
   if (!product) {
     return (
       <div className="space-y-6">
-        <h1 className="text-3xl font-serif tracking-wide">Product Not Found</h1>
-        <p className="text-neutral-600">The product you&apos;re looking for doesn&apos;t exist.</p>
+        <h1 className="font-serif text-4xl md:text-5xl font-light text-novraux-obsidian dark:text-novraux-bone tracking-wide transition-colors">Product Not Found</h1>
+        <p className="text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">The product you&apos;re looking for doesn&apos;t exist.</p>
       </div>
     );
   }
@@ -26,13 +26,13 @@ export default async function EditProductPage({ params }: PageProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-serif tracking-wide">Edit Product</h1>
-        <p className="text-neutral-600 mt-1">{product.name}</p>
+        <h1 className="font-serif text-4xl md:text-5xl font-light text-novraux-obsidian dark:text-novraux-bone tracking-wide transition-colors">Edit Product</h1>
+        <p className="text-novraux-ash dark:text-novraux-bone/70 mt-2 font-light transition-colors">{product.name}</p>
       </div>
 
       <ProductForm productId={id} />
 
-      <div className="border-t border-neutral-200 pt-6">
+      <div className="border-t border-novraux-ash/20 dark:border-novraux-graphite pt-6 transition-colors">
         <ProductVariantForm productId={id} />
       </div>
     </div>

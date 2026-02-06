@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useCart } from '@/contexts/CartContext';
 
 interface Variant {
     id: string;
@@ -22,6 +23,7 @@ interface ProductPurchaseProps {
 
 export default function ProductPurchase({ productId, basePrice, variants }: ProductPurchaseProps) {
     const router = useRouter();
+    const { addToCart } = useCart();
     const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
     const [quantity, setQuantity] = useState(1);
     const [loading, setLoading] = useState(false);
@@ -48,26 +50,14 @@ export default function ProductPurchase({ productId, basePrice, variants }: Prod
         setError(null);
 
         try {
-            const res = await fetch('/api/cart', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    productId,
-                    variantId: selectedVariantId,
-                    quantity
-                }),
-            });
-
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || 'Failed to add to cart');
+            const result = await addToCart(productId, quantity);
+            
+            if (result.success) {
+                setSuccess(true);
+                setTimeout(() => setSuccess(false), 2000);
+            } else {
+                setError(result.error || 'Failed to add to cart');
             }
-
-            setSuccess(true);
-            setTimeout(() => setSuccess(false), 2000);
-
-            // Dispatch cart update event
-            window.dispatchEvent(new Event('cart-updated'));
         } catch (err) {
             console.error(err);
             setError(err instanceof Error ? err.message : 'Failed to add to cart');

@@ -2,61 +2,58 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-novraux-charcoal dark:bg-[#0a0a0a] text-novraux-cream px-4 py-16 lg:px-8 transition-colors">
+    <footer className="bg-novraux-obsidian text-novraux-bone px-6 py-20 lg:px-8 transition-colors border-t border-novraux-graphite">
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
-          {/* Brand Info */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 lg:gap-12">
+          {/* Brand Info — Brand Strategy Approved */}
           <div className="col-span-1 lg:col-span-1">
             <Link
               href="/"
-              className="font-serif text-2xl font-medium tracking-editorial-widest uppercase hover:text-novraux-terracotta transition-colors"
+              className="font-serif text-3xl font-light tracking-novraux-wide uppercase hover:text-novraux-gold transition-colors"
             >
-              Novraux
+              NOVRAUX
             </Link>
-            <p className="mt-6 text-sm text-novraux-beige/60 leading-relaxed max-w-xs">
-              Contemporary luxury, limited edition fashion. Handcrafted with intention in our Casablanca atelier.
+            <p className="mt-8 font-sans text-sm font-light text-novraux-bone/70 leading-relaxed">
+              Designed with intention.<br />
+              Made to last.
             </p>
           </div>
 
           {/* Shop Links */}
           <div>
-            <h4 className="text-[13px] font-semibold tracking-editorial uppercase mb-6 text-novraux-cream">Shop</h4>
+            <h4 className="font-sans text-xs font-normal tracking-novraux-medium uppercase mb-6 text-novraux-bone/50">Shop</h4>
             <ul className="space-y-4">
-              <li><Link href="/products" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">All Creations</Link></li>
-              <li><Link href="/products" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">New Arrivals</Link></li>
-              <li><Link href="/products" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Limited Editions</Link></li>
+              <li><Link href="/products" className="font-sans text-sm font-light text-novraux-bone/70 hover:text-novraux-bone transition-colors">Collection</Link></li>
+              <li><Link href="/about" className="font-sans text-sm font-light text-novraux-bone/70 hover:text-novraux-bone transition-colors">About</Link></li>
             </ul>
           </div>
 
-          {/* About Links */}
+          {/* Editorial Links */}
           <div>
-            <h4 className="text-[13px] font-semibold tracking-editorial uppercase mb-6 text-novraux-cream">Brand</h4>
+            <h4 className="font-sans text-xs font-normal tracking-novraux-medium uppercase mb-6 text-novraux-bone/50">Editorial</h4>
             <ul className="space-y-4">
-              <li><Link href="/about" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Our Story</Link></li>
-              <li><Link href="/blog" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Editorial</Link></li>
-              <li><Link href="/about" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Atelier</Link></li>
+              <li><Link href="/blog" className="font-sans text-sm font-light text-novraux-bone/70 hover:text-novraux-bone transition-colors">Journal</Link></li>
+              <li><Link href="/about" className="font-sans text-sm font-light text-novraux-bone/70 hover:text-novraux-bone transition-colors">Our Craft</Link></li>
             </ul>
           </div>
 
           {/* Support Links */}
           <div>
-            <h4 className="text-[13px] font-semibold tracking-editorial uppercase mb-6 text-novraux-cream">Support</h4>
+            <h4 className="font-sans text-xs font-normal tracking-novraux-medium uppercase mb-6 text-novraux-bone/50">Support</h4>
             <ul className="space-y-4">
-              <li><Link href="/contact" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Contact</Link></li>
-              <li><Link href="/contact" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Shipping</Link></li>
-              <li><Link href="/contact" className="text-sm text-novraux-beige/60 hover:text-novraux-cream transition-colors">Returns</Link></li>
+              <li><Link href="/contact" className="font-sans text-sm font-light text-novraux-bone/70 hover:text-novraux-bone transition-colors">Contact</Link></li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-16 pt-8 border-t border-novraux-beige/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-novraux-beige/40 tracking-widest uppercase">
-            © {new Date().getFullYear()} Novraux. All rights reserved.
+        {/* Bottom Bar — Brand Strategy: "Designed with intention. © 2026 Novraux" */}
+        <div className="mt-20 pt-10 border-t border-novraux-graphite flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="font-sans text-sm font-light text-novraux-bone/50">
+            © {new Date().getFullYear()} Novraux
           </p>
           <div className="flex gap-8">
-            {['Instagram', 'Pinterest', 'X'].map((social) => (
-              <a key={social} href="#" className="text-xs text-novraux-beige/40 hover:text-novraux-cream uppercase tracking-widest transition-colors">
+            {['Instagram', 'Pinterest'].map((social) => (
+              <a key={social} href="#" className="font-sans text-xs font-light text-novraux-bone/50 hover:text-novraux-gold uppercase tracking-wide transition-colors">
                 {social}
               </a>
             ))}

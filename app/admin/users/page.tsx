@@ -94,167 +94,165 @@ export default function AdminUsersPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-gray-500">Loading admin users...</div>
+      <div className="flex items-center justify-center h-screen bg-novraux-bone dark:bg-novraux-obsidian transition-colors">
+        <div className="text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">Loading admin users...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-              Admin Users
-            </h1>
-            <p className="text-gray-600 dark:text-gray-400 mt-1">
-              Manage administrative user accounts
-            </p>
-          </div>
-          <Link
-            href="/admin/users/new"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <span className="text-lg">+</span>
-            New User
-          </Link>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="font-serif text-4xl md:text-5xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">
+            Admin Users
+          </h1>
+          <p className="text-novraux-ash dark:text-novraux-bone/70 mt-2 font-light transition-colors">
+            Manage administrative user accounts
+          </p>
         </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-            {error}
-          </div>
-        )}
-
-        {/* Users Table */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow overflow-hidden">
-          {users.length === 0 ? (
-            <div className="p-6 text-center text-gray-500 dark:text-gray-400">
-              No admin users found
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-100 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">
-                      Username
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">
-                      Email
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">
-                      Role
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">
-                      Status
-                    </th>
-                    <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900 dark:text-white">
-                      Created
-                    </th>
-                    <th className="px-6 py-3 text-right text-sm font-semibold text-gray-900 dark:text-white">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                  {users.map((user) => (
-                    <tr
-                      key={user.id}
-                      className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                    >
-                      <td className="px-6 py-4 text-sm text-gray-900 dark:text-white font-medium">
-                        {user.username}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
-                        {user.email}
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        <span className="px-3 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 rounded-full text-xs font-medium">
-                          {user.role}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-sm">
-                        <button
-                          onClick={() => toggleUserActive(user)}
-                          className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                            user.isActive
-                              ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 hover:bg-green-200'
-                              : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 hover:bg-gray-200'
-                          }`}
-                        >
-                          {user.isActive ? 'Active' : 'Inactive'}
-                        </button>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                        {new Date(user.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex justify-end gap-2">
-                          <Link
-                            href={`/admin/users/${user.id}`}
-                            className="p-2 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
-                            title="Edit user"
-                          >
-                            ✎
-                          </Link>
-                          <button
-                            onClick={() => {
-                              setUserToDelete(user);
-                              setDeleteModalOpen(true);
-                            }}
-                            className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
-                            title="Delete user"
-                          >
-                            🗑
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+        <Link
+          href="/admin/users/new"
+          className="px-8 py-4 bg-novraux-obsidian dark:bg-novraux-gold text-novraux-bone dark:text-novraux-obsidian text-xs uppercase tracking-novraux-medium hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-obsidian dark:hover:text-novraux-bone transition-colors font-normal rounded-sm inline-flex items-center gap-2"
+        >
+          <span className="text-lg">+</span>
+          New User
+        </Link>
       </div>
 
-      {/* Delete Confirmation Modal */}
-      {deleteModalOpen && userToDelete && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg max-w-md w-full p-6">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-              Delete User
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Are you sure you want to delete <strong>{userToDelete.username}</strong>?
-              This action cannot be undone.
-            </p>
-            <div className="flex gap-4 justify-end">
-              <button
-                onClick={() => {
-                  setDeleteModalOpen(false);
-                  setUserToDelete(null);
-                }}
-                disabled={deleting}
-                className="px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors disabled:opacity-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => userToDelete && handleDelete(userToDelete.id)}
-                disabled={deleting}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors disabled:opacity-50"
-              >
-                {deleting ? 'Deleting...' : 'Delete'}
-              </button>
-            </div>
-          </div>
+      {/* Error Message */}
+      {error && (
+        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-400 rounded-sm font-light transition-colors">
+          {error}
         </div>
       )}
-    </div>
-  );
+
+      {/* Users Table */}
+      <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-sm border border-novraux-ash/10 dark:border-novraux-graphite overflow-hidden transition-colors">
+        {users.length === 0 ? (
+          <div className="p-8 text-center text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">
+            No admin users found
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-novraux-obsidian/5 dark:bg-novraux-obsidian/20 border-b border-novraux-ash/20 dark:border-novraux-graphite transition-colors">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-normal uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 transition-colors">
+                    Username
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-normal uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 transition-colors">
+                    Email
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-normal uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 transition-colors">
+                    Role
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-normal uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 transition-colors">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-normal uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 transition-colors">
+                    Created
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-normal uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 transition-colors">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-novraux-ash/10 dark:divide-novraux-graphite transition-colors">
+                {users.map((user) => (
+                  <tr
+                    key={user.id}
+                    className="hover:bg-novraux-obsidian/5 dark:hover:bg-novraux-obsidian/30 transition-colors"
+                  >
+                    <td className="px-6 py-4 text-sm text-novraux-obsidian dark:text-novraux-bone font-medium transition-colors">
+                      {user.username}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">
+                      {user.email}
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      <span className="px-3 py-1 bg-novraux-gold/20 dark:bg-novraux-gold/10 text-novraux-obsidian dark:text-novraux-gold rounded-sm text-xs font-normal uppercase tracking-novraux-medium transition-colors">
+                        {user.role}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm">
+                      <button
+                        onClick={() => toggleUserActive(user)}
+                        className={`px-3 py-1 rounded-sm text-xs font-normal uppercase tracking-novraux-medium transition-colors ${
+                          user.isActive
+                            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-200'
+                            : 'bg-novraux-ash/20 text-novraux-ash dark:bg-novraux-graphite dark:text-novraux-bone/70 hover:bg-novraux-ash/30'
+                        }`}
+                      >
+                        {user.isActive ? 'Active' : 'Inactive'}
+                      </button>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex justify-end gap-2">
+                        <Link
+                          href={`/admin/users/${user.id}`}
+                          className="px-3 py-1.5 text-novraux-gold hover:text-novraux-obsidian dark:hover:text-novraux-bone rounded-sm transition-colors text-xs uppercase tracking-novraux-medium font-normal"
+                          title="Edit user"
+                        >
+                          Edit
+                        </Link>
+                        <button
+                          onClick={() => {
+                            setUserToDelete(user);
+                            setDeleteModalOpen(true);
+                          }}
+                          className="px-3 py-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-sm transition-colors text-xs uppercase tracking-novraux-medium font-normal"
+                          title="Delete user"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+    {/* Delete Confirmation Modal */}
+    {deleteModalOpen && userToDelete && (
+      <div className="fixed inset-0 bg-novraux-obsidian/50 dark:bg-black/70 flex items-center justify-center z-50 p-4 transition-colors">
+        <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-xl max-w-md w-full p-6 transition-colors">
+          <h2 className="text-xl font-serif font-light text-novraux-obsidian dark:text-novraux-bone mb-4 transition-colors">
+            Delete User
+          </h2>
+          <p className="text-novraux-ash dark:text-novraux-bone/70 mb-6 font-light transition-colors">
+            Are you sure you want to delete <strong>{userToDelete.username}</strong>?
+            This action cannot be undone.
+          </p>
+          <div className="flex gap-4 justify-end">
+            <button
+              onClick={() => {
+                setDeleteModalOpen(false);
+                setUserToDelete(null);
+              }}
+              disabled={deleting}
+              className="px-4 py-2 text-novraux-obsidian dark:text-novraux-bone hover:bg-novraux-ash/10 dark:hover:bg-novraux-obsidian rounded-sm transition-colors disabled:opacity-50 text-xs uppercase tracking-novraux-medium font-normal"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => userToDelete && handleDelete(userToDelete.id)}
+              disabled={deleting}
+              className="px-4 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700 transition-colors disabled:opacity-50 text-xs uppercase tracking-novraux-medium font-normal"
+            >
+              {deleting ? 'Deleting...' : 'Delete'}
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+);
 }

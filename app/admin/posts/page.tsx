@@ -88,18 +88,18 @@ export default function AdminPostsPage() {
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <h1 className="font-serif text-3xl text-novraux-charcoal dark:text-white">Blog Articles</h1>
+                <h1 className="font-serif text-4xl md:text-5xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">Articles</h1>
                 <div className="flex gap-3">
                     <Link
                         href="/admin/posts/ai-wizard"
-                        className="px-6 py-2.5 bg-gradient-to-r from-novraux-gold to-yellow-600 text-white text-sm uppercase tracking-wider hover:shadow-lg transition-all rounded font-semibold flex items-center gap-2"
+                        className="px-8 py-4 bg-novraux-gold text-novraux-obsidian text-xs uppercase tracking-novraux-medium hover:bg-novraux-bone hover:text-novraux-obsidian transition-all rounded-sm font-normal flex items-center gap-2"
                     >
                         <span>✨</span>
                         <span>AI Wizard</span>
                     </Link>
                     <Link
                         href="/admin/posts/new"
-                        className="px-6 py-2.5 bg-novraux-charcoal dark:bg-white text-white dark:text-neutral-900 text-sm uppercase tracking-wider hover:bg-black dark:hover:bg-neutral-100 transition-colors rounded"
+                        className="px-8 py-4 bg-novraux-obsidian dark:bg-novraux-gold text-novraux-bone dark:text-novraux-obsidian text-xs uppercase tracking-novraux-medium hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-obsidian dark:hover:text-novraux-bone transition-colors rounded-sm font-normal"
                     >
                         + Write New Post
                     </Link>
@@ -113,42 +113,42 @@ export default function AdminPostsPage() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search articles..."
-                    className="flex-1 px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+                    className="flex-1 px-4 py-2 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-graphite dark:text-novraux-bone bg-novraux-bone text-novraux-obsidian placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50 transition-colors"
                 />
                 <button
                     type="submit"
-                    className="px-4 py-2 bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 rounded text-sm hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
+                    className="px-4 py-2 bg-novraux-obsidian dark:bg-novraux-graphite text-novraux-bone dark:text-novraux-bone rounded-sm text-sm hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-gold dark:hover:text-novraux-obsidian transition-colors font-normal uppercase tracking-novraux-medium"
                 >
                     Search
                 </button>
             </form>
 
             {/* Posts Table */}
-            <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-sm border border-neutral-100 dark:border-neutral-700 overflow-hidden">
+            <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-sm border border-novraux-ash/10 dark:border-novraux-graphite overflow-hidden transition-colors">
                 {loading ? (
-                    <div className="p-8 text-center text-neutral-500 dark:text-neutral-400">
-                        <div className="inline-block w-6 h-6 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin mb-2"></div>
-                        <p>Loading articles...</p>
+                    <div className="p-8 text-center text-novraux-ash dark:text-novraux-bone/70 transition-colors">
+                        <div className="inline-block w-6 h-6 border-2 border-novraux-gold border-t-novraux-obsidian rounded-full animate-spin mb-2"></div>
+                        <p className="font-light">Loading articles...</p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700 text-xs uppercase tracking-wider text-novraux-grey dark:text-neutral-400">
+                            <thead className="bg-novraux-obsidian/5 dark:bg-novraux-obsidian/20 border-b border-novraux-ash/20 dark:border-novraux-graphite text-xs uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 transition-colors">
                                 <tr>
-                                    <th className="p-4">Image</th>
-                                    <th className="p-4">Title</th>
-                                    <th className="p-4">Status</th>
-                                    <th className="p-4">Published Date</th>
-                                    <th className="p-4 text-right">Actions</th>
+                                    <th className="p-4 font-normal">Image</th>
+                                    <th className="p-4 font-normal">Title</th>
+                                    <th className="p-4 font-normal">Status</th>
+                                    <th className="p-4 font-normal">Published Date</th>
+                                    <th className="p-4 font-normal text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-neutral-100 dark:divide-neutral-700">
+                            <tbody className="divide-y divide-novraux-ash/10 dark:divide-novraux-graphite transition-colors">
                                 {posts.map((post) => {
                                     const isPublished = !!post.publishedAt;
                                     return (
-                                        <tr key={post.id} className="hover:bg-neutral-50/50 dark:hover:bg-neutral-800/50 transition-colors">
+                                        <tr key={post.id} className="hover:bg-novraux-obsidian/5 dark:hover:bg-novraux-obsidian/30 transition-colors">
                                             <td className="p-4 w-20">
-                                                <div className="relative w-12 h-12 bg-neutral-100 dark:bg-neutral-800 rounded overflow-hidden">
+                                                <div className="relative w-12 h-12 bg-novraux-graphite dark:bg-novraux-obsidian rounded-sm overflow-hidden">
                                                     {post.imageUrl ? (
                                                         <Image
                                                             src={post.imageUrl}
@@ -157,41 +157,41 @@ export default function AdminPostsPage() {
                                                             className="object-cover"
                                                         />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-neutral-300">
+                                                        <div className="w-full h-full flex items-center justify-center text-novraux-ash/30 dark:text-novraux-bone/30">
                                                             📄
                                                         </div>
                                                     )}
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <span className="font-medium text-novraux-charcoal dark:text-white block">{post.title}</span>
-                                                <span className="text-xs text-neutral-400 font-mono">/{post.slug}</span>
+                                                <span className="font-medium text-novraux-obsidian dark:text-novraux-bone block transition-colors">{post.title}</span>
+                                                <span className="text-xs text-novraux-ash dark:text-novraux-bone/60 font-mono font-light transition-colors">/{post.slug}</span>
                                             </td>
                                             <td className="p-4">
                                                 {isPublished ? (
-                                                    <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">
+                                                    <span className="inline-flex items-center px-2 py-1 rounded-sm text-xs font-normal bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 transition-colors">
                                                         Published
                                                     </span>
                                                 ) : (
-                                                    <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400">
+                                                    <span className="inline-flex items-center px-2 py-1 rounded-sm text-xs font-normal bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 transition-colors">
                                                         Draft
                                                     </span>
                                                 )}
                                             </td>
-                                            <td className="p-4 text-neutral-500 dark:text-neutral-400">
+                                            <td className="p-4 text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">
                                                 {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : '-'}
                                             </td>
                                             <td className="p-4 text-right">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <Link
                                                         href={`/admin/posts/${post.id}`}
-                                                        className="px-3 py-1.5 text-xs font-medium text-novraux-navy dark:text-blue-400 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded transition-colors"
+                                                        className="px-3 py-1.5 text-xs font-normal text-novraux-gold dark:text-novraux-gold hover:text-novraux-obsidian dark:hover:text-novraux-obsidian rounded-sm transition-colors uppercase tracking-novraux-medium"
                                                     >
                                                         Edit
                                                     </Link>
                                                     <button
                                                         onClick={() => openDeleteModal(post)}
-                                                        className="px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                                                        className="px-3 py-1.5 text-xs font-normal text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-sm transition-colors uppercase tracking-novraux-medium"
                                                     >
                                                         Delete
                                                     </button>
@@ -202,7 +202,7 @@ export default function AdminPostsPage() {
                                 })}
                                 {posts.length === 0 && (
                                     <tr>
-                                        <td colSpan={5} className="p-8 text-center text-novraux-grey dark:text-neutral-400">
+                                        <td colSpan={5} className="p-8 text-center text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">
                                             No blog posts yet. Write your first one!
                                         </td>
                                     </tr>
@@ -215,24 +215,24 @@ export default function AdminPostsPage() {
 
             {/* Delete Confirmation Modal */}
             {deleteModalOpen && postToDelete && (
-                <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-xl max-w-md w-full p-6 space-y-4">
-                        <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Delete Article</h3>
-                        <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                <div className="fixed inset-0 bg-novraux-obsidian/50 dark:bg-black/70 flex items-center justify-center z-50 p-4 transition-colors">
+                    <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-xl max-w-md w-full p-6 space-y-4 transition-colors">
+                        <h3 className="text-lg font-medium text-novraux-obsidian dark:text-novraux-bone transition-colors">Delete Article</h3>
+                        <p className="text-sm text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">
                             Are you sure you want to delete <strong>&quot;{postToDelete.title}&quot;</strong>? This cannot be undone.
                         </p>
                         <div className="flex justify-end gap-3 pt-2">
                             <button
                                 onClick={closeDeleteModal}
                                 disabled={deleting}
-                                className="px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded"
+                                className="px-4 py-2 text-sm font-normal text-novraux-obsidian dark:text-novraux-bone hover:bg-novraux-ash/10 dark:hover:bg-novraux-obsidian rounded-sm transition-colors uppercase tracking-novraux-medium"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleDelete}
                                 disabled={deleting}
-                                className="px-4 py-2 text-sm font-medium bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-2"
+                                className="px-4 py-2 text-sm font-normal bg-red-600 text-white rounded-sm hover:bg-red-700 transition-colors uppercase tracking-novraux-medium flex items-center gap-2"
                             >
                                 {deleting ? 'Deleting...' : 'Delete'}
                             </button>

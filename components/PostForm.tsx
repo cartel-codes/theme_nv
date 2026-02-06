@@ -168,7 +168,7 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
     return (
         <form className="space-y-6">
             {error && (
-                <div className="p-4 bg-red-50 border border-red-200 text-red-800 rounded dark:bg-red-900/20 dark:border-red-800 dark:text-red-300">
+                <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 rounded-sm text-sm font-light transition-colors">
                     {error}
                 </div>
             )}
@@ -177,58 +177,58 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">
                     {/* Editor Card */}
-                    <div className="bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 space-y-4">
+                    <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm border border-novraux-ash/10 dark:border-novraux-graphite p-8 space-y-6 transition-colors">
                         <div>
-                            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Title</label>
+                            <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Title</label>
                             <input
                                 type="text"
                                 name="title"
                                 value={formData.title}
                                 onChange={handleInputChange}
                                 required
-                                className="w-full px-4 py-3 text-lg border-b border-neutral-200 dark:border-neutral-700 focus:border-neutral-900 dark:focus:border-white focus:outline-none bg-transparent placeholder-neutral-400 dark:text-white transition-colors"
+                                className="w-full px-4 py-3 text-lg border-b border-novraux-ash/20 dark:border-novraux-graphite focus:border-novraux-gold dark:focus:border-novraux-gold focus:outline-none bg-transparent placeholder-novraux-ash dark:placeholder-novraux-bone/50 text-novraux-obsidian dark:text-novraux-bone transition-colors"
                                 placeholder="Article Title..."
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Slug</label>
+                            <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Slug</label>
                             <input
                                 type="text"
                                 name="slug"
                                 value={formData.slug}
                                 onChange={handleInputChange}
-                                className="w-full px-3 py-2 text-sm border border-neutral-200 dark:border-neutral-700 rounded bg-neutral-50 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 focus:outline-none focus:ring-1 focus:ring-neutral-400"
+                                className="w-full px-4 py-3 text-sm border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm bg-white dark:bg-novraux-obsidian text-novraux-ash dark:text-novraux-bone/70 focus:outline-none focus:ring-2 focus:ring-novraux-gold transition-colors"
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Content (Markdown)</label>
+                            <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Content (Markdown)</label>
                             <textarea
                                 name="content"
                                 value={formData.content}
                                 onChange={handleInputChange}
                                 rows={20}
-                                className="w-full px-4 py-3 border border-neutral-200 dark:border-neutral-700 rounded-lg text-base font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white resize-y"
+                                className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-base font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian resize-y transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                                 placeholder="# Write your article here..."
                             />
-                            <p className="text-xs text-neutral-500 mt-2 text-right">Markdown supported</p>
+                            <p className="text-xs text-novraux-ash dark:text-novraux-bone/70 mt-2 text-right font-light transition-colors">Markdown supported</p>
                         </div>
                     </div>
 
                     {/* SEO Section */}
-                    <div className="bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 space-y-6">
+                    <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm border border-novraux-ash/10 dark:border-novraux-graphite p-8 space-y-6 transition-colors">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-medium text-neutral-900 dark:text-white">SEO Settings</h2>
+                            <h2 className="font-serif text-2xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">SEO Settings</h2>
                             <button
                                 type="button"
                                 onClick={handleGenerateSEO}
                                 disabled={seoLoading || !formData.title || !formData.content}
-                                className="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white text-sm rounded-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                                className="px-4 py-2 bg-novraux-gold text-novraux-obsidian text-sm rounded-sm hover:bg-novraux-gold/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 uppercase tracking-novraux-medium font-medium"
                             >
                                 {seoLoading ? (
                                     <>
-                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-novraux-obsidian"></div>
                                         <span>Generating...</span>
                                     </>
                                 ) : (
@@ -243,7 +243,7 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                                    <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
                                         Meta Title
                                         <span className={`ml-2 text-xs ${getCharCountColor(formData.metaTitle.length, 50, 60)}`}>
                                             ({formData.metaTitle.length}/60)
@@ -254,12 +254,12 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
                                         name="metaTitle"
                                         value={formData.metaTitle}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm dark:bg-neutral-800 dark:text-white"
+                                        className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors focus:outline-none focus:ring-2 focus:ring-novraux-gold placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                                    <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
                                         Meta Description
                                         <span className={`ml-2 text-xs ${getCharCountColor(formData.metaDescription.length, 120, 160)}`}>
                                             ({formData.metaDescription.length}/160)
@@ -270,12 +270,12 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
                                         value={formData.metaDescription}
                                         onChange={handleInputChange}
                                         rows={3}
-                                        className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm dark:bg-neutral-800 dark:text-white"
+                                        className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors focus:outline-none focus:ring-2 focus:ring-novraux-gold placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+                                    <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
                                         Keywords (comma-separated)
                                     </label>
                                     <input
@@ -284,18 +284,18 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
                                         value={formData.keywords}
                                         onChange={handleInputChange}
                                         placeholder="luxury fashion, style, trends"
-                                        className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm dark:bg-neutral-800 dark:text-white"
+                                        className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors focus:outline-none focus:ring-2 focus:ring-novraux-gold placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                                     />
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Focus Keyword</label>
+                                    <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Focus Keyword</label>
                                     <input
                                         type="text"
                                         name="focusKeyword"
                                         value={formData.focusKeyword}
                                         onChange={handleInputChange}
-                                        className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm dark:bg-neutral-800 dark:text-white"
+                                        className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors focus:outline-none focus:ring-2 focus:ring-novraux-gold placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                                     />
                                 </div>
                             </div>
@@ -314,19 +314,19 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
                 {/* Sidebar */}
                 <div className="space-y-6">
                     {/* Publish Action */}
-                    <div className="bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 space-y-4">
-                        <h3 className="font-medium text-neutral-900 dark:text-white">Publishing</h3>
+                    <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm border border-novraux-ash/10 dark:border-novraux-graphite p-6 space-y-4 transition-colors">
+                        <h3 className="font-serif text-lg font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">Publishing</h3>
 
                         <div>
-                            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Publish Date</label>
+                            <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Publish Date</label>
                             <input
                                 type="datetime-local"
                                 name="publishedAt"
                                 value={formData.publishedAt || ''}
                                 onChange={handleInputChange}
-                                className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm dark:bg-neutral-800 dark:text-white"
+                                className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors focus:outline-none focus:ring-2 focus:ring-novraux-gold"
                             />
-                            <p className="text-xs text-neutral-500 mt-1">Leave empty to keep as Draft</p>
+                            <p className="text-xs text-novraux-ash dark:text-novraux-bone/70 mt-2 font-light transition-colors">Leave empty to keep as Draft</p>
                         </div>
 
                         <div className="flex gap-2 pt-2">
@@ -334,7 +334,7 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
                                 type="button"
                                 onClick={(e) => handleSubmit(e, true)}
                                 disabled={loading}
-                                className="flex-1 px-4 py-2 border border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 rounded text-sm font-medium hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+                                className="flex-1 px-4 py-3 border border-novraux-ash/30 dark:border-novraux-graphite text-novraux-obsidian dark:text-novraux-bone rounded-sm text-sm font-medium uppercase tracking-novraux-medium hover:bg-novraux-ash/10 dark:hover:bg-novraux-graphite/50 transition-colors"
                             >
                                 Save Draft
                             </button>
@@ -342,7 +342,7 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
                                 type="button"
                                 onClick={(e) => handleSubmit(e, false)}
                                 disabled={loading}
-                                className="flex-1 px-4 py-2 bg-novraux-charcoal dark:bg-white text-white dark:text-neutral-900 rounded text-sm font-medium hover:opacity-90 transition-colors"
+                                className="flex-1 px-4 py-3 bg-novraux-obsidian dark:bg-novraux-gold text-novraux-bone dark:text-novraux-obsidian rounded-sm text-sm font-medium uppercase tracking-novraux-medium hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-bone dark:hover:text-novraux-obsidian transition-colors"
                             >
                                 Publish
                             </button>
@@ -350,8 +350,8 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
                     </div>
 
                     {/* Featured Image */}
-                    <div className="bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 space-y-4">
-                        <h3 className="font-medium text-neutral-900 dark:text-white">Featured Image</h3>
+                    <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm border border-novraux-ash/10 dark:border-novraux-graphite p-6 space-y-4 transition-colors">
+                        <h3 className="font-serif text-lg font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">Featured Image</h3>
                         <ImageUploader
                             images={formData.images}
                             onImagesChange={handleImageUpdate}
@@ -359,14 +359,14 @@ export default function PostForm({ postId, initialData }: PostFormProps) {
                     </div>
 
                     {/* Excerpt */}
-                    <div className="bg-white dark:bg-neutral-900 rounded-lg border border-neutral-200 dark:border-neutral-700 p-6 space-y-4">
-                        <h3 className="font-medium text-neutral-900 dark:text-white">Excerpt</h3>
+                    <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm border border-novraux-ash/10 dark:border-novraux-graphite p-6 space-y-4 transition-colors">
+                        <h3 className="font-serif text-lg font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">Excerpt</h3>
                         <textarea
                             name="excerpt"
                             value={formData.excerpt}
                             onChange={handleInputChange}
                             rows={4}
-                            className="w-full px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-1 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+                            className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                             placeholder="Short summary for list views..."
                         />
                     </div>

@@ -281,56 +281,56 @@ export default function ProductForm({ productId }: ProductFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 rounded text-sm">
+        <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 rounded-sm text-sm font-light transition-colors">
           {error}
         </div>
       )}
 
       {/* Basic Information */}
-      <div className="bg-white dark:bg-neutral-900 rounded border border-neutral-200 dark:border-neutral-700 p-6 space-y-4">
-        <h2 className="font-serif text-xl dark:text-white">Basic Information</h2>
+      <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm border border-novraux-ash/10 dark:border-novraux-graphite p-8 space-y-4 transition-colors">
+        <h2 className="font-serif text-2xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">Basic Information</h2>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Product Name *</label>
+          <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Product Name *</label>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleInputChange}
             required
-            className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+            className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
             placeholder="Product name"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Slug *</label>
+          <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Slug *</label>
           <input
             type="text"
             name="slug"
             value={formData.slug}
             onChange={handleInputChange}
             required
-            className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+            className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
             placeholder="product-slug"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Description</label>
+          <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Description</label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleInputChange}
             rows={4}
-            className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+            className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
             placeholder="Product description"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Price *</label>
+            <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Price *</label>
             <input
               type="number"
               name="price"
@@ -339,18 +339,18 @@ export default function ProductForm({ productId }: ProductFormProps) {
               required
               step="0.01"
               min="0"
-              className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+              className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
               placeholder="0.00"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Category</label>
+            <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Category</label>
             <select
               name="categoryId"
               value={formData.categoryId}
               onChange={handleInputChange}
-              className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+              className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors"
             >
               <option value="">Select a category</option>
               {categories.map(cat => (
@@ -362,9 +362,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
       </div>
 
       {/* Images */}
-      <div className="bg-white dark:bg-neutral-900 rounded border border-neutral-200 dark:border-neutral-700 p-6 space-y-4">
-        <h2 className="font-serif text-xl dark:text-white">Product Images</h2>
-        <p className="text-xs text-neutral-500 dark:text-neutral-400">💡 Uploading an image will automatically generate product name, description, and SEO fields using AI</p>
+      <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm border border-novraux-ash/10 dark:border-novraux-graphite p-8 space-y-4 transition-colors">
+        <h2 className="font-serif text-2xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">Product Images</h2>
+        <p className="text-xs text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">💡 Uploading an image will automatically generate product name, description, and SEO fields using AI</p>
         <ImageUploader 
           images={formData.images} 
           onImagesChange={handleImagesUpdate}
@@ -373,9 +373,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
       </div>
 
       {/* SEO Settings */}
-      <div className="bg-white dark:bg-neutral-900 rounded border border-neutral-200 dark:border-neutral-700 p-6 space-y-6">
+      <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm border border-novraux-ash/10 dark:border-novraux-graphite p-8 space-y-6 transition-colors">
         <div className="flex items-center justify-between">
-          <h2 className="font-serif text-xl dark:text-white">SEO Settings</h2>
+          <h2 className="font-serif text-2xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">SEO Settings</h2>
           <div className="flex gap-2">
             <button
               type="button"
@@ -390,15 +390,15 @@ export default function ProductForm({ productId }: ProductFormProps) {
               onClick={handleAiGenerateSEO}
               disabled={isAiGenerating || (!formData.name && (!formData.images || formData.images.length === 0))}
               title={(!formData.name && (!formData.images || formData.images.length === 0)) ? "Enter a name OR upload an image to enable AI generation" : "Generate content using AI"}
-              className="px-3 py-1.5 text-xs font-medium bg-novraux-charcoal dark:bg-neutral-100 text-white dark:text-neutral-900 rounded hover:bg-black dark:hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5"
+              className="px-4 py-2 text-xs font-medium bg-novraux-gold text-novraux-obsidian dark:text-novraux-obsidian rounded-sm hover:bg-novraux-gold/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {isAiGenerating ? (
                 <>
-                  <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                  Generating...
+                  <span className="w-3 h-3 border-2 border-novraux-obsidian/30 border-t-novraux-obsidian rounded-full animate-spin"></span>
+                  <span className="uppercase tracking-novraux-medium">Generating...</span>
                 </>
               ) : (
-                <>🤖 AI Generate</>
+                <>🤖 <span className="uppercase tracking-novraux-medium">AI Generate</span></>
               )}
             </button>
           </div>
@@ -419,7 +419,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
           {/* SEO Fields */}
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+              <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
                 Meta Title
                 <span className={`ml-2 text-xs ${getCharCountColor(formData.metaTitle.length, 50, 60)}`}>
                   ({formData.metaTitle.length}/60)
@@ -431,13 +431,13 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 value={formData.metaTitle}
                 onChange={handleInputChange}
                 maxLength={70}
-                className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+                className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                 placeholder="Page title for search engines (50-60 chars)"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">
+              <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
                 Meta Description
                 <span className={`ml-2 text-xs ${getCharCountColor(formData.metaDescription.length, 120, 160)}`}>
                   ({formData.metaDescription.length}/160)
@@ -449,49 +449,49 @@ export default function ProductForm({ productId }: ProductFormProps) {
                 onChange={handleInputChange}
                 maxLength={170}
                 rows={3}
-                className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+                className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                 placeholder="Page description for search engines (120-160 chars)"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Focus Keyword</label>
+              <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Focus Keyword</label>
               <input
                 type="text"
                 name="focusKeyword"
                 value={formData.focusKeyword}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+                className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                 placeholder="Primary keyword to target"
               />
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+              <p className="text-xs text-novraux-ash dark:text-novraux-bone/70 mt-2 font-light transition-colors">
                 The main keyword you want this product to rank for
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">Keywords</label>
+              <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Keywords</label>
               <input
                 type="text"
                 name="keywords"
                 value={formData.keywords}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+                className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                 placeholder="comma, separated, keywords"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1">OG Image URL</label>
+              <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">OG Image URL</label>
               <input
                 type="text"
                 name="ogImage"
                 value={formData.ogImage}
                 onChange={handleInputChange}
-                className="w-full px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+                className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                 placeholder="https://... (leave empty to use first product image)"
               />
-              <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+              <p className="text-xs text-novraux-ash dark:text-novraux-bone/70 mt-2 font-light transition-colors">
                 Custom image for social media sharing (1200x630px recommended)
               </p>
             </div>
@@ -513,14 +513,14 @@ export default function ProductForm({ productId }: ProductFormProps) {
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-2 bg-novraux-charcoal dark:bg-neutral-100 text-white dark:text-neutral-900 rounded text-sm font-medium hover:bg-black dark:hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-3 bg-novraux-obsidian dark:bg-novraux-gold text-novraux-bone dark:text-novraux-obsidian rounded-sm text-sm font-medium uppercase tracking-novraux-medium hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-bone dark:hover:text-novraux-obsidian transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? 'Saving...' : productId ? 'Update Product' : 'Create Product'}
         </button>
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-6 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm font-medium hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors dark:text-white"
+          className="px-6 py-3 border border-novraux-ash/30 dark:border-novraux-graphite rounded-sm text-sm font-medium uppercase tracking-novraux-medium hover:bg-novraux-ash/10 dark:hover:bg-novraux-graphite/50 transition-colors text-novraux-obsidian dark:text-novraux-bone"
         >
           Cancel
         </button>

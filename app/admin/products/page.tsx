@@ -102,16 +102,16 @@ export default function AdminProductsPage() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="font-serif text-3xl text-novraux-charcoal dark:text-white">Products</h1>
+                    <h1 className="font-serif text-4xl md:text-5xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">Products</h1>
                     {pagination && (
-                        <p className="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+                        <p className="text-sm text-novraux-ash dark:text-novraux-bone/70 mt-2 font-light transition-colors">
                             {pagination.total} product{pagination.total !== 1 ? 's' : ''} total
                         </p>
                     )}
                 </div>
                 <Link
                     href="/admin/products/new"
-                    className="px-6 py-2.5 bg-novraux-charcoal dark:bg-white text-white dark:text-neutral-900 text-sm uppercase tracking-wider hover:bg-black dark:hover:bg-neutral-100 transition-colors rounded"
+                    className="px-8 py-4 bg-novraux-obsidian dark:bg-novraux-gold text-novraux-bone dark:text-novraux-obsidian text-xs uppercase tracking-novraux-medium hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-obsidian dark:hover:text-novraux-bone transition-colors font-normal rounded-sm"
                 >
                     + Add New
                 </Link>
@@ -124,11 +124,11 @@ export default function AdminProductsPage() {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search products..."
-                    className="flex-1 px-4 py-2 border border-neutral-300 dark:border-neutral-600 rounded text-sm focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-800 dark:text-white"
+                    className="flex-1 px-4 py-2 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-novraux-gold dark:bg-novraux-graphite dark:text-novraux-bone bg-novraux-bone text-novraux-obsidian placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50 transition-colors"
                 />
                 <button
                     type="submit"
-                    className="px-4 py-2 bg-neutral-100 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200 rounded text-sm hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors"
+                    className="px-4 py-2 bg-novraux-obsidian dark:bg-novraux-graphite text-novraux-bone dark:text-novraux-bone rounded-sm text-sm hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-gold dark:hover:text-novraux-obsidian transition-colors font-normal uppercase tracking-novraux-medium"
                 >
                     Search
                 </button>
@@ -139,7 +139,7 @@ export default function AdminProductsPage() {
                             setSearchTerm('');
                             fetchProducts();
                         }}
-                        className="px-4 py-2 text-neutral-500 dark:text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 text-sm"
+                        className="px-4 py-2 text-novraux-ash dark:text-novraux-bone/70 hover:text-novraux-obsidian dark:hover:text-novraux-bone text-sm font-normal transition-colors"
                     >
                         Clear
                     </button>
@@ -147,33 +147,33 @@ export default function AdminProductsPage() {
             </form>
 
             {/* Products Table */}
-            <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-sm border border-neutral-100 dark:border-neutral-700 overflow-hidden">
+            <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-sm border border-novraux-ash/10 dark:border-novraux-graphite overflow-hidden transition-colors">
                 {loading ? (
-                    <div className="p-8 text-center text-neutral-500 dark:text-neutral-400">
-                        <div className="inline-block w-6 h-6 border-2 border-neutral-300 border-t-neutral-600 rounded-full animate-spin mb-2"></div>
-                        <p>Loading products...</p>
+                    <div className="p-8 text-center text-novraux-ash dark:text-novraux-bone/70 transition-colors">
+                        <div className="inline-block w-6 h-6 border-2 border-novraux-gold border-t-novraux-obsidian rounded-full animate-spin mb-2"></div>
+                        <p className="font-light">Loading products...</p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm">
-                            <thead className="bg-neutral-50 dark:bg-neutral-800 border-b border-neutral-100 dark:border-neutral-700 text-xs uppercase tracking-wider text-novraux-grey dark:text-neutral-400">
+                            <thead className="bg-novraux-obsidian/5 dark:bg-novraux-obsidian/20 border-b border-novraux-ash/20 dark:border-novraux-graphite text-xs uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 transition-colors">
                                 <tr>
-                                    <th className="p-4">Image</th>
-                                    <th className="p-4">Name</th>
-                                    <th className="p-4 hidden sm:table-cell">SKU / ID</th>
-                                    <th className="p-4">Price</th>
-                                    <th className="p-4 hidden md:table-cell">Category</th>
-                                    <th className="p-4 text-right">Actions</th>
+                                    <th className="p-4 font-normal">Image</th>
+                                    <th className="p-4 font-normal">Name</th>
+                                    <th className="p-4 font-normal hidden sm:table-cell">SKU / ID</th>
+                                    <th className="p-4 font-normal">Price</th>
+                                    <th className="p-4 font-normal hidden md:table-cell">Category</th>
+                                    <th className="p-4 font-normal text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-neutral-100 dark:divide-neutral-700">
+                            <tbody className="divide-y divide-novraux-ash/10 dark:divide-novraux-graphite transition-colors">
                                 {products.map((product) => {
                                     const displayImage = product.images[0]?.url || product.imageUrl;
 
                                     return (
-                                        <tr key={product.id} className="hover:bg-neutral-50/50 dark:hover:bg-neutral-800/50 transition-colors">
+                                        <tr key={product.id} className="hover:bg-novraux-obsidian/5 dark:hover:bg-novraux-obsidian/30 transition-colors">
                                             <td className="p-4 w-20">
-                                                <div className="relative w-12 h-16 bg-neutral-100 dark:bg-neutral-800 rounded overflow-hidden">
+                                                <div className="relative w-12 h-16 bg-novraux-graphite dark:bg-novraux-obsidian rounded-sm overflow-hidden">
                                                     {displayImage ? (
                                                         <Image
                                                             src={displayImage}
@@ -182,7 +182,7 @@ export default function AdminProductsPage() {
                                                             className="object-cover"
                                                         />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-neutral-400">
+                                                        <div className="w-full h-full flex items-center justify-center text-novraux-ash/30 dark:text-novraux-bone/30">
                                                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                             </svg>
@@ -191,37 +191,37 @@ export default function AdminProductsPage() {
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <span className="font-medium text-novraux-charcoal dark:text-white">{product.name}</span>
-                                                <span className="block text-xs text-neutral-400 dark:text-neutral-500 mt-0.5 sm:hidden">
+                                                <span className="font-medium text-novraux-obsidian dark:text-novraux-bone transition-colors">{product.name}</span>
+                                                <span className="block text-xs text-novraux-ash/60 dark:text-novraux-bone/60 mt-0.5 sm:hidden font-light transition-colors">
                                                     {product.id.slice(-8)}
                                                 </span>
                                             </td>
-                                            <td className="p-4 font-mono text-xs text-novraux-grey dark:text-neutral-500 hidden sm:table-cell">
+                                            <td className="p-4 font-mono text-xs text-novraux-ash dark:text-novraux-bone/70 hidden sm:table-cell font-light transition-colors">
                                                 {product.id.slice(-8)}
                                             </td>
-                                            <td className="p-4 text-novraux-charcoal dark:text-white">
+                                            <td className="p-4 text-novraux-obsidian dark:text-novraux-bone font-medium transition-colors">
                                                 ${Number(product.price).toFixed(2)}
                                             </td>
                                             <td className="p-4 hidden md:table-cell">
                                                 {product.category ? (
-                                                    <span className="inline-block px-2 py-1 bg-novraux-beige/20 dark:bg-neutral-700 text-novraux-charcoal dark:text-neutral-300 text-xs rounded">
+                                                    <span className="inline-block px-2 py-1 bg-novraux-gold/20 dark:bg-novraux-gold/10 text-novraux-obsidian dark:text-novraux-gold text-xs rounded-sm font-normal transition-colors">
                                                         {product.category.name}
                                                     </span>
                                                 ) : (
-                                                    <span className="text-neutral-400 dark:text-neutral-500 italic text-xs">Uncategorized</span>
+                                                    <span className="text-novraux-ash dark:text-novraux-bone/70 italic text-xs font-light transition-colors">Uncategorized</span>
                                                 )}
                                             </td>
                                             <td className="p-4 text-right">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <Link
                                                         href={`/admin/products/${product.id}`}
-                                                        className="px-3 py-1.5 text-xs font-medium text-novraux-navy dark:text-blue-400 hover:bg-neutral-100 dark:hover:bg-neutral-700 rounded transition-colors"
+                                                        className="px-3 py-1.5 text-xs font-normal text-novraux-gold dark:text-novraux-gold hover:text-novraux-obsidian dark:hover:text-novraux-obsidian rounded-sm transition-colors uppercase tracking-novraux-medium"
                                                     >
                                                         Edit
                                                     </Link>
                                                     <button
                                                         onClick={() => openDeleteModal(product)}
-                                                        className="px-3 py-1.5 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
+                                                        className="px-3 py-1.5 text-xs font-normal text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-sm transition-colors uppercase tracking-novraux-medium"
                                                     >
                                                         Delete
                                                     </button>
@@ -232,7 +232,7 @@ export default function AdminProductsPage() {
                                 })}
                                 {products.length === 0 && (
                                     <tr>
-                                        <td colSpan={6} className="p-8 text-center text-novraux-grey dark:text-neutral-400">
+                                        <td colSpan={6} className="p-8 text-center text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">
                                             No products found.
                                         </td>
                                     </tr>
@@ -245,8 +245,8 @@ export default function AdminProductsPage() {
 
             {/* Delete Confirmation Modal */}
             {deleteModalOpen && productToDelete && (
-                <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-xl max-w-md w-full p-6 space-y-4">
+                <div className="fixed inset-0 bg-novraux-obsidian/50 dark:bg-black/70 flex items-center justify-center z-50 p-4 transition-colors">
+                    <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-xl max-w-md w-full p-6 space-y-4 transition-colors">
                         <div className="flex items-start gap-4">
                             <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center flex-shrink-0">
                                 <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,8 +254,8 @@ export default function AdminProductsPage() {
                                 </svg>
                             </div>
                             <div>
-                                <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Delete Product</h3>
-                                <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                                <h3 className="text-lg font-medium text-novraux-obsidian dark:text-novraux-bone transition-colors">Delete Product</h3>
+                                <p className="text-sm text-novraux-ash dark:text-novraux-bone/70 mt-1 font-light transition-colors">
                                     Are you sure you want to delete <strong>&quot;{productToDelete.name}&quot;</strong>? This action cannot be undone and will also remove all associated images from storage.
                                 </p>
                             </div>
@@ -265,14 +265,14 @@ export default function AdminProductsPage() {
                             <button
                                 onClick={closeDeleteModal}
                                 disabled={deleting}
-                                className="px-4 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded transition-colors disabled:opacity-50"
+                                className="px-4 py-2 text-sm font-normal text-novraux-obsidian dark:text-novraux-bone hover:bg-novraux-ash/10 dark:hover:bg-novraux-obsidian rounded-sm transition-colors disabled:opacity-50 uppercase tracking-novraux-medium"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleDelete}
                                 disabled={deleting}
-                                className="px-4 py-2 text-sm font-medium bg-red-600 text-white rounded hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2"
+                                className="px-4 py-2 text-sm font-normal bg-red-600 text-white rounded-sm hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2 uppercase tracking-novraux-medium"
                             >
                                 {deleting ? (
                                     <>

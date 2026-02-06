@@ -69,38 +69,38 @@ export default function ProfileForm({ initialEmail, initialUsername }: ProfileFo
   return (
     <div className="space-y-10">
       {/* Profile section */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-neutral-100 max-w-md">
-        <h2 className="font-serif text-xl mb-6">Profile Information</h2>
+      <div className="bg-novraux-bone dark:bg-novraux-graphite p-8 rounded-sm shadow-sm border border-novraux-ash/10 dark:border-novraux-graphite max-w-md transition-colors">
+        <h2 className="font-serif text-2xl font-light text-novraux-obsidian dark:text-novraux-bone mb-8 transition-colors">Profile Information</h2>
         <form onSubmit={handleProfileSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-novraux-charcoal mb-1">Username</label>
+            <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Username</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border border-neutral-200 rounded focus:ring-2 focus:ring-novraux-charcoal/20 focus:border-novraux-charcoal"
+              className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite bg-white dark:bg-novraux-obsidian text-novraux-obsidian dark:text-novraux-bone rounded-sm focus:ring-2 focus:ring-novraux-gold dark:focus:ring-novraux-gold focus:border-novraux-gold transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
               placeholder="Your username"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-novraux-charcoal mb-1">Email</label>
+            <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-neutral-200 rounded focus:ring-2 focus:ring-novraux-charcoal/20 focus:border-novraux-charcoal"
+              className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite bg-white dark:bg-novraux-obsidian text-novraux-obsidian dark:text-novraux-bone rounded-sm focus:ring-2 focus:ring-novraux-gold dark:focus:ring-novraux-gold focus:border-novraux-gold transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
             />
           </div>
           {profileMessage && (
-            <p className={`text-sm ${profileMessage.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+            <p className={`text-sm font-light transition-colors ${profileMessage.type === 'success' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
               {profileMessage.text}
             </p>
           )}
           <button
             type="submit"
             disabled={profileLoading}
-            className="px-6 py-2 bg-novraux-charcoal text-white text-sm uppercase tracking-wider hover:bg-black transition-colors disabled:opacity-50"
+            className="px-8 py-3 bg-novraux-obsidian dark:bg-novraux-gold text-novraux-bone dark:text-novraux-obsidian text-xs uppercase tracking-novraux-medium hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-obsidian dark:hover:text-novraux-bone transition-colors disabled:opacity-50 font-normal rounded-sm"
           >
             {profileLoading ? 'Saving...' : 'Save Profile'}
           </button>
@@ -108,50 +108,50 @@ export default function ProfileForm({ initialEmail, initialUsername }: ProfileFo
       </div>
 
       {/* Password section */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-neutral-100 max-w-md">
-        <h2 className="font-serif text-xl mb-6">Change Password</h2>
+      <div className="bg-novraux-bone dark:bg-novraux-graphite p-8 rounded-sm shadow-sm border border-novraux-ash/10 dark:border-novraux-graphite max-w-md transition-colors">
+        <h2 className="font-serif text-2xl font-light text-novraux-obsidian dark:text-novraux-bone mb-8 transition-colors">Change Password</h2>
         <form onSubmit={handlePasswordSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-novraux-charcoal mb-1">Current Password</label>
+            <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Current Password</label>
             <input
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               required
-              className="w-full px-4 py-2 border border-neutral-200 rounded focus:ring-2 focus:ring-novraux-charcoal/20 focus:border-novraux-charcoal"
+              className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite bg-white dark:bg-novraux-obsidian text-novraux-obsidian dark:text-novraux-bone rounded-sm focus:ring-2 focus:ring-novraux-gold dark:focus:ring-novraux-gold focus:border-novraux-gold transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-novraux-charcoal mb-1">New Password</label>
+            <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">New Password</label>
             <input
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
               minLength={8}
-              className="w-full px-4 py-2 border border-neutral-200 rounded focus:ring-2 focus:ring-novraux-charcoal/20 focus:border-novraux-charcoal"
+              className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite bg-white dark:bg-novraux-obsidian text-novraux-obsidian dark:text-novraux-bone rounded-sm focus:ring-2 focus:ring-novraux-gold dark:focus:ring-novraux-gold focus:border-novraux-gold transition-colors"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-novraux-charcoal mb-1">Confirm New Password</label>
+            <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">Confirm New Password</label>
             <input
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
               minLength={8}
-              className="w-full px-4 py-2 border border-neutral-200 rounded focus:ring-2 focus:ring-novraux-charcoal/20 focus:border-novraux-charcoal"
+              className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite bg-white dark:bg-novraux-obsidian text-novraux-obsidian dark:text-novraux-bone rounded-sm focus:ring-2 focus:ring-novraux-gold dark:focus:ring-novraux-gold focus:border-novraux-gold transition-colors"
             />
           </div>
           {passwordMessage && (
-            <p className={`text-sm ${passwordMessage.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+            <p className={`text-sm font-light transition-colors ${passwordMessage.type === 'success' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
               {passwordMessage.text}
             </p>
           )}
           <button
             type="submit"
             disabled={passwordLoading}
-            className="px-6 py-2 bg-novraux-charcoal text-white text-sm uppercase tracking-wider hover:bg-black transition-colors disabled:opacity-50"
+            className="px-8 py-3 bg-novraux-obsidian dark:bg-novraux-gold text-novraux-bone dark:text-novraux-obsidian text-xs uppercase tracking-novraux-medium hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-obsidian dark:hover:text-novraux-bone transition-colors disabled:opacity-50 font-normal rounded-sm"
           >
             {passwordLoading ? 'Updating...' : 'Update Password'}
           </button>

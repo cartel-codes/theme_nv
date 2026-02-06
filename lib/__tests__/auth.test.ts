@@ -74,7 +74,7 @@ describe('Authentication Utilities', () => {
         data: expect.objectContaining({
           email: 'admin@novraux.com',
           password: 'hashed_password',
-          name: 'Admin User',
+          username: 'Admin User',
         }),
       });
     });

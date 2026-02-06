@@ -12,11 +12,17 @@ jest.mock('../prisma', () => ({
             create: jest.fn(),
             update: jest.fn(),
             delete: jest.fn(),
+            deleteMany: jest.fn(),
         },
         cartItem: {
             findUnique: jest.fn(),
+            findFirst: jest.fn(),
+            findMany: jest.fn(),
             update: jest.fn(),
+            upsert: jest.fn(),
             create: jest.fn(),
+            delete: jest.fn(),
+            deleteMany: jest.fn(),
         },
     },
 }));

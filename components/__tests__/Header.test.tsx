@@ -21,7 +21,7 @@ describe('Header', () => {
 
   it('renders the logo', () => {
     renderWithProviders(<Header />);
-    const logo = screen.getByText('Novraux');
+    const logo = screen.getByText('NOVRAUX');
     expect(logo).toBeInTheDocument();
   });
 

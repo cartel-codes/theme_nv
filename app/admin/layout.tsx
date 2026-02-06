@@ -27,72 +27,72 @@ export default async function AdminLayout({
 
     // At this point, we have a valid session - render full layout
     return (
-        <div className="min-h-screen bg-neutral-50 flex font-sans">
+        <div className="min-h-screen bg-novraux-bone dark:bg-novraux-obsidian flex font-sans transition-colors">
             {/* Sidebar */}
-            <aside className="w-64 bg-novraux-charcoal text-white flex-shrink-0 hidden md:flex flex-col">
-                <div className="p-6 border-b border-white/10">
-                    <Link href="/" className="font-serif text-2xl tracking-widest uppercase">
+            <aside className="w-64 bg-novraux-obsidian dark:bg-black text-novraux-bone flex-shrink-0 hidden md:flex flex-col transition-colors">
+                <div className="p-6 border-b border-novraux-bone/10">
+                    <Link href="/" className="font-serif text-2xl tracking-widest uppercase text-novraux-bone">
                         Novraux
                     </Link>
-                    <span className="text-xs text-novraux-grey block mt-1 uppercase tracking-wider">Backoffice</span>
+                    <span className="text-xs text-novraux-bone/60 dark:text-novraux-bone/50 block mt-1 uppercase tracking-novraux-medium font-normal transition-colors">Backoffice</span>
                 </div>
 
                 <nav className="flex-1 p-4 space-y-2">
                     <Link
                         href="/admin"
-                        className="block px-4 py-2 rounded text-sm hover:bg-white/5 transition-colors"
+                        className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone hover:bg-novraux-bone/10 dark:hover:bg-novraux-bone/5 transition-colors uppercase tracking-novraux-medium"
                     >
                         Dashboard
                     </Link>
                     <Link
                         href="/admin/products"
-                        className="block px-4 py-2 rounded text-sm hover:bg-white/5 transition-colors"
+                        className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone hover:bg-novraux-bone/10 dark:hover:bg-novraux-bone/5 transition-colors uppercase tracking-novraux-medium"
                     >
                         Products
                     </Link>
                     <Link
                         href="/admin/collections"
-                        className="block px-4 py-2 rounded text-sm hover:bg-white/5 transition-colors"
+                        className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone hover:bg-novraux-bone/10 dark:hover:bg-novraux-bone/5 transition-colors uppercase tracking-novraux-medium"
                     >
                         Collections
                     </Link>
                     <Link
                         href="/admin/posts"
-                        className="block px-4 py-2 rounded text-sm hover:bg-white/5 transition-colors"
+                        className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone hover:bg-novraux-bone/10 dark:hover:bg-novraux-bone/5 transition-colors uppercase tracking-novraux-medium"
                     >
                         Articles
                     </Link>
                     <Link
                         href="/admin/orders"
-                        className="block px-4 py-2 rounded text-sm hover:bg-white/5 transition-colors opacity-50 cursor-not-allowed"
+                        className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone/40 opacity-50 cursor-not-allowed uppercase tracking-novraux-medium"
                     >
                         Orders (Soon)
                     </Link>
                     <Link
                         href="/admin/profile"
-                        className="block px-4 py-2 rounded text-sm hover:bg-white/5 transition-colors"
+                        className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone hover:bg-novraux-bone/10 dark:hover:bg-novraux-bone/5 transition-colors uppercase tracking-novraux-medium"
                     >
                         Profile
                     </Link>
                 </nav>
 
                 {/* User Info & Logout */}
-                <div className="p-4 border-t border-white/10 space-y-3">
+                <div className="p-4 border-t border-novraux-bone/10 space-y-3">
                     {session && (
                         <div className="text-xs">
-                            <p className="text-white/70">Signed in as</p>
-                            <p className="text-white font-medium truncate">{session.email}</p>
+                            <p className="text-novraux-bone/60 dark:text-novraux-bone/50 transition-colors">Signed in as</p>
+                            <p className="text-novraux-bone font-normal truncate transition-colors">{session.email}</p>
                         </div>
                     )}
                     <AdminLogoutButton />
-                    <Link href="/" className="text-xs text-novraux-grey hover:text-white transition-colors block">
+                    <Link href="/" className="text-xs text-novraux-bone/60 dark:text-novraux-bone/50 hover:text-novraux-bone transition-colors block font-normal">
                         &larr; Return to Store
                     </Link>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 p-8 overflow-y-auto">
+            <main className="flex-1 p-8 overflow-y-auto bg-novraux-bone dark:bg-novraux-obsidian transition-colors">
                 {children}
             </main>
         </div>

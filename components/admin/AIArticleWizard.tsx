@@ -166,21 +166,21 @@ export default function AIArticleWizard() {
     const progressPercent = (currentStep / 5) * 100;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800 p-8">
+        <div className="min-h-screen bg-gradient-to-br from-novraux-bone to-white dark:from-novraux-obsidian dark:to-novraux-graphite p-8 transition-colors">
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="mb-8 flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-serif font-bold text-neutral-900 dark:text-white mb-2">
+                        <h1 className="font-serif text-4xl md:text-5xl font-light text-novraux-obsidian dark:text-novraux-bone mb-2 tracking-wide transition-colors">
                             ✨ AI Article Wizard
                         </h1>
-                        <p className="text-neutral-600 dark:text-neutral-400">
+                        <p className="text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">
                             Create a complete article in 5 automated steps
                         </p>
                     </div>
                     <Link
                         href="/admin/posts"
-                        className="px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white border border-neutral-300 dark:border-neutral-600 rounded-lg hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all"
+                        className="px-4 py-3 text-sm text-novraux-ash dark:text-novraux-bone/70 hover:text-novraux-obsidian dark:hover:text-novraux-bone border border-novraux-ash/30 dark:border-novraux-graphite rounded-sm hover:bg-novraux-ash/10 dark:hover:bg-novraux-graphite/50 transition-all uppercase tracking-novraux-medium"
                     >
                         ← Back to Posts
                     </Link>
@@ -191,22 +191,24 @@ export default function AIArticleWizard() {
                     <div className="flex justify-between items-center mb-2">
                         {[1, 2, 3, 4, 5].map(step => (
                             <div key={step} className="flex items-center">
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${step < currentStep
-                                    ? 'bg-green-500 text-white'
-                                    : step === currentStep
-                                        ? 'bg-novraux-gold text-white'
-                                        : 'bg-neutral-300 dark:bg-neutral-700 text-neutral-500'
-                                    }`}>
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-colors ${
+                                    step < currentStep
+                                        ? 'bg-green-600 dark:bg-green-500 text-white'
+                                        : step === currentStep
+                                            ? 'bg-novraux-gold text-novraux-obsidian'
+                                            : 'bg-novraux-ash/30 dark:bg-novraux-graphite text-novraux-ash dark:text-novraux-bone/50'
+                                }`}>
                                     {step < currentStep ? '✓' : step}
                                 </div>
                                 {step < 5 && (
-                                    <div className={`w-24 h-1 ${step < currentStep ? 'bg-green-500' : 'bg-neutral-300 dark:bg-neutral-700'
-                                        }`} />
+                                    <div className={`w-24 h-1 transition-colors ${
+                                        step < currentStep ? 'bg-green-600 dark:bg-green-500' : 'bg-novraux-ash/30 dark:bg-novraux-graphite'
+                                    }`} />
                                 )}
                             </div>
                         ))}
                     </div>
-                    <div className="w-full bg-neutral-200 dark:bg-neutral-700 rounded-full h-2">
+                    <div className="w-full bg-novraux-ash/20 dark:bg-novraux-graphite rounded-full h-2">
                         <div
                             className="bg-gradient-to-r from-novraux-gold to-yellow-500 h-2 rounded-full transition-all duration-500"
                             style={{ width: `${progressPercent}%` }}
@@ -216,7 +218,7 @@ export default function AIArticleWizard() {
 
                 {/* Error Display */}
                 {error && (
-                    <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-800 dark:text-red-300">
+                    <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-sm text-red-800 dark:text-red-300 font-light transition-colors">
                         {error}
                     </div>
                 )}
@@ -224,9 +226,9 @@ export default function AIArticleWizard() {
                 {/* Loading Overlay */}
                 {loading && (
                     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center">
-                        <div className="bg-white dark:bg-neutral-800 p-8 rounded-xl shadow-2xl flex flex-col items-center gap-4">
+                        <div className="bg-novraux-bone dark:bg-novraux-graphite p-8 rounded-sm shadow-2xl flex flex-col items-center gap-4 transition-colors">
                             <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-novraux-gold"></div>
-                            <p className="text-lg font-medium text-neutral-700 dark:text-neutral-300">
+                            <p className="text-lg font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">
                                 {currentStep === 1 && 'Generating trending titles...'}
                                 {currentStep === 2 && 'Finding article angles...'}
                                 {currentStep === 3 && 'Writing your article...'}
@@ -237,43 +239,45 @@ export default function AIArticleWizard() {
                 )}
 
                 {/* Step Content */}
-                <div className="bg-white dark:bg-neutral-900 rounded-xl shadow-xl p-8 border border-neutral-200 dark:border-neutral-700">
+                <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-lg p-8 border border-novraux-ash/10 dark:border-novraux-graphite transition-colors">
 
                     {/* STEP 1: Niche/Title Input */}
                     {currentStep === 1 && (
                         <div className="space-y-6">
-                            <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white">
+                            <h2 className="font-serif text-2xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">
                                 Step 1: Choose Your Starting Point
                             </h2>
 
                             <div className="flex gap-4">
                                 <button
                                     onClick={() => setUseCustomTitle(false)}
-                                    className={`flex-1 p-4 border-2 rounded-lg transition-all ${!useCustomTitle
-                                        ? 'border-novraux-gold bg-yellow-50 dark:bg-yellow-900/20'
-                                        : 'border-neutral-300 dark:border-neutral-600'
-                                        }`}
+                                    className={`flex-1 p-4 border-2 rounded-sm transition-all ${
+                                        !useCustomTitle
+                                            ? 'border-novraux-gold bg-novraux-gold/10 dark:bg-novraux-gold/20'
+                                            : 'border-novraux-ash/30 dark:border-novraux-graphite'
+                                    }`}
                                 >
                                     <div className="text-3xl mb-2">💡</div>
-                                    <div className="font-semibold">Generate Ideas</div>
-                                    <div className="text-sm text-neutral-500">Let AI suggest titles</div>
+                                    <div className="font-medium text-novraux-obsidian dark:text-novraux-bone transition-colors">Generate Ideas</div>
+                                    <div className="text-sm text-novraux-ash dark:text-novraux-bone/70 transition-colors">Let AI suggest titles</div>
                                 </button>
                                 <button
                                     onClick={() => setUseCustomTitle(true)}
-                                    className={`flex-1 p-4 border-2 rounded-lg transition-all ${useCustomTitle
-                                        ? 'border-novraux-gold bg-yellow-50 dark:bg-yellow-900/20'
-                                        : 'border-neutral-300 dark:border-neutral-600'
-                                        }`}
+                                    className={`flex-1 p-4 border-2 rounded-sm transition-all ${
+                                        useCustomTitle
+                                            ? 'border-novraux-gold bg-novraux-gold/10 dark:bg-novraux-gold/20'
+                                            : 'border-novraux-ash/30 dark:border-novraux-graphite'
+                                    }`}
                                 >
                                     <div className="text-3xl mb-2">✍️</div>
-                                    <div className="font-semibold">Custom Title</div>
-                                    <div className="text-sm text-neutral-500">I have my own</div>
+                                    <div className="font-medium text-novraux-obsidian dark:text-novraux-bone transition-colors">Custom Title</div>
+                                    <div className="text-sm text-novraux-ash dark:text-novraux-bone/70 transition-colors">I have my own</div>
                                 </button>
                             </div>
 
                             {!useCustomTitle ? (
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                    <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
                                         Enter your niche or topic
                                     </label>
                                     <input
@@ -281,18 +285,18 @@ export default function AIArticleWizard() {
                                         value={niche}
                                         onChange={(e) => setNiche(e.target.value)}
                                         placeholder="e.g., sustainable luxury fashion"
-                                        className="w-full p-4 border border-neutral-300 dark:border-neutral-600 rounded-lg text-lg dark:bg-neutral-800 dark:text-white focus:ring-2 focus:ring-novraux-gold"
+                                        className="w-full p-4 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-lg dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian focus:ring-2 focus:ring-novraux-gold transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                                     />
                                     {titles.length > 0 && (
                                         <div className="mt-6 space-y-3">
-                                            <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                                            <p className="text-sm font-medium text-novraux-ash dark:text-novraux-bone/70 uppercase tracking-novraux-medium transition-colors">
                                                 Select a title:
                                             </p>
                                             {titles.map((title, i) => (
                                                 <button
                                                     key={i}
                                                     onClick={() => handleTitleSelect(title)}
-                                                    className="w-full text-left p-4 border border-neutral-200 dark:border-neutral-700 rounded-lg hover:border-novraux-gold hover:bg-yellow-50 dark:hover:bg-yellow-900/10 transition-all"
+                                                    className="w-full text-left p-4 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm hover:border-novraux-gold hover:bg-novraux-gold/5 dark:hover:bg-novraux-gold/10 transition-all text-novraux-obsidian dark:text-novraux-bone"
                                                 >
                                                     <span className="text-novraux-gold font-bold mr-2">{i + 1}.</span>
                                                     {title}
@@ -303,7 +307,7 @@ export default function AIArticleWizard() {
                                 </div>
                             ) : (
                                 <div>
-                                    <label className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                                    <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
                                         Enter your article title
                                     </label>
                                     <input
@@ -311,7 +315,7 @@ export default function AIArticleWizard() {
                                         value={customTitle}
                                         onChange={(e) => setCustomTitle(e.target.value)}
                                         placeholder="e.g., The Art of Minimalist Luxury"
-                                        className="w-full p-4 border border-neutral-300 dark:border-neutral-600 rounded-lg text-lg dark:bg-neutral-800 dark:text-white focus:ring-2 focus:ring-novraux-gold"
+                                        className="w-full p-4 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-lg dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian focus:ring-2 focus:ring-novraux-gold transition-colors placeholder:text-novraux-ash dark:placeholder:text-novraux-bone/50"
                                     />
                                 </div>
                             )}
@@ -319,7 +323,7 @@ export default function AIArticleWizard() {
                             <button
                                 onClick={handleStep1}
                                 disabled={loading || (!niche && !customTitle)}
-                                className="w-full py-4 bg-gradient-to-r from-novraux-gold to-yellow-600 text-white rounded-lg font-semibold text-lg hover:shadow-lg transition-all disabled:opacity-50"
+                                className="w-full py-4 bg-gradient-to-r from-novraux-gold to-yellow-600 text-novraux-obsidian rounded-sm font-semibold text-lg hover:shadow-lg transition-all disabled:opacity-50 uppercase tracking-novraux-medium"
                             >
                                 {useCustomTitle ? 'Continue' : 'Generate Titles'}
                             </button>
@@ -329,19 +333,19 @@ export default function AIArticleWizard() {
                     {/* STEP 2: Angle Selection */}
                     {currentStep === 2 && angles.length > 0 && (
                         <div className="space-y-6">
-                            <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white">
+                            <h2 className="font-serif text-2xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">
                                 Step 2: Choose Your Angle
                             </h2>
-                            <div className="p-4 bg-neutral-100 dark:bg-neutral-800 rounded-lg">
-                                <p className="text-sm text-neutral-500">Selected Title:</p>
-                                <p className="font-semibold text-neutral-900 dark:text-white">{selectedTitle}</p>
+                            <div className="p-4 bg-novraux-ash/10 dark:bg-novraux-obsidian rounded-sm transition-colors">
+                                <p className="text-xs uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 mb-1 transition-colors">Selected Title:</p>
+                                <p className="font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">{selectedTitle}</p>
                             </div>
                             <div className="space-y-3">
                                 {angles.map((angle, i) => (
                                     <button
                                         key={i}
                                         onClick={() => handleAngleSelect(angle)}
-                                        className="w-full text-left p-4 border border-neutral-200 dark:border-neutral-700 rounded-lg hover:border-novraux-gold hover:bg-yellow-50 dark:hover:bg-yellow-900/10 transition-all"
+                                        className="w-full text-left p-4 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm hover:border-novraux-gold hover:bg-novraux-gold/5 dark:hover:bg-novraux-gold/10 transition-all text-novraux-obsidian dark:text-novraux-bone"
                                     >
                                         <span className="text-novraux-gold font-bold mr-2">{i + 1}.</span>
                                         {angle}
@@ -354,17 +358,17 @@ export default function AIArticleWizard() {
                     {/* STEP 3: Content Generation (Auto) */}
                     {currentStep === 3 && content && (
                         <div className="space-y-6">
-                            <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white">
+                            <h2 className="font-serif text-2xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">
                                 Step 3: Article Generated
                             </h2>
-                            <div className="p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                            <div className="p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-sm transition-colors">
                                 <div className="flex items-center gap-3 mb-2">
                                     <span className="text-3xl">✓</span>
-                                    <span className="font-semibold text-green-900 dark:text-green-300">
+                                    <span className="font-medium text-green-900 dark:text-green-300 transition-colors">
                                         Article content generated successfully!
                                     </span>
                                 </div>
-                                <p className="text-sm text-green-700 dark:text-green-400">
+                                <p className="text-sm text-green-700 dark:text-green-400 font-light transition-colors">
                                     {content.split(' ').length} words written
                                 </p>
                             </div>
@@ -372,7 +376,7 @@ export default function AIArticleWizard() {
                                 value={content}
                                 onChange={(e) => setContent(e.target.value)}
                                 rows={12}
-                                className="w-full p-4 border border-neutral-300 dark:border-neutral-600 rounded-lg font-mono text-sm dark:bg-neutral-800 dark:text-white"
+                                className="w-full p-4 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm font-mono text-sm dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors focus:ring-2 focus:ring-novraux-gold"
                             />
                         </div>
                     )}
@@ -380,51 +384,51 @@ export default function AIArticleWizard() {
                     {/* STEP 4: Image & SEO Generation (Auto) */}
                     {currentStep === 4 && seo.metaTitle && (
                         <div className="space-y-6">
-                            <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white">
+                            <h2 className="font-serif text-2xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">
                                 Step 4: Media & SEO Generated
                             </h2>
 
                             {imageUrl && (
                                 <div>
-                                    <p className="text-sm font-medium text-neutral-600 dark:text-neutral-400 mb-2">
+                                    <p className="text-xs font-normal uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 mb-2 transition-colors">
                                         Featured Image:
                                     </p>
                                     <img
                                         src={imageUrl}
                                         alt="Generated"
-                                        className="w-full rounded-lg border border-neutral-200 dark:border-neutral-700"
+                                        className="w-full rounded-sm border border-novraux-ash/20 dark:border-novraux-graphite transition-colors"
                                     />
                                 </div>
                             )}
 
                             <div className="space-y-4">
                                 <div>
-                                    <label className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                                    <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
                                         Meta Title
                                     </label>
                                     <input
                                         type="text"
                                         value={seo.metaTitle}
                                         onChange={(e) => setSeo({ ...seo, metaTitle: e.target.value })}
-                                        className="w-full p-3 border border-neutral-300 dark:border-neutral-600 rounded-lg dark:bg-neutral-800 dark:text-white"
+                                        className="w-full p-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors focus:ring-2 focus:ring-novraux-gold"
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                                    <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
                                         Meta Description
                                     </label>
                                     <textarea
                                         value={seo.metaDescription}
                                         onChange={(e) => setSeo({ ...seo, metaDescription: e.target.value })}
                                         rows={3}
-                                        className="w-full p-3 border border-neutral-300 dark:border-neutral-600 rounded-lg dark:bg-neutral-800 dark:text-white"
+                                        className="w-full p-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm dark:bg-novraux-obsidian dark:text-novraux-bone bg-white text-novraux-obsidian transition-colors focus:ring-2 focus:ring-novraux-gold"
                                     />
                                 </div>
                             </div>
 
                             <button
                                 onClick={() => setCurrentStep(5)}
-                                className="w-full py-4 bg-gradient-to-r from-novraux-gold to-yellow-600 text-white rounded-lg font-semibold text-lg hover:shadow-lg transition-all"
+                                className="w-full py-4 bg-gradient-to-r from-novraux-gold to-yellow-600 text-novraux-obsidian rounded-sm font-semibold text-lg hover:shadow-lg transition-all uppercase tracking-novraux-medium"
                             >
                                 Review & Save
                             </button>
@@ -434,13 +438,13 @@ export default function AIArticleWizard() {
                     {/* STEP 5: Review & Save */}
                     {currentStep === 5 && (
                         <div className="space-y-6">
-                            <h2 className="text-2xl font-semibold text-neutral-900 dark:text-white">
+                            <h2 className="font-serif text-2xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">
                                 Step 5: Review & Save
                             </h2>
 
-                            <div className="p-6 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-                                <h3 className="font-bold text-lg mb-2">🎉 Your Article is Ready!</h3>
-                                <ul className="text-sm space-y-1 text-neutral-700 dark:text-neutral-300">
+                            <div className="p-6 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border border-green-200 dark:border-green-800 rounded-sm transition-colors">
+                                <h3 className="font-bold text-lg mb-2 text-novraux-obsidian dark:text-novraux-bone transition-colors">🎉 Your Article is Ready!</h3>
+                                <ul className="text-sm space-y-1 text-novraux-obsidian dark:text-novraux-bone font-light transition-colors">
                                     <li>✓ Title: {selectedTitle}</li>
                                     <li>✓ Content: {content.split(' ').length} words</li>
                                     <li>✓ Featured Image: {imageUrl ? 'Generated' : 'Skipped'}</li>
@@ -451,13 +455,13 @@ export default function AIArticleWizard() {
                             <div className="flex gap-4">
                                 <button
                                     onClick={() => handleSave(true)}
-                                    className="flex-1 py-4 border-2 border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 rounded-lg font-semibold text-lg hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all"
+                                    className="flex-1 py-4 border-2 border-novraux-ash/30 dark:border-novraux-graphite text-novraux-obsidian dark:text-novraux-bone rounded-sm font-semibold text-lg hover:bg-novraux-ash/10 dark:hover:bg-novraux-graphite/50 transition-all uppercase tracking-novraux-medium"
                                 >
                                     Save as Draft
                                 </button>
                                 <button
                                     onClick={() => handleSave(false)}
-                                    className="flex-1 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg font-semibold text-lg hover:shadow-lg transition-all"
+                                    className="flex-1 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-sm font-semibold text-lg hover:shadow-lg transition-all uppercase tracking-novraux-medium"
                                 >
                                     Publish Now
                                 </button>
@@ -472,7 +476,7 @@ export default function AIArticleWizard() {
                                     setAngles([]);
                                     setContent('');
                                 }}
-                                className="w-full py-3 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+                                className="w-full py-3 text-novraux-ash dark:text-novraux-bone/70 hover:text-novraux-obsidian dark:hover:text-novraux-bone transition-colors uppercase tracking-novraux-medium text-sm"
                             >
                                 ← Start Over
                             </button>

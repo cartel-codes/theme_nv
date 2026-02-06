@@ -141,7 +141,7 @@ export default function AdminUserForm({ userId }: AdminUserFormProps) {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="text-gray-500">Loading...</div>
+        <div className="text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">Loading...</div>
       </div>
     );
   }
@@ -150,25 +150,25 @@ export default function AdminUserForm({ userId }: AdminUserFormProps) {
     <div className="max-w-2xl">
       <form
         onSubmit={handleSubmit}
-        className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 space-y-6"
+        className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-sm p-8 space-y-6 border border-novraux-ash/10 dark:border-novraux-graphite transition-colors"
       >
         {/* Error Message */}
         {error && (
-          <div className="p-4 bg-red-100 border border-red-400 text-red-700 dark:bg-red-900/30 dark:border-red-700 dark:text-red-400 rounded-lg">
+          <div className="p-4 bg-red-50 border border-red-200 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-300 rounded-sm font-light transition-colors">
             {error}
           </div>
         )}
 
         {/* Success Message */}
         {success && (
-          <div className="p-4 bg-green-100 border border-green-400 text-green-700 dark:bg-green-900/30 dark:border-green-700 dark:text-green-400 rounded-lg">
+          <div className="p-4 bg-green-50 border border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-300 rounded-sm font-light transition-colors">
             User saved successfully! Redirecting...
           </div>
         )}
 
         {/* Username */}
         <div>
-          <label htmlFor="username" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+          <label htmlFor="username" className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
             Username
           </label>
           <input
@@ -178,14 +178,14 @@ export default function AdminUserForm({ userId }: AdminUserFormProps) {
             value={formData.username}
             onChange={handleInputChange}
             placeholder="Enter username"
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm bg-white dark:bg-novraux-obsidian text-novraux-obsidian dark:text-novraux-bone placeholder-novraux-ash dark:placeholder-novraux-bone/50 focus:ring-2 focus:ring-novraux-gold focus:outline-none transition-colors"
             disabled={submitting}
           />
         </div>
 
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+          <label htmlFor="email" className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
             Email Address
           </label>
           <input
@@ -195,15 +195,15 @@ export default function AdminUserForm({ userId }: AdminUserFormProps) {
             value={formData.email}
             onChange={handleInputChange}
             placeholder="Enter email address"
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm bg-white dark:bg-novraux-obsidian text-novraux-obsidian dark:text-novraux-bone placeholder-novraux-ash dark:placeholder-novraux-bone/50 focus:ring-2 focus:ring-novraux-gold focus:outline-none transition-colors"
             disabled={submitting}
           />
         </div>
 
         {/* Password */}
         <div>
-          <label htmlFor="password" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
-            Password {!isEditing && <span className="text-red-500">*</span>}
+          <label htmlFor="password" className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
+            Password {!isEditing && <span className="text-red-500 dark:text-red-400">*</span>}
           </label>
           <input
             type="password"
@@ -212,10 +212,10 @@ export default function AdminUserForm({ userId }: AdminUserFormProps) {
             value={formData.password}
             onChange={handleInputChange}
             placeholder={isEditing ? 'Leave blank to keep current password' : 'Enter password'}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm bg-white dark:bg-novraux-obsidian text-novraux-obsidian dark:text-novraux-bone placeholder-novraux-ash dark:placeholder-novraux-bone/50 focus:ring-2 focus:ring-novraux-gold focus:outline-none transition-colors"
             disabled={submitting}
           />
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs text-novraux-ash dark:text-novraux-bone/70 mt-2 font-light transition-colors">
             {isEditing ? 'Leave blank to keep the current password' : 'Minimum 8 characters recommended'}
           </p>
         </div>
@@ -223,7 +223,7 @@ export default function AdminUserForm({ userId }: AdminUserFormProps) {
         {/* Confirm Password */}
         {formData.password && (
           <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+            <label htmlFor="confirmPassword" className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
               Confirm Password
             </label>
             <input
@@ -233,7 +233,7 @@ export default function AdminUserForm({ userId }: AdminUserFormProps) {
               value={formData.confirmPassword}
               onChange={handleInputChange}
               placeholder="Confirm password"
-              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm bg-white dark:bg-novraux-obsidian text-novraux-obsidian dark:text-novraux-bone placeholder-novraux-ash dark:placeholder-novraux-bone/50 focus:ring-2 focus:ring-novraux-gold focus:outline-none transition-colors"
               disabled={submitting}
             />
           </div>
@@ -241,7 +241,7 @@ export default function AdminUserForm({ userId }: AdminUserFormProps) {
 
         {/* Role */}
         <div>
-          <label htmlFor="role" className="block text-sm font-semibold text-gray-900 dark:text-white mb-2">
+          <label htmlFor="role" className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2 transition-colors">
             Role
           </label>
           <select
@@ -249,7 +249,7 @@ export default function AdminUserForm({ userId }: AdminUserFormProps) {
             name="role"
             value={formData.role}
             onChange={handleInputChange}
-            className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm bg-white dark:bg-novraux-obsidian text-novraux-obsidian dark:text-novraux-bone focus:ring-2 focus:ring-novraux-gold focus:outline-none transition-colors"
             disabled={submitting}
           >
             <option value="admin">Admin</option>
@@ -266,10 +266,10 @@ export default function AdminUserForm({ userId }: AdminUserFormProps) {
             name="isActive"
             checked={formData.isActive}
             onChange={handleInputChange}
-            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
+            className="w-4 h-4 rounded border-novraux-ash/30 text-novraux-gold focus:ring-2 focus:ring-novraux-gold"
             disabled={submitting}
           />
-          <label htmlFor="isActive" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="isActive" className="text-sm font-medium text-novraux-obsidian dark:text-novraux-bone transition-colors">
             Account Active
           </label>
         </div>
@@ -279,13 +279,13 @@ export default function AdminUserForm({ userId }: AdminUserFormProps) {
           <button
             type="submit"
             disabled={submitting}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-novraux-obsidian dark:bg-novraux-gold text-novraux-bone dark:text-novraux-obsidian rounded-sm hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-bone dark:hover:text-novraux-obsidian transition-colors disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-novraux-medium font-medium text-sm"
           >
             {submitting ? 'Saving...' : isEditing ? 'Update User' : 'Create User'}
           </button>
           <Link
             href="/admin/users"
-            className="px-6 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+            className="px-6 py-3 border border-novraux-ash/30 dark:border-novraux-graphite text-novraux-obsidian dark:text-novraux-bone rounded-sm hover:bg-novraux-ash/10 dark:hover:bg-novraux-graphite/50 transition-colors uppercase tracking-novraux-medium font-medium text-sm"
           >
             Cancel
           </Link>

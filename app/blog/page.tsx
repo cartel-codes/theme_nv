@@ -24,60 +24,45 @@ export default async function BlogPage() {
   });
 
   return (
-    <div className="bg-novraux-cream min-h-screen">
-      <div className="container mx-auto px-4 py-24 lg:px-8">
-        <div className="text-center mb-20">
-          <span className="text-xs font-semibold tracking-editorial uppercase text-novraux-terracotta">
-            The Journal
-          </span>
-          <h1 className="mt-4 font-serif text-4xl md:text-5xl font-medium text-novraux-charcoal uppercase">
-            Stories & Perspectives
+    <div className="bg-novraux-bone dark:bg-novraux-obsidian min-h-screen transition-colors">
+      <div className="container mx-auto px-6 py-24 lg:px-8">
+        <div className="text-center mb-24">
+          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-light text-novraux-obsidian dark:text-novraux-bone uppercase tracking-tight transition-colors">
+            Journal
           </h1>
-          <p className="mt-6 text-novraux-grey max-w-xl mx-auto">
-            Exploring the intersection of contemporary design, traditional craftsmanship, and intentional living.
+          <p className="mt-6 font-sans text-lg font-light text-novraux-ash dark:text-novraux-bone/70 leading-relaxed transition-colors">
+            Thoughts on clothing, craft, and restraint.
           </p>
         </div>
 
-        <div className="grid gap-16 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
           {posts.map((post) => (
             <article key={post.id} className="group">
               <Link href={`/blog/${post.slug}`} className="block">
-                <div className="relative aspect-[3/2] overflow-hidden bg-novraux-beige">
+                <div className="relative aspect-[4/5] overflow-hidden bg-novraux-graphite rounded-sm">
                   {post.imageUrl ? (
                     <Image
                       src={post.imageUrl}
                       alt={post.title}
                       fill
-                      className="object-cover transition-all duration-700 group-hover:scale-105"
+                      className="object-cover transition-all duration-700 group-hover:scale-105 group-hover:opacity-90"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center text-novraux-grey text-[10px] tracking-editorial uppercase">
-                      No image
+                    <div className="flex h-full items-center justify-center text-novraux-ash/50 text-xs uppercase">
+                      —
                     </div>
                   )}
                 </div>
                 <div className="mt-8">
-                  <span className="text-[10px] tracking-editorial uppercase text-novraux-terracotta font-semibold">
-                    {post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-                      month: 'long',
-                      day: 'numeric',
-                      year: 'numeric',
-                    }) : 'Draft'}
-                  </span>
-                  <h2 className="mt-4 font-serif text-2xl font-medium text-novraux-charcoal group-hover:text-novraux-terracotta transition-colors leading-tight">
+                  <h2 className="font-serif text-2xl md:text-3xl font-light text-novraux-obsidian dark:text-novraux-bone group-hover:text-novraux-gold dark:group-hover:text-novraux-gold transition-colors leading-tight">
                     {post.title}
                   </h2>
                   {post.excerpt && (
-                    <p className="mt-4 line-clamp-3 text-sm text-novraux-grey leading-relaxed">
+                    <p className="mt-4 line-clamp-2 font-sans text-sm font-light text-novraux-ash dark:text-novraux-bone/70 leading-relaxed transition-colors">
                       {post.excerpt}
                     </p>
                   )}
-                  <div className="mt-6">
-                    <span className="text-[11px] font-semibold tracking-editorial uppercase text-novraux-charcoal border-b border-novraux-charcoal pb-0.5 group-hover:text-novraux-terracotta group-hover:border-novraux-terracotta transition-all">
-                      Read Story
-                    </span>
-                  </div>
                 </div>
               </Link>
             </article>
