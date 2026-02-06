@@ -252,7 +252,7 @@ export default function AccountPage() {
           <div>
             <h2 className="text-lg font-medium text-novraux-charcoal mb-4">Your Orders</h2>
             <Link
-              href="/orders"
+              href="/account/orders"
               className="inline-block px-4 py-2 text-sm font-medium text-white bg-novraux-charcoal rounded-lg hover:bg-novraux-charcoal/90 transition-colors"
             >
               View Order History

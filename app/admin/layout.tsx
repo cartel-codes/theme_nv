@@ -29,7 +29,7 @@ export default async function AdminLayout({
     return (
         <div className="min-h-screen bg-novraux-bone dark:bg-novraux-obsidian flex font-sans transition-colors">
             {/* Sidebar */}
-            <aside className="w-64 bg-novraux-obsidian dark:bg-black text-novraux-bone flex-shrink-0 hidden md:flex flex-col transition-colors">
+            <aside className="w-64 bg-novraux-obsidian dark:bg-black text-novraux-bone flex-shrink-0 hidden md:flex flex-col transition-colors sticky top-0 h-screen overflow-y-auto">
                 <div className="p-6 border-b border-novraux-bone/10">
                     <Link href="/" className="font-serif text-2xl tracking-widest uppercase text-novraux-bone">
                         Novraux
@@ -43,6 +43,12 @@ export default async function AdminLayout({
                         className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone hover:bg-novraux-bone/10 dark:hover:bg-novraux-bone/5 transition-colors uppercase tracking-novraux-medium"
                     >
                         Dashboard
+                    </Link>
+                    <Link
+                        href="/admin/orders"
+                        className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone hover:bg-novraux-bone/10 dark:hover:bg-novraux-bone/5 transition-colors uppercase tracking-novraux-medium"
+                    >
+                        Orders
                     </Link>
                     <Link
                         href="/admin/products"
@@ -61,12 +67,6 @@ export default async function AdminLayout({
                         className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone hover:bg-novraux-bone/10 dark:hover:bg-novraux-bone/5 transition-colors uppercase tracking-novraux-medium"
                     >
                         Articles
-                    </Link>
-                    <Link
-                        href="/admin/orders"
-                        className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone/40 opacity-50 cursor-not-allowed uppercase tracking-novraux-medium"
-                    >
-                        Orders (Soon)
                     </Link>
                     <Link
                         href="/admin/profile"

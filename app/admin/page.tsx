@@ -4,9 +4,10 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-    const [productCount, categoryCount, recentProducts, avgPrice] = await Promise.all([
+    const [productCount, categoryCount, orderCount, recentProducts, avgPrice] = await Promise.all([
         prisma.product.count(),
         prisma.category.count(),
+        prisma.order.count(),
         prisma.product.findMany({
             take: 5,
             orderBy: { createdAt: 'desc' },
@@ -40,8 +41,8 @@ export default async function AdminDashboard() {
                 </div>
                 <div className="bg-novraux-bone dark:bg-novraux-graphite p-8 rounded-sm border border-novraux-ash/10 dark:border-novraux-graphite transition-colors">
                     <h3 className="text-xs uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 font-normal transition-colors">Orders</h3>
-                    <p className="text-4xl font-serif mt-4 text-novraux-obsidian dark:text-novraux-bone transition-colors">0</p>
-                    <p className="text-xs text-novraux-ash dark:text-novraux-bone/70 mt-2 font-light transition-colors">Coming soon</p>
+                    <p className="text-4xl font-serif mt-4 text-novraux-obsidian dark:text-novraux-bone transition-colors">{orderCount}</p>
+                    <p className="text-xs text-novraux-ash dark:text-novraux-bone/70 mt-2 font-light transition-colors">Total orders</p>
                 </div>
             </div>
 

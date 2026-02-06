@@ -8,6 +8,8 @@ import { AuthProvider } from '@/app/providers';
 import { CartProvider } from '@/contexts/CartContext';
 import { ThemeProvider } from '@/providers/ThemeProvider';
 import { generateMetadata as getBaseMetadata } from '@/lib/seo';
+import PublicOnly from '@/components/PublicOnly';
+
 
 // Cormorant Garamond - For elegant headlines and editorial content
 const cormorant = Cormorant_Garamond({
@@ -46,7 +48,10 @@ export default function RootLayout({
                 <main className="flex-1 text-novraux-obsidian dark:text-novraux-bone transition-colors duration-300">
                   {children}
                 </main>
-                <Footer />
+                <PublicOnly>
+                  <Footer />
+                </PublicOnly>
+
                 <CartDrawer />
               </CartProvider>
             </AuthProvider>

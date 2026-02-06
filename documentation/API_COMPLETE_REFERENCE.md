@@ -858,6 +858,26 @@ Captures the payment on PayPal and finalizes the order locally.
 **Side Effects**:
 - Order status updated to "paid"
 - Inventory deducted for all items
+
+**Validation & Security Notes**:
+- The capture endpoint re-validates the authenticated user against the local order. The order's `userId` must match the current session's user; otherwise the request is rejected with `403`.
+- The PayPal capture response is checked for status `COMPLETED` before the order is marked as paid.
+- When **strict validation** is enabled (see below), the captured amount and currency are compared against the local `order.total` in USD. Any significant mismatch returns a `400` error and does **not** mark the order as paid.
+
+**Environment Flags (PayPal Validation)**:
+- `PAYPAL_STRICT_VALIDATION` (optional):
+  - When set to `"true"`, the API enforces strict amount/currency validation on capture and fails the request on mismatches.
+- `NODE_ENV`:
+  - In `production`, strict validation is enabled by default even if `PAYPAL_STRICT_VALIDATION` is not set.
+  - In non-production environments, strict validation is **off** by default; mismatches are logged for investigation but do not block capture. This makes sandbox/local testing more forgiving.
+
+**Related Webhook**:
+- **POST** `/api/webhooks/paypal`
+  - Handles PayPal `PAYMENT.CAPTURE.COMPLETED` events as a secondary source of truth.
+  - If a capture webhook arrives for a known `paymentId` whose order is not yet marked paid, the webhook will:
+    - Update the order to `status: "paid"`, `paymentStatus: "captured"`.
+    - Attempt to deduct inventory for the order, logging (but not throwing) on stock errors.
+  - Other event types are logged and ignored so they do not cause webhook failures.
 - User's cart cleared
 
 ---
