@@ -1,0 +1,133 @@
+// Prisma Migration: Add Print-on-Demand Support
+// Run: npx prisma migrate dev --name add_print_on_demand
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// Print Provider Configuration
+model PrintProvider {
+  id              String         @id @default(cuid())
+  name            String         // "printful" or "printify"
+  apiKey          String         // Encrypted API key
+  isActive        Boolean        @default(true)
+  shopId          String?        // For Printify
+  webhookSecret   String?        // For webhook verification
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  
+  products        PrintProduct[]
+  orders          PrintOrder[]
+  
+  @@index([name])
+  @@index([isActive])
+}
+
+// POD Products (synced from Printful/Printify)
+model PrintProduct {
+  id                String    @id @default(cuid())
+  providerId        String
+  externalId        String    // Printful/Printify product ID
+  blueprintId       String?   // Printify blueprint ID
+  printProviderId   String?   // Printify print provider ID
+  name              String
+  description       String?
+  variants          Json      // Store variant data as JSON
+  mockupUrls        Json?     // Generated mockup URLs
+  designFiles       Json?     // Design file IDs/URLs
+  syncedAt          DateTime  @default(now())
+  isPublished       Boolean   @default(false)
+  
+  provider          PrintProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  localProducts     Product[]     @relation("PrintProductMapping")
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@unique([providerId, externalId])
+  @@index([providerId])
+  @@index([externalId])
+  @@index([isPublished])
+}
+
+// Track POD Orders
+model PrintOrder {
+  id                String    @id @default(cuid())
+  orderId           String    // Your local order ID
+  providerId        String        
+  externalOrderId   String?   // Printful/Printify order ID
+  externalOrderNumber String? // Human-readable order number
+  status            String    @default("draft") // draft, pending, fulfilled, cancelled, failed
+  statusMessage     String?
+  trackingNumber    String?
+  trackingUrl       String?
+  estimatedDelivery DateTime?
+  shippingCost      Decimal?  @db.Decimal(10, 2)
+  productionCost    Decimal?  @db.Decimal(10, 2)
+  items             Json      // Order items data
+  shippingAddress   Json      // Address info
+  webhookEvents     Json?     // Store webhook history
+  
+  provider          PrintProvider @relation(fields: [providerId], references: [id])
+  order             Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@unique([orderId, providerId])
+  @@index([orderId])
+  @@index([providerId])
+  @@index([externalOrderId])
+  @@index([status])
+}
+
+// Webhook Log (for debugging and audit)
+model PrintWebhookLog {
+  id              String    @id @default(cuid())
+  provider        String    // "printful" or "printify"
+  event           String    // event type (e.g., "order.updated")
+  payload         Json      // Full webhook payload
+  processed       Boolean   @default(false)
+  processedAt     DateTime?
+  error           String?
+  createdAt       DateTime  @default(now())
+  
+  @@index([provider])
+  @@index([event])
+  @@index([processed])
+  @@index([createdAt])
+}
+
+// ============================================
+// MODIFICATIONS TO EXISTING MODELS
+// ============================================
+
+// Add these fields to your existing Product model:
+// 
+//   isPrintOnDemand   Boolean       @default(false)
+//   printProductId    String?
+//   printProduct      PrintProduct? @relation("PrintProductMapping", fields: [printProductId], references: [id])
+// 
+//   @@index([isPrintOnDemand])
+//   @@index([printProductId])
+
+// Add these fields to your existing Order model:
+//
+//   printOrders       PrintOrder[]
+//   fulfillmentType   String?       // "standard", "pod", "mixed"
+//
+//   @@index([fulfillmentType])
+
+// Add these fields to your existing OrderItem model:
+//
+//   isPrintOnDemand   Boolean       @default(false)
+//   printVariantId    String?       // External variant ID
+//   designFileUrl     String?       // Custom design for this item
+//
+//   @@index([isPrintOnDemand])
