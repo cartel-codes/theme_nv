@@ -55,6 +55,14 @@ export async function POST(
             );
         }
 
+        // Create warehouse if missing (simple fallback)
+        let warehouse = await prisma.warehouse.findFirst({ where: { name: 'Main Warehouse' } });
+        if (!warehouse) {
+            warehouse = await prisma.warehouse.create({
+                data: { name: 'Main Warehouse', isActive: true }
+            });
+        }
+
         // Create variant with inventory
         const variant = await prisma.productVariant.create({
             data: {
@@ -65,7 +73,8 @@ export async function POST(
                 price: price ? parseFloat(price) : null,
                 inventory: {
                     create: {
-                        productId: id, // Link inventory to product too
+                        productId: id,
+                        warehouseId: warehouse.id,
                         quantity: stock ? parseInt(stock) : 0,
                     },
                 },

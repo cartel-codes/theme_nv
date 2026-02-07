@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { generateMetadata as getSEO, generateJsonLd, generateAutoTitle, generateAutoDescription } from '@/lib/seo';
-import ProductPurchase from '@/components/ProductPurchase';
+import ProductPurchaseEnhanced from '@/components/ProductPurchaseEnhanced';
 import ImageGallery from './ImageGallery';
 import ProductTabs from './ProductTabs';
 
@@ -59,6 +59,9 @@ export default async function ProductPage({ params }: PageProps) {
         orderBy: {
           createdAt: 'asc'
         }
+      },
+      specs: {
+        orderBy: { order: 'asc' }
       }
     },
   });
@@ -136,7 +139,11 @@ export default async function ProductPage({ params }: PageProps) {
             </div>
             <div>
               <span className="block text-[#8B8B8B] dark:text-novraux-beige/60 uppercase tracking-[0.25em] mb-1.5 font-medium text-[11px]">Availability</span>
-              <span className="text-green-600 dark:text-green-400 font-medium">In Stock</span>
+              {product.variants.reduce((acc, v) => acc + (v.inventory?.quantity || 0), 0) > 0 ? (
+                <span className="text-green-600 dark:text-green-400 font-medium">In Stock</span>
+              ) : (
+                <span className="text-red-600 dark:text-red-400 font-medium">Out of Stock</span>
+              )}
             </div>
           </div>
         </div>
@@ -210,15 +217,15 @@ export default async function ProductPage({ params }: PageProps) {
 
             {/* Short Description - Warm gray */}
             {product.description && (
-              <p className="text-[15px] leading-relaxed tracking-[0.02em] text-[#5D5D5D] dark:text-novraux-beige/80 border-l-2 border-[#D4A574] pl-6 italic">
-                {product.description.slice(0, 200)}
-                {product.description.length > 200 ? '...' : ''}
-              </p>
+              <div
+                className="text-[15px] leading-relaxed tracking-[0.02em] text-[#5D5D5D] dark:text-novraux-beige/80 border-l-2 border-[#D4A574] pl-6 italic"
+                dangerouslySetInnerHTML={{ __html: product.description }}
+              />
             )}
 
             {/* Purchase Section with Variants */}
             <div className="pt-4">
-              <ProductPurchase
+              <ProductPurchaseEnhanced
                 productId={product.id}
                 basePrice={price}
                 variants={product.variants.map(v => ({
@@ -229,8 +236,32 @@ export default async function ProductPage({ params }: PageProps) {
                   price: v.price ? Number(v.price) : null,
                   inventory: v.inventory
                 }))}
+                discountPercentage={product.discountPercentage ? Number(product.discountPercentage) : null}
+                isOnSale={product.isOnSale}
+                discountExpiresAt={product.discountExpiresAt?.toISOString() || null}
               />
             </div>
+
+            {/* Product Specifications */}
+            {product.specs && product.specs.length > 0 && (
+              <div className="pt-6 border-t border-neutral-100">
+                <h3 className="text-sm uppercase tracking-[0.2em] font-medium text-[#2C2C2C] dark:text-novraux-cream mb-4">
+                  Specifications
+                </h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  {product.specs.map((spec) => (
+                    <div key={spec.id}>
+                      <p className="text-[#8B8B8B] dark:text-novraux-beige/60 uppercase tracking-[0.15em] text-xs mb-1 font-medium">
+                        {spec.label}
+                      </p>
+                      <p className="text-[#2C2C2C] dark:text-novraux-cream font-medium">
+                        {spec.value}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Additional Info - Refined badges */}
             <div className="pt-6 flex flex-wrap gap-5 text-[11px] tracking-[0.25em] text-[#5D5D5D] dark:text-novraux-beige/80 uppercase">

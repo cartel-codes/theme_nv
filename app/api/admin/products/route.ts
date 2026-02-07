@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const { name, slug, description, price, categoryId, metaTitle, metaDescription, keywords, ogImage, focusKeyword, images } = body;
+    const { name, slug, description, price, categoryId, metaTitle, metaDescription, keywords, ogImage, focusKeyword, images, isOnSale, discountPercentage, discountExpiresAt } = body;
 
     if (!name || !slug || !price) {
       return NextResponse.json(
@@ -102,6 +102,9 @@ export async function POST(request: NextRequest) {
         keywords,
         ogImage,
         focusKeyword,
+        isOnSale: isOnSale || false,
+        discountPercentage: discountPercentage ? parseFloat(discountPercentage) : null,
+        discountExpiresAt: discountExpiresAt ? new Date(discountExpiresAt) : null,
         imageUrl: images && Array.isArray(images) && images.length > 0 ? images[0].url : null,
         images: {
           create: Array.isArray(images)

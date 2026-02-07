@@ -5,6 +5,7 @@ import { createContext, useContext, useState, useEffect, useCallback, ReactNode 
 interface CartItem {
     id: string;
     productId: string;
+    variantId?: string | null;
     quantity: number;
     product: {
         id: string;
@@ -13,6 +14,12 @@ interface CartItem {
         price: string | number;
         imageUrl?: string;
     };
+    variant?: {
+        id: string;
+        name: string;
+        value: string;
+        price?: string | number;
+    } | null;
 }
 
 interface CartContextType {
@@ -24,7 +31,7 @@ interface CartContextType {
     openDrawer: () => void;
     closeDrawer: () => void;
     refreshCart: () => Promise<void>;
-    addToCart: (productId: string, quantity?: number) => Promise<{ success: boolean; error?: string }>;
+    addToCart: (productId: string, quantity?: number, variantId?: string | null) => Promise<{ success: boolean; error?: string }>;
     updateQuantity: (itemId: string, quantity: number) => Promise<void>;
     removeItem: (itemId: string) => Promise<void>;
 }
@@ -38,7 +45,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = items.reduce(
-        (sum, item) => sum + Number(item.product.price) * item.quantity,
+        (sum, item) => {
+            const price = item.variant?.price ? Number(item.variant.price) : Number(item.product.price);
+            return sum + price * item.quantity;
+        },
         0
     );
 
@@ -56,12 +66,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
         }
     }, []);
 
-    const addToCart = useCallback(async (productId: string, quantity = 1) => {
+    const addToCart = useCallback(async (productId: string, quantity = 1, variantId?: string | null) => {
         try {
             const res = await fetch('/api/cart', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId, quantity }),
+                body: JSON.stringify({ productId, quantity, variantId }),
             });
 
             if (res.status === 401) {

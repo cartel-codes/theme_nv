@@ -35,6 +35,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
     ogImage: '',
     focusKeyword: '',
     images: [] as any[],
+    isOnSale: false,
+    discountPercentage: '',
+    discountExpiresAt: '',
   });
 
   useEffect(() => {
@@ -79,6 +82,9 @@ export default function ProductForm({ productId }: ProductFormProps) {
         ogImage: product.ogImage || '',
         focusKeyword: product.focusKeyword || '',
         images: product.images || [],
+        isOnSale: product.isOnSale || false,
+        discountPercentage: product.discountPercentage ? product.discountPercentage.toString() : '',
+        discountExpiresAt: product.discountExpiresAt ? new Date(product.discountExpiresAt).toISOString().split('T')[0] : '',
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch product');
@@ -360,14 +366,61 @@ export default function ProductForm({ productId }: ProductFormProps) {
             </select>
           </div>
         </div>
+
+        {/* Discount / Sale Section */}
+        <div className="pt-4 border-t border-novraux-ash/10 dark:border-novraux-graphite/50">
+          <h3 className="font-serif text-lg text-novraux-obsidian dark:text-novraux-bone mb-4">Promotions</h3>
+
+          <div className="flex items-center gap-3 mb-4">
+            <input
+              type="checkbox"
+              id="isOnSale"
+              name="isOnSale"
+              checked={formData.isOnSale}
+              onChange={(e) => setFormData(prev => ({ ...prev, isOnSale: e.target.checked }))}
+              className="w-4 h-4 rounded border-novraux-ash/20 text-novraux-gold focus:ring-novraux-gold bg-white dark:bg-novraux-graphite"
+            />
+            <label htmlFor="isOnSale" className="text-sm font-medium text-novraux-obsidian dark:text-novraux-bone cursor-pointer select-none">
+              Enable Sale Status
+            </label>
+          </div>
+
+          {formData.isOnSale && (
+            <div className="grid grid-cols-2 gap-4 animate-fadeIn">
+              <div>
+                <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2">Discount %</label>
+                <input
+                  type="number"
+                  name="discountPercentage"
+                  value={formData.discountPercentage}
+                  onChange={handleInputChange}
+                  placeholder="e.g. 20"
+                  min="0"
+                  max="100"
+                  className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm dark:bg-novraux-obsidian dark:text-novraux-bone"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-normal uppercase tracking-novraux-medium text-novraux-obsidian dark:text-novraux-bone mb-2">Sale Ends</label>
+                <input
+                  type="date"
+                  name="discountExpiresAt"
+                  value={formData.discountExpiresAt}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm text-sm dark:bg-novraux-obsidian dark:text-novraux-bone"
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Images */}
       <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm border border-novraux-ash/10 dark:border-novraux-graphite p-8 space-y-4 transition-colors">
         <h2 className="font-serif text-2xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">Product Images</h2>
         <p className="text-xs text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">💡 Uploading an image will automatically generate product name, description, and SEO fields using AI</p>
-        <ImageUploader 
-          images={formData.images} 
+        <ImageUploader
+          images={formData.images}
           onImagesChange={handleImagesUpdate}
           onImageUploadedForAI={handleImageUploadedForAI}
         />
