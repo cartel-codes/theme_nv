@@ -1,51 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { syncPrintfulProducts, getPrintfulProducts } from '@/lib/print-providers/printful/products';
+import { NextResponse } from 'next/server';
+import { syncPrintfulProducts } from '@/lib/print-providers/printful/products';
+import { syncPrintifyProducts } from '@/lib/print-providers/printify/products';
 
-// GET: List synced products with pagination
-export async function GET(request: NextRequest) {
+export async function POST(request: Request) {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const pageSize = parseInt(searchParams.get('pageSize') || '5', 10);
+    const { provider } = await request.json().catch(() => ({ provider: 'printful' }));
 
-    const result = await getPrintfulProducts(page, pageSize);
-    
-    return NextResponse.json(result);
+    let result;
+    if (provider === 'printify') {
+      result = await syncPrintifyProducts();
+    } else {
+      result = await syncPrintfulProducts();
+    }
+
+    if (result.success) {
+      return NextResponse.json(result);
+    } else {
+      return NextResponse.json({ error: result.error || 'Sync failed' }, { status: 500 });
+    }
   } catch (error: any) {
-    console.error('GET /sync error:', error);
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
 
-// POST: Trigger sync
-export async function POST() {
-  try {
-    console.log('Starting Printful product sync...');
-    const result = await syncPrintfulProducts();
-    
-    // Return summary with message
-    return NextResponse.json({
-      success: result.success,
-      error: result.error,
-      count: result.count || 0,
-      total: result.total,
-      totalAvailable: result.totalAvailable,
-      message: result.message || (result.success 
-        ? `Successfully synced ${result.count} products from Printful`
-        : 'Failed to sync products'),
-    });
-  } catch (error: any) {
-    console.error('POST /sync error:', error);
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: error.message,
-        count: 0,
-      },
-      { status: 500 }
-    );
+// Keep GET for backward compatibility if needed, or simple trigger
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const provider = searchParams.get('provider');
+
+  let result;
+  if (provider === 'printify') {
+    result = await syncPrintifyProducts();
+  } else {
+    result = await syncPrintfulProducts();
   }
+
+  return NextResponse.json(result);
 }

@@ -69,6 +69,12 @@ export default async function AdminLayout({
                         Articles
                     </Link>
                     <Link
+                        href="/admin/print-providers"
+                        className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone hover:bg-novraux-bone/10 dark:hover:bg-novraux-bone/5 transition-colors uppercase tracking-novraux-medium"
+                    >
+                        Print Providers
+                    </Link>
+                    <Link
                         href="/admin/profile"
                         className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone hover:bg-novraux-bone/10 dark:hover:bg-novraux-bone/5 transition-colors uppercase tracking-novraux-medium"
                     >

@@ -578,6 +578,41 @@ export async function generateArticleImage(prompt: string): Promise<ArrayBuffer>
     return await response.arrayBuffer();
 }
 
+/**
+ * Generate a product design image for Print-on-Demand.
+ * Returns ArrayBuffer (PNG/JPG).
+ */
+export async function generateProductDesign(prompt: string): Promise<ArrayBuffer> {
+    const hfKey = process.env.HUGGINGFACE_API_KEY;
+    if (!hfKey) throw new Error('HUGGINGFACE_API_KEY is not configured');
+
+    console.log('🎨 Generating POD Design:', prompt);
+
+    // Using SDXL or a specific model good for graphics/vectors if available
+    const model = "stabilityai/stable-diffusion-xl-base-1.0";
+
+    const response = await fetch(
+        `https://router.huggingface.co/hf-inference/models/${model}`,
+        {
+            headers: {
+                Authorization: `Bearer ${hfKey}`,
+                "Content-Type": "application/json",
+                "x-use-cache": "false"
+            },
+            method: "POST",
+            body: JSON.stringify({
+                inputs: `t-shirt design, vector art style, ${prompt}, isolated on white background, high quality, 8k, flat color`,
+            }),
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error(`Hugging Face API Error: ${response.statusText}`);
+    }
+
+    return await response.arrayBuffer();
+}
+
 
 /**
  * Generate article angle/topic proposals based on a title.

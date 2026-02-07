@@ -1,0 +1,39 @@
+
+> novraux-ecommerce@0.1.0 dev
+> next dev -p 3001
+
+  ▲ Next.js 14.2.18
+  - Local:        http://localhost:3001
+  - Environments: .env.local, .env
+
+ ✓ Starting...
+ ✓ Ready in 3.7s
+ ✓ Compiled /middleware in 441ms (72 modules)
+ ○ Compiling /admin/login ...
+ ✓ Compiled /admin/login in 6.1s (603 modules)
+ ✓ Compiled in 1244ms (296 modules)
+ GET /admin/login 200 in 7417ms
+ ○ Compiling /api/cart ...
+ ✓ Compiled /api/cart in 1558ms (418 modules)
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Cart"."id", "public"."Cart"."sessionId", "public"."Cart"."createdAt", "public"."Cart"."updatedAt", "public"."Cart"."userId" FROM "public"."Cart" WHERE ("public"."Cart"."sessionId" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query INSERT INTO "public"."Cart" ("id","sessionId","createdAt","updatedAt") VALUES ($1,$2,$3,$4) RETURNING "public"."Cart"."id"
+prisma:query SELECT "public"."Cart"."id", "public"."Cart"."sessionId", "public"."Cart"."createdAt", "public"."Cart"."updatedAt", "public"."Cart"."userId" FROM "public"."Cart" WHERE "public"."Cart"."id" = $1 LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."CartItem"."id", "public"."CartItem"."cartId", "public"."CartItem"."productId", "public"."CartItem"."quantity", "public"."CartItem"."createdAt", "public"."CartItem"."updatedAt", "public"."CartItem"."variantId" FROM "public"."CartItem" WHERE "public"."CartItem"."cartId" IN ($1) OFFSET $2
+prisma:query COMMIT
+ GET /api/cart 200 in 3149ms
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Cart"."id", "public"."Cart"."sessionId", "public"."Cart"."createdAt", "public"."Cart"."updatedAt", "public"."Cart"."userId" FROM "public"."Cart" WHERE ("public"."Cart"."sessionId" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query INSERT INTO "public"."Cart" ("id","sessionId","createdAt","updatedAt") VALUES ($1,$2,$3,$4) RETURNING "public"."Cart"."id"
+prisma:query SELECT "public"."Cart"."id", "public"."Cart"."sessionId", "public"."Cart"."createdAt", "public"."Cart"."updatedAt", "public"."Cart"."userId" FROM "public"."Cart" WHERE "public"."Cart"."id" = $1 LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."CartItem"."id", "public"."CartItem"."cartId", "public"."CartItem"."productId", "public"."CartItem"."quantity", "public"."CartItem"."createdAt", "public"."CartItem"."updatedAt", "public"."CartItem"."variantId" FROM "public"."CartItem" WHERE "public"."CartItem"."cartId" IN ($1) OFFSET $2
+prisma:query COMMIT
+ GET /api/cart 200 in 735ms

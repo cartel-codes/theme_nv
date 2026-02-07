@@ -1,4 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
+import { PODOrder, PODProduct, PODVariant, PODWebhookEvent } from '../types';
 
 export class PrintfulAPI {
   private client: AxiosInstance;
@@ -20,9 +21,9 @@ export class PrintfulAPI {
       const { data } = await this.client.get('/stores');
       return { success: true, data: data.result };
     } catch (error: any) {
-      return { 
-        success: false, 
-        error: error.response?.data?.error?.message || error.message 
+      return {
+        success: false,
+        error: error.response?.data?.error?.message || error.message
       };
     }
   }
@@ -79,7 +80,7 @@ export class PrintfulAPI {
   }
 
   // Orders
-  async createOrder(orderData: any) {
+  async createOrder(orderData: PODOrder) {
     const { data } = await this.client.post('/orders', orderData);
     return data.result;
   }
@@ -121,7 +122,7 @@ export class PrintfulAPI {
   // Mockups
   async generateMockup(taskData: any) {
     const { data } = await this.client.post(
-      `/mockup-generator/create-task/${taskData.product_id}`, 
+      `/mockup-generator/create-task/${taskData.product_id}`,
       taskData
     );
     return data.result;

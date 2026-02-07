@@ -12,7 +12,28 @@ This document covers the core storefront features built before the admin panel. 
 
 ---
 
-## 1. Products
+## 1. Print-on-Demand (POD)
+27: 
+28: ### Integration
+29: 
+30: - **Provider**: Printful
+31: - **Sync Logic**: `lib/print-providers/printful` handles catalog synchronization.
+32: - **Models**: `PrintProvider`, `PrintProduct` (staging area), `Product` (storefront).
+33: 
+34: ### Workflow
+35: 
+36: 1. **Sync**: Fetch products from Printful (`/api/admin/print-providers/sync`).
+37: 2. **Import & Customize**: 
+38:    - Admin selects a synced product.
+39:    - **Customization UI**: `/admin/print-providers/import/[id]` allows renaming, pricing, and variant selection.
+40:    - **AI Enhancement**: Auto-generates SEO title, description, and keywords.
+41: 3. **Publish**: Creates a standard storefront `Product` with `isPrintOnDemand: true`.
+42:    - Variants are mapped (e.g., Printful "Red / XL" -> Store "Color / Size").
+43:    - Inventory is tracked via `Inventory` model (linked to Printful stock status).
+44: 
+45: ---
+46: 
+47: ## 2. Products
 
 ### Product Catalog
 
