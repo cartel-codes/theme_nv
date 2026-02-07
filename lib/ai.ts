@@ -588,7 +588,10 @@ export async function generateProductDesign(prompt: string): Promise<ArrayBuffer
 
     console.log('🎨 Generating POD Design:', prompt);
 
-    // Using SDXL or a specific model good for graphics/vectors if available
+    // Optimized prompt for luxury and clean edges
+    const optimizedPrompt = `luxury boutique apparel design, ${prompt}, ultra-premium minimalist vector art, isolated on pure white background, crisp sharp edges, high contrast, clean lines, professional branding graphic, 8k resolution, flat 2d art, boutique store quality, centered composition`;
+    const negativePrompt = `low quality, blurry, text, watermark, background textures, messy lines, realistic photo, 3d render, shadows, gradients, complex background, frame, border`;
+
     const model = "stabilityai/stable-diffusion-xl-base-1.0";
 
     const response = await fetch(
@@ -601,12 +604,19 @@ export async function generateProductDesign(prompt: string): Promise<ArrayBuffer
             },
             method: "POST",
             body: JSON.stringify({
-                inputs: `t-shirt design, vector art style, ${prompt}, isolated on white background, high quality, 8k, flat color`,
+                inputs: optimizedPrompt,
+                parameters: {
+                    negative_prompt: negativePrompt,
+                    num_inference_steps: 40,
+                    guidance_scale: 8.5
+                }
             }),
         }
     );
 
     if (!response.ok) {
+        const errText = await response.text();
+        console.error('HF Error:', errText);
         throw new Error(`Hugging Face API Error: ${response.statusText}`);
     }
 

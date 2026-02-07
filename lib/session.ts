@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { getSessionByToken, createTrackedSession, invalidateSession, updateSessionActivity, isSessionValid } from './session-tracking';
 
 const SESSION_COOKIE_NAME = 'admin_session';
-const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 export interface SessionData {
   id: string;

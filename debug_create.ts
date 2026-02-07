@@ -42,8 +42,8 @@ async function main() {
 
     // 3. Test Create Product
     // Use a known successful blueprint if possible, or fetch one
-    const blueprintId = 3; // Men's Cotton Crew Tee (Standard)
-    const providerId = 29; // Monster Digital (Standard)
+    const blueprintId = 5; // Unisex Cotton Crew Tee
+    const providerId = 41; // Duplium
     // Need valid variants for this combo.
     console.log('Fetching variants for Blueprint 3, Provider 29...');
 

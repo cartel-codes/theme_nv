@@ -21,6 +21,9 @@ interface ProductForm {
     description: string;
     price: number;
     selectedVariants: number[]; // Variant IDs
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: string;
 }
 
 export default function ImportProductPage() {
@@ -36,7 +39,10 @@ export default function ImportProductPage() {
         slug: '',
         description: '',
         price: 0,
-        selectedVariants: []
+        selectedVariants: [],
+        metaTitle: '',
+        metaDescription: '',
+        keywords: ''
     });
     const [error, setError] = useState<string | null>(null);
 
@@ -73,8 +79,11 @@ export default function ImportProductPage() {
                         name: found.name,
                         slug: found.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
                         description: found.description || '',
-                        price: 0, // Default to 0 so user sets it
-                        selectedVariants: found.variants.map((v: any) => v.id)
+                        price: 25.0, // Default for luxury basics
+                        selectedVariants: found.variants.map((v: any) => v.id),
+                        metaTitle: found.name,
+                        metaDescription: found.description?.substring(0, 160) || '',
+                        keywords: ''
                     });
                 } else {
                     setError('Product not found in synced catalog. Please Sync first.');
@@ -100,7 +109,12 @@ export default function ImportProductPage() {
                     slug: form.slug,
                     description: form.description,
                     price: form.price,
-                    selectedVariantIds: form.selectedVariants
+                    selectedVariantIds: form.selectedVariants,
+                    seo: {
+                        metaTitle: form.metaTitle,
+                        metaDescription: form.metaDescription,
+                        keywords: form.keywords
+                    }
                 }),
             });
             const data = await res.json();
@@ -192,6 +206,42 @@ export default function ImportProductPage() {
                                 onChange={e => setForm({ ...form, description: e.target.value })}
                                 rows={5}
                                 className="w-full bg-novraux-bone/5 border border-novraux-bone/10 rounded-sm p-2 text-novraux-bone text-sm focus:outline-none focus:border-novraux-bone/30"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Search Engine Optimization */}
+                    <div className="bg-novraux-bone/5 p-6 rounded-sm border border-novraux-bone/10 space-y-4">
+                        <h3 className="text-lg font-serif text-novraux-bone">Search Engine Optimization</h3>
+
+                        <div>
+                            <label className="block text-xs uppercase tracking-novraux-medium text-novraux-bone/60 mb-1">Meta Title</label>
+                            <input
+                                type="text"
+                                value={form.metaTitle || ''}
+                                onChange={e => setForm({ ...form, metaTitle: e.target.value })}
+                                className="w-full bg-novraux-bone/5 border border-novraux-bone/10 rounded-sm p-2 text-novraux-bone text-sm focus:outline-none focus:border-novraux-bone/30"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs uppercase tracking-novraux-medium text-novraux-bone/60 mb-1">Meta Description</label>
+                            <textarea
+                                value={form.metaDescription || ''}
+                                onChange={e => setForm({ ...form, metaDescription: e.target.value })}
+                                rows={3}
+                                className="w-full bg-novraux-bone/5 border border-novraux-bone/10 rounded-sm p-2 text-novraux-bone text-sm focus:outline-none focus:border-novraux-bone/30"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs uppercase tracking-novraux-medium text-novraux-bone/60 mb-1">Keywords</label>
+                            <input
+                                type="text"
+                                value={form.keywords || ''}
+                                onChange={e => setForm({ ...form, keywords: e.target.value })}
+                                className="w-full bg-novraux-bone/5 border border-novraux-bone/10 rounded-sm p-2 text-novraux-bone text-sm focus:outline-none focus:border-novraux-bone/30"
+                                placeholder="comma, separated, keywords"
                             />
                         </div>
                     </div>

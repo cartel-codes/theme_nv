@@ -621,3 +621,18 @@ model PrintWebhookLog {
   @@index([processed])
   @@index([createdAt])
 }
+
+model AIDesign {
+  id            String   @id @default(cuid())
+  prompt        String
+  revisedPrompt String?  // The actual optimized prompt used
+  imageUrl      String
+  category      String?
+  tags          String[]
+  isFavorite    Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([category])
+  @@index([isFavorite])
+}

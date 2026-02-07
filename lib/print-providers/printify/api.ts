@@ -106,13 +106,31 @@ export class PrintifyAPI {
 
     async createProduct(shopId: string, productData: any) {
         try {
-            // productData structure: { title, description, blueprint_id, print_provider_id, variants: [...], print_areas: [...] }
-            console.log('Creating product with payload:', JSON.stringify(productData, null, 2));
+            // Detailed logging before sending
+            console.log('🚀 === CREATING PRODUCT ===');
+            console.log('📝 Shop ID:', shopId);
+            console.log('📋 Payload object:', productData);
+            console.log('📋 Payload JSON:', JSON.stringify(productData));
+            console.log('📋 Payload keys:', Object.keys(productData));
+
+            // Pre-flight validation for required fields
+            if (!productData.images) productData.images = [];
+            if (!productData.tags) productData.tags = [];
+
+            console.log('🌐 Making POST request to:', `/shops/${shopId}/products.json`);
+            console.log('📤 Request config:', this.client.defaults);
+
             const { data } = await this.client.post(`/shops/${shopId}/products.json`, productData);
-            console.log('Create product response:', data);
+            console.log('✅ Create product response:', data);
             return data;
         } catch (error: any) {
-            console.error('createProduct error:', error.response?.data || error.message);
+            console.error('❌ === PRINTIFY ERROR ===');
+            console.error('Status:', error.response?.status);
+            console.error('Status text:', error.response?.statusText);
+            console.error('Headers sent:', error.config?.headers);
+            console.error('Data sent:', error.config?.data);
+            console.error('Response data:', error.response?.data);
+            console.error('Error message:', error.message);
             throw error;
         }
     }

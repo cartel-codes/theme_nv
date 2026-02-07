@@ -5,7 +5,7 @@ import { PrintifyAPI } from './api';
 // This is the token the user provided. 
 // Ideally we store this via Admin UI, but for initial setup we hardcode/seed it or use it if provided.
 // Since the user GAVE it to me, I'll update the DB record with it during sync.
-const PROVIDED_API_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzN2Q0YmQzMDM1ZmUxMWU5YTgwM2FiN2VlYjNjY2M5NyIsImp0aSI6IjFkYzJlNmNiMjQzNTMyZjUwYjQ4YzEzYjgyYzE5M2E2MmUxMWQ3M2U5YTJkY2EwZWM2OGUyMWRkODQ0ODViY2VhNDVjZDlhMDhhODdlZDg4IiwiaWF0IjoxNzcwNDQyNTAxLjMyMDgxNCwibmJmIjoxNzcwNDQyNTAxLjMyMDgxNSwiZXhwIjoxODAxOTc4NTAxLjMxMjU5MSwic3ViIjoiMjYzMDAwMTUiLCJzY29wZXMiOlsic2hvcHMubWFuYWdlIiwic2hvcHMucmVhZCIsImNhdGFsb2cucmVhZCIsIm9yZGVycy5yZWFkIiwib3JkZXJzLndyaXRlIiwicHJvZHVjdHMucmVhZCIsInByb2R1Y3RzLndyaXRlIiwid2ViaG9va3MucmVhZCIsIndlYmhvb2tzLndyaXRlIiwidXBsb2Fkcy5yZWFkIiwidXBsb2Fkcy53cml0ZSIsInByaW50X3Byb3ZpZGVycy5yZWFkIiwidXNlci5pbmZvIl19.CnF8rZ7aBj4AdjeHRQ9zPaN0CV4q4J43rwCR7Qy-fB0-V2ppHLfWjwLuk4B5mNNDhbI9ifvFxY9ddHFLALRUQ1lLnQtetN_No03EWM3PSFgTjCYUYk4ly16NDTNt_h8L-Mns6DYRG8hwfJlVo80XtBmrLzNka0--k2lPd62YE_vtUFaiXeY-wyP5CrVb_sH6CPBkSKFNYI5gdfxyVGMyVVZ6fwsU6TYC03MBHDZL0ikFIfqBYCjGBNXW1dYGXrEGUfcDpTy_hifVZ3aPepz-PxcySi6bLIdt85FLtNOc2K5mZdq5_Av68_yaOCFQvmMaykOjVuzYrQAWhC1mBBD35osUM9YGf_dWjBrD6abtt-mJV77QEiYtzlN0jFGnmGshBCvk_7KVEsmFleaqGkW_r6beSUOq89W45TvK-Y9z5sA20Sp6EuK9BP4ACkUnJAATlSVo-p-BzN6bKbOnCx9eh4s45MZlsrqGjlLgVcitw_vnBCs7gKG7OZEUw_aEDAjA3VVx-8EakiI13scMJLi8778_IbPO0xxScs5NjlQxQxKVVtg29DejzV6cd9cMHGTJfqy6pof7DMkM4A1f0OKC60P9CzisT-JMPyjU6icGO2uWPeQ05Efmkc6urks967zu2W1RRJADR3Yr32aYJ9nWEecyNA7-d6c6sGXSxZtQUpM';
+const PROVIDED_API_KEY = process.env.PRINTIFY_API_KEY || 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIzN2Q0YmQzMDM1ZmUxMWU5YTgwM2FiN2VlYjNjY2M5NyIsImp0aSI6IjFkYzJlNmNiMjQzNTMyZjUwYjQ4YzEzYjgyYzE5M2E2MmUxMWQ3M2U5YTJkY2EwZWM2OGUyMWRkODQ0ODViY2VhNDVjZDlhMDhhODdlZDg4IiwiaWF0IjoxNzcwNDQyNTAxLjMyMDgxNCwibmJmIjoxNzcwNDQyNTAxLjMyMDgxNSwiZXhwIjoxODAxOTc4NTAxLjMxMjU5MSwic3ViIjoiMjYzMDAwMTUiLCJzY29wZXMiOlsic2hvcHMubWFuYWdlIiwic2hvcHMucmVhZCIsImNhdGFsb2cucmVhZCIsIm9yZGVycy5yZWFkIiwib3JkZXJzLndyaXRlIiwicHJvZHVjdHMucmVhZCIsInByb2R1Y3RzLndyaXRlIiwid2ViaG9va3MucmVhZCIsIndlYmhvb2tzLndyaXRlIiwidXBsb2Fkcy5yZWFkIiwidXBsb2Fkcy53cml0ZSIsInByaW50X3Byb3ZpZGVycy5yZWFkIiwidXNlci5pbmZvIl19.CnF8rZ7aBj4AdjeHRQ9zPaN0CV4q4J43rwCR7Qy-fB0-V2ppHLfWjwLuk4B5mNNDhbI9ifvFxY9ddHFLALRUQ1lLnQtetN_No03EWM3PSFgTjCYUYk4ly16NDTNt_h8L-Mns6DYRG8hwfJlVo80XtBmrLzNka0--k2lPd62YE_vtUFaiXeY-wyP5CrVb_sH6CPBkSKFNYI5gdfxyVGMyVVZ6fwsU6TYC03MBHDZL0ikFIfqBYCjGBNXW1dYGXrEGUfcDpTy_hifVZ3aPepz-PxcySi6bLIdt85FLtNOc2K5mZdq5_Av68_yaOCFQvmMaykOjVuzYrQAWhC1mBBD35osUM9YGf_dWjBrD6abtt-mJV77QEiYtzlN0jFGnmGshBCvk_7KVEsmFleaqGkW_r6beSUOq89W45TvK-Y9z5sA20Sp6EuK9BP4ACkUnJAATlSVo-p-BzN6bKbOnCx9eh4s45MZlsrqGjlLgVcitw_vnBCs7gKG7OZEUw_aEDAjA3VVx-8EakiI13scMJLi8778_IbPO0xxScs5NjlQxQxKVVtg29DejzV6cd9cMHGTJfqy6pof7DMkM4A1f0OKC60P9CzisT-JMPyjU6icGO2uWPeQ05Efmkc6urks967zu2W1RRJADR3Yr32aYJ9nWEecyNA7-d6c6sGXSxZtQUpM';
 
 export async function syncPrintifyProducts() {
     try {
@@ -119,6 +119,124 @@ export async function syncPrintifyProducts() {
 
     } catch (error: any) {
         console.error('Printify Sync Failed:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+export async function createProductFromPrintify(
+    externalId: string,
+    localProductData: any
+) {
+    try {
+        const printProduct = await prisma.printProduct.findFirst({
+            where: { externalId },
+            include: { provider: true }
+        });
+
+        if (!printProduct) {
+            throw new Error('Print product not found. Sync catalog first.');
+        }
+
+        // 1. Fetch detailed variants from Printify if needed
+        // (Printify variants are already synced in syncPrintifyProducts, 
+        // but we can ensure they are fresh if necessary. For now we use synced variants)
+        const variantsToSync: any[] = Array.isArray(printProduct.variants) ? printProduct.variants as any[] : [];
+
+        // 2. Filter Variants based on user selection
+        const selectedIds = localProductData.selectedVariantIds; // Array of IDs (strings in Printify)
+        const variantsToCreate = selectedIds && Array.isArray(selectedIds)
+            ? variantsToSync.filter((v: any) => selectedIds.includes(v.id))
+            : variantsToSync;
+
+        if (variantsToCreate.length === 0) {
+            throw new Error('No variants selected for import.');
+        }
+
+        // 3. Prepare SEO and Metadata
+        const baseName = localProductData.name || printProduct.name;
+        const baseDesc = localProductData.description || printProduct.description || '';
+        const mainImage = (printProduct.mockupUrls as any)?.main;
+
+        // Reuse AI SEO if present in request, else generate
+        let seoData = localProductData.seo || {};
+        if (!seoData.metaTitle) {
+            try {
+                const { generateSEOWithAI } = await import('@/lib/ai');
+                seoData = await generateSEOWithAI(baseName, baseDesc, 'product', mainImage);
+            } catch (e) {
+                console.error('AI SEO Generation failed:', e);
+                seoData = {
+                    metaTitle: baseName,
+                    metaDescription: baseDesc.substring(0, 160),
+                    suggestedSlug: baseName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+                };
+            }
+        }
+
+        const slug = localProductData.slug || seoData.suggestedSlug || baseName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Date.now().toString().slice(-4);
+        const finalPrice = localProductData.price ? parseFloat(localProductData.price) : 0;
+
+        // 4. Create Product
+        const product = await prisma.product.create({
+            data: {
+                name: baseName,
+                slug: slug,
+                description: baseDesc,
+                price: finalPrice,
+                imageUrl: mainImage,
+                isPrintOnDemand: true,
+                printProductId: printProduct.id,
+                // SEO
+                metaTitle: seoData.metaTitle || baseName,
+                metaDescription: seoData.metaDescription || baseDesc.substring(0, 160),
+                keywords: seoData.keywords || '',
+                focusKeyword: seoData.focusKeyword || '',
+                // Variants
+                variants: {
+                    create: variantsToCreate.map((v: any) => ({
+                        name: 'Variant',
+                        value: v.name || 'Default',
+                        sku: v.sku || `PRTY-${externalId}-${v.id}`,
+                        price: finalPrice, // Usually price is set per product in our simple model
+                    }))
+                },
+                // Images
+                images: {
+                    create: (printProduct.mockupUrls as any)?.all?.map((url: string, index: number) => ({
+                        url,
+                        alt: `${baseName} - View ${index + 1}`,
+                        isPrimary: index === 0,
+                        order: index
+                    })) || []
+                }
+            },
+            include: { variants: true }
+        });
+
+        // 5. Inventory
+        if (product.variants && product.variants.length > 0) {
+            await Promise.all(product.variants.map(v => {
+                return prisma.inventory.create({
+                    data: {
+                        productId: product.id,
+                        variantId: v.id,
+                        quantity: 999, // POD typically has high "virtual" stock
+                        reorderLevel: 0
+                    }
+                });
+            }));
+        }
+
+        // 6. Mark as published
+        await prisma.printProduct.update({
+            where: { id: printProduct.id },
+            data: { isPublished: true }
+        });
+
+        return { success: true, product };
+
+    } catch (error: any) {
+        console.error('Failed to publish Printify product:', error);
         return { success: false, error: error.message };
     }
 }

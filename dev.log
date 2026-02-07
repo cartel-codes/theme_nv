@@ -37,3 +37,4 @@ prisma:query SELECT "public"."Cart"."id", "public"."Cart"."sessionId", "public".
 prisma:query SELECT "public"."CartItem"."id", "public"."CartItem"."cartId", "public"."CartItem"."productId", "public"."CartItem"."quantity", "public"."CartItem"."createdAt", "public"."CartItem"."updatedAt", "public"."CartItem"."variantId" FROM "public"."CartItem" WHERE "public"."CartItem"."cartId" IN ($1) OFFSET $2
 prisma:query COMMIT
  GET /api/cart 200 in 735ms
+ ✓ Compiled in 1332ms (296 modules)
