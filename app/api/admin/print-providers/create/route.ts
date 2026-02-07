@@ -82,6 +82,11 @@ export async function POST(request: Request) {
 
         console.log('✓ Converted variant IDs:', variantIdsAsNumbers);
 
+        // Transformation values from body
+        const x = body.designX !== undefined ? Number(body.designX) : 0.5;
+        const y = body.designY !== undefined ? Number(body.designY) : 0.5;
+        const scale = body.designScale !== undefined ? Number(body.designScale) : 1;
+
         // Build product payload with all required Printify fields
         const productPayload: any = {
             title: title.trim(),
@@ -102,9 +107,9 @@ export async function POST(request: Request) {
                             images: [
                                 {
                                     id: imageId,
-                                    x: 0.5,
-                                    y: 0.5,
-                                    scale: 1,
+                                    x: x,
+                                    y: y,
+                                    scale: scale,
                                     angle: 0
                                 }
                             ]

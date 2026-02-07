@@ -19,7 +19,7 @@ export async function GET() {
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { prompt, imageUrl, revisedPrompt, category, tags } = body;
+        const { prompt, imageUrl, revisedPrompt, category, tags, title, description, seo } = body;
 
         if (!prompt || !imageUrl) {
             return NextResponse.json({ success: false, error: 'Prompt and Image URL are required' }, { status: 400 });
@@ -30,6 +30,9 @@ export async function POST(req: Request) {
                 prompt,
                 imageUrl,
                 revisedPrompt,
+                title,
+                description,
+                seo,
                 category: category || 'General',
                 tags: tags || []
             }

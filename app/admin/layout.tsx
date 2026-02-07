@@ -75,6 +75,12 @@ export default async function AdminLayout({
                         Print Providers
                     </Link>
                     <Link
+                        href="/admin/ai-tools"
+                        className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone hover:bg-novraux-bone/10 dark:hover:bg-novraux-bone/5 transition-colors uppercase tracking-novraux-medium"
+                    >
+                        AI Tools
+                    </Link>
+                    <Link
                         href="/admin/profile"
                         className="block px-4 py-2 rounded-sm text-xs font-normal text-novraux-bone hover:bg-novraux-bone/10 dark:hover:bg-novraux-bone/5 transition-colors uppercase tracking-novraux-medium"
                     >

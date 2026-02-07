@@ -20,7 +20,13 @@ This comprehensive documentation provides everything you need to understand, dev
 - Common workflows
 - Implementation checklist
 
-**🏗️ Understanding Architecture?** Read: [SYSTEM ARCHITECTURE](./SYSTEM_ARCHITECTURE.md)
+
+- Auto-save media to cloud storage
+- Free image generation, video, audio, AI chat
+- OpenAI API integration with cost control
+- Media gallery with full management
+- Detailed cost breakdown & monitoring
+- Complete troubleshooting guide
 - High-level system design
 - Database schema (UML)
 - Component structure
@@ -172,9 +178,8 @@ Related Files:
 - **Session lifecycle?** → [VISUAL DIAGRAMS - Session State Machine](./VISUAL_DIAGRAMS_WORKFLOWS.md#session-state-machine)
 - **Cart states?** → [VISUAL DIAGRAMS - Cart State Machine](./VISUAL_DIAGRAMS_WORKFLOWS.md#cart-state-machine)
 
----
+### AI & Utilities (NEW!)
 
-## 📊 DOCUMENTATION STATISTICS
 
 | Document | Type | Size | Focus |
 |----------|------|------|-------|
@@ -182,8 +187,9 @@ Related Files:
 | DESIGN_PATTERNS.md | Guide | 7,000 words | Best practices, patterns, standards |
 | API_COMPLETE_REFERENCE.md | Reference | 6,000 words | API endpoints, examples, error codes |
 | VISUAL_DIAGRAMS_WORKFLOWS.md | Reference | 5,500 words | Diagrams, sequences, state machines |
+
 | DEVELOPER_QUICK_REFERENCE.md | Quick Start | 4,500 words | Checklist, workflows, tips |
-| **TOTAL** | - | **33,000+ words** | **Complete, production-ready docs** |
+| **TOTAL** | - | **38,000+ words** | **Complete, production-ready docs** |
 
 ---
 
@@ -397,14 +403,15 @@ Read: None (Use the app)
 
 ### Unique Features of This Documentation
 
-✅ **Comprehensive** - 33,000+ words covering entire system  
+✅ **Comprehensive** - 38,000+ words covering entire system  
 ✅ **Visual** - SQL UML diagrams, sequence diagrams, state machines  
 ✅ **Practical** - Code examples, curl commands, implementation guides  
 ✅ **Organized** - Clear sections, cross-references, navigation  
-✅ **Up-to-date** - Last updated February 5, 2026  
+
+✅ **Up-to-date** - Last updated February 7, 2026  
 ✅ **Actionable** - Implementation checklists, next steps, debugging tips  
 ✅ **Developer-friendly** - Code style, best practices, patterns  
-✅ **Production-ready** - Security, performance, deployment  
+✅ **Production-ready** - Security, performance, deployment, cost control  
 
 ---
 

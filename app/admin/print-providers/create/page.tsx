@@ -1,13 +1,15 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { Rnd } from 'react-rnd';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export default function PodCreatorPage() {
     const router = useRouter();
-    const [step, setStep] = useState(1); // 1: Design, 2: Blueprint, 3: Provider, 4: Preview/Variants, 5: Review
+    const [step, setStep] = useState(1);
+    const canvasRef = useRef<HTMLDivElement>(null);
     const [loading, setLoading] = useState(false);
 
     // Data
@@ -57,7 +59,13 @@ export default function PodCreatorPage() {
             });
     }, []);
 
-    // Step 1: Generate Design
+    // Step 1: Blueprint
+    const handleSelectBlueprint = async (bp: any) => {
+        setSelectedBlueprint(bp);
+        setStep(2);
+    };
+
+    // Step 2: Generate Design
     const handleGenerateDesign = async () => {
         if (!designPrompt.trim()) {
             setErrorMsg('Please describe the design vision you wish to materialize.');
@@ -68,11 +76,16 @@ export default function PodCreatorPage() {
         setErrorMsg('');
 
         try {
-            console.log('🎨 Materializing vision...');
+            // Contextualize prompt with selected blueprint
+            const contextualPrompt = selectedBlueprint
+                ? `${designPrompt} (optimized for a ${selectedBlueprint.title})`
+                : designPrompt;
+
+            console.log('🎨 Materializing vision for product:', selectedBlueprint?.title);
             const imageRes = await fetch('/api/admin/print-providers/generate-image', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: designPrompt })
+                body: JSON.stringify({ prompt: contextualPrompt })
             });
             const imageData = await imageRes.json();
 
@@ -83,7 +96,7 @@ export default function PodCreatorPage() {
             const aiRes = await fetch('/api/admin/print-providers/generate-metadata', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: designPrompt })
+                body: JSON.stringify({ prompt: contextualPrompt })
             });
             const aiData = await aiRes.json();
 
@@ -93,48 +106,49 @@ export default function PodCreatorPage() {
                 setSeo(aiData.seo);
 
                 // Auto-save to treasury
-                fetch('/api/admin/ai/designs', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        prompt: designPrompt,
-                        imageUrl: imageData.image,
-                        revisedPrompt: aiData.revisedPrompt || '',
-                        category: aiData.seo?.suggestedCategory || 'General'
-                    })
-                }).then(res => res.json()).then(saveData => {
-                    if (saveData.success) setSavedDesigns(prev => [saveData.design, ...prev]);
-                });
+                try {
+                    fetch('/api/admin/ai/designs', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            prompt: designPrompt,
+                            imageUrl: imageData.image,
+                            revisedPrompt: aiData.revisedPrompt || '',
+                            category: aiData.seo?.suggestedCategory || 'General',
+                            title: aiData.title,
+                            description: aiData.description,
+                            seo: aiData.seo
+                        })
+                    }).then(res => res.json()).then(saveData => {
+                        if (saveData.success) setSavedDesigns(prev => [saveData.design, ...prev]);
+                    }).catch(e => console.error('Treasury save failed:', e));
+                } catch (e) {
+                    console.error('Silent treasury fail:', e);
+                }
             } else {
                 setTitle('Untitled Masterpiece');
                 setDescription(designPrompt);
             }
 
-            setStep(2);
+            setLoading(true);
+            try {
+                const res = await fetch(`/api/admin/print-providers/catalog?type=providers&blueprint_id=${selectedBlueprint.id}`);
+                const data = await res.json();
+                if (data.success) {
+                    setProviders(data.data);
+                    setStep(3);
+                } else {
+                    setErrorMsg('No artisan workshops found for this canvas.');
+                }
+            } catch (e) {
+                setErrorMsg('Failed to fetch partners.');
+            } finally {
+                setLoading(false);
+            }
         } catch (e: any) {
             setErrorMsg(e.message);
         } finally {
             setGenerating(false);
-        }
-    };
-
-    // Step 2: Blueprint
-    const handleSelectBlueprint = async (bp: any) => {
-        setSelectedBlueprint(bp);
-        setLoading(true);
-        try {
-            const res = await fetch(`/api/admin/print-providers/catalog?type=providers&blueprint_id=${bp.id}`);
-            const data = await res.json();
-            if (data.success) {
-                setProviders(data.data);
-                setStep(3);
-            } else {
-                setErrorMsg('No artisan workshops found for this canvas.');
-            }
-        } catch (e) {
-            setErrorMsg('Failed to fetch partners.');
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -207,8 +221,8 @@ export default function PodCreatorPage() {
     );
 
     const progressSteps = [
-        { id: 1, name: 'Identity' },
-        { id: 2, name: 'Foundation' },
+        { id: 1, name: 'Foundation' },
+        { id: 2, name: 'Identity' },
         { id: 3, name: 'Workshop' },
         { id: 4, name: 'Aesthetics' },
         { id: 5, name: 'Manifest' }
@@ -257,54 +271,8 @@ export default function PodCreatorPage() {
             {/* Right Side: Content */}
             <div className="flex-1 max-w-4xl">
 
-                {/* STEP 1: AI IDENTITY */}
+                {/* STEP 1: FOUNDATION SELECTION */}
                 {step === 1 && (
-                    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-                        <div className="space-y-6">
-                            <h2 className="text-5xl font-serif text-novraux-bone leading-tight">Define the <br /><span className="italic">extraordinary</span>.</h2>
-                            <p className="text-novraux-bone/50 text-base max-w-xl leading-relaxed">
-                                Our creative engine will interpret your vision, crafting both visual art and a refined brand narrative for your piece.
-                            </p>
-                        </div>
-
-                        <div className="space-y-10 bg-white/[0.03] border border-white/5 p-12 rounded-sm backdrop-blur-sm shadow-2xl">
-                            <div className="space-y-6">
-                                <label className="text-[10px] uppercase tracking-[0.4em] text-novraux-bone/40">The Artistic Vision</label>
-                                <textarea
-                                    className="w-full bg-transparent border-b border-novraux-bone/5 py-4 text-2xl font-serif text-novraux-bone focus:outline-none focus:border-novraux-bone/40 transition-all resize-none placeholder:text-novraux-bone/5 leading-relaxed"
-                                    rows={3}
-                                    value={designPrompt}
-                                    onChange={(e) => setDesignPrompt(e.target.value)}
-                                    placeholder="Describe your design masterpiece..."
-                                />
-                            </div>
-
-                            {errorMsg && (
-                                <div className="text-red-400 text-[10px] uppercase tracking-widest bg-red-400/5 p-6 border border-red-400/10">
-                                    {errorMsg}
-                                </div>
-                            )}
-
-                            <button
-                                onClick={handleGenerateDesign}
-                                disabled={generating || !designPrompt.trim()}
-                                className="w-full py-7 bg-novraux-bone text-novraux-obsidian text-[11px] uppercase tracking-[0.5em] font-bold hover:bg-white transition-all disabled:opacity-20 flex items-center justify-center gap-6 shadow-xl"
-                            >
-                                {generating ? (
-                                    <>
-                                        <div className="w-5 h-5 border-2 border-novraux-obsidian/20 border-t-novraux-obsidian rounded-full animate-spin" />
-                                        Materializing Masterpiece...
-                                    </>
-                                ) : (
-                                    'Commence Creation'
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {/* STEP 2: FOUNDATION SELECTION */}
-                {step === 2 && (
                     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
                         <div className="space-y-6">
                             <div className="flex justify-between items-end">
@@ -352,8 +320,90 @@ export default function PodCreatorPage() {
                                 </button>
                             ))}
                         </div>
+                    </div>
+                )}
 
-                        <button onClick={() => setStep(1)} className="text-[10px] uppercase tracking-[0.4em] text-white/20 hover:text-white transition-all pt-4 block">← Back to Identity</button>
+                {/* STEP 2: AI IDENTITY */}
+                {step === 2 && (
+                    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+                        <div className="space-y-6">
+                            <h2 className="text-5xl font-serif text-novraux-bone leading-tight">Define the <br /><span className="italic">extraordinary</span>.</h2>
+                            <p className="text-novraux-bone/50 text-base max-w-xl leading-relaxed">
+                                Our creative engine will interpret your vision for the <span className="text-novraux-bone font-medium italic">{selectedBlueprint?.title}</span>.
+                            </p>
+                        </div>
+
+                        <div className="space-y-10 bg-white/[0.03] border border-white/5 p-12 rounded-sm backdrop-blur-sm shadow-2xl">
+                            <div className="space-y-6">
+                                <label className="text-[10px] uppercase tracking-[0.4em] text-novraux-bone/40">The Artistic Vision</label>
+                                <textarea
+                                    className="w-full bg-transparent border-b border-novraux-bone/5 py-4 text-2xl font-serif text-novraux-bone focus:outline-none focus:border-novraux-bone/40 transition-all resize-none placeholder:text-novraux-bone/5 leading-relaxed"
+                                    rows={3}
+                                    value={designPrompt}
+                                    onChange={(e) => setDesignPrompt(e.target.value)}
+                                    placeholder="Describe your design masterpiece..."
+                                />
+                            </div>
+
+                            {errorMsg && (
+                                <div className="text-red-400 text-[10px] uppercase tracking-widest bg-red-400/5 p-6 border border-red-400/10">
+                                    {errorMsg}
+                                </div>
+                            )}
+
+                            <button
+                                onClick={handleGenerateDesign}
+                                disabled={generating || !designPrompt.trim()}
+                                className="w-full py-7 bg-novraux-bone text-novraux-obsidian text-[11px] uppercase tracking-[0.5em] font-bold hover:bg-white transition-all disabled:opacity-20 flex items-center justify-center gap-6 shadow-xl"
+                            >
+                                {generating ? (
+                                    <>
+                                        <div className="w-5 h-5 border-2 border-novraux-obsidian/20 border-t-novraux-obsidian rounded-full animate-spin" />
+                                        Materializing Masterpiece...
+                                    </>
+                                ) : (
+                                    'Commence Creation'
+                                )}
+                            </button>
+                        </div>
+
+                        {/* Design Treasury */}
+                        {savedDesigns.length > 0 && (
+                            <div className="space-y-6 pt-12 border-t border-white/5">
+                                <div className="flex justify-between items-center">
+                                    <h3 className="text-[10px] uppercase tracking-[0.5em] text-novraux-bone/40">Design Treasury</h3>
+                                    <button onClick={() => setShowTreasury(!showTreasury)} className="text-[9px] uppercase tracking-[0.3em] text-novraux-bone/20 hover:text-novraux-bone transition-colors underline underline-offset-4 decoration-white/5">
+                                        {showTreasury ? 'Close Treasury' : 'Browse Archives'}
+                                    </button>
+                                </div>
+
+                                {showTreasury && (
+                                    <div className="grid grid-cols-4 gap-6 animate-in fade-in slide-in-from-top-4 duration-700">
+                                        {savedDesigns.map((d) => (
+                                            <button
+                                                key={d.id}
+                                                onClick={() => {
+                                                    setImageUrl(d.imageUrl);
+                                                    setDesignPrompt(d.prompt);
+                                                    setTitle(d.title || 'Untitled Masterpiece');
+                                                    setDescription(d.description || d.prompt);
+                                                    setSeo(d.seo || null);
+                                                    setStep(3); // Go to Workshop
+                                                }}
+                                                className="group relative aspect-square bg-white/[0.02] border border-white/5 overflow-hidden hover:border-novraux-bone/30 transition-all rounded-sm"
+                                            >
+                                                <img src={d.imageUrl} className="w-full h-full object-contain opacity-40 group-hover:opacity-100 transition-opacity" />
+                                                <div className="absolute inset-0 bg-novraux-obsidian/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <span className="text-[8px] uppercase tracking-widest text-novraux-bone">Resurrect</span>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        <button onClick={() => setStep(1)} className="text-[10px] uppercase tracking-[0.4em] text-white/20 hover:text-white transition-all pt-4 block">← Back to Foundation</button>
                     </div>
                 )}
 
@@ -390,7 +440,7 @@ export default function PodCreatorPage() {
                             ))}
                         </div>
 
-                        <button onClick={() => setStep(2)} className="text-[10px] uppercase tracking-[0.4em] text-white/20 hover:text-white transition-all pt-4 block">← Back to Foundation</button>
+                        <button onClick={() => setStep(2)} className="text-[10px] uppercase tracking-[0.4em] text-white/20 hover:text-white transition-all pt-4 block">← Back to Identity</button>
                     </div>
                 )}
 
@@ -403,24 +453,91 @@ export default function PodCreatorPage() {
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                            {/* Artistic Preview */}
-                            <div className="relative aspect-[4/5] bg-white overflow-hidden rounded-sm group shadow-[0_50px_100px_rgba(0,0,0,0.5)] border border-white/10">
+                            {/* Artistic Preview - Interactive Canvas */}
+                            <div
+                                ref={canvasRef}
+                                className="relative aspect-[4/5] bg-white overflow-hidden rounded-sm group shadow-[0_50px_100px_rgba(0,0,0,0.5)] border border-white/10"
+                            >
                                 <img
                                     src={selectedBlueprint.images?.[0]}
                                     className="w-full h-full object-contain pointer-events-none opacity-90 group-hover:opacity-100 transition-opacity"
                                 />
-                                <div className="absolute inset-0 flex items-center justify-center p-[20%] opacity-85 mix-blend-multiply group-hover:opacity-95 transition-all duration-1000 group-hover:scale-105">
-                                    <img
-                                        src={imageUrl}
-                                        className="w-full h-full object-contain drop-shadow-2xl"
-                                        style={{ transform: 'translateY(-12%)' }}
-                                    />
-                                </div>
-                                <div className="absolute top-8 left-8 text-[9px] uppercase tracking-[0.5em] bg-black/60 px-4 py-2 backdrop-blur-md text-white/50 font-medium">Aesthetic Verdict</div>
+
+                                <Rnd
+                                    size={{
+                                        width: designScale * 200,
+                                        height: designScale * 200
+                                    }}
+                                    position={{
+                                        x: (designX * (canvasRef.current?.offsetWidth || 400)) - (designScale * 100),
+                                        y: (designY * (canvasRef.current?.offsetHeight || 500)) - (designScale * 100)
+                                    }}
+                                    onDragStop={(e, d) => {
+                                        if (canvasRef.current) {
+                                            const width = canvasRef.current.offsetWidth;
+                                            const height = canvasRef.current.offsetHeight;
+                                            const centerX = d.x + (designScale * 200) / 2;
+                                            const centerY = d.y + (designScale * 200) / 2;
+                                            setDesignX(centerX / width);
+                                            setDesignY(centerY / height);
+                                        }
+                                    }}
+                                    onResizeStop={(e, direction, ref, delta, position) => {
+                                        const newWidth = parseInt(ref.style.width);
+                                        setDesignScale(newWidth / 200);
+
+                                        if (canvasRef.current) {
+                                            const width = canvasRef.current.offsetWidth;
+                                            const height = canvasRef.current.offsetHeight;
+                                            const centerX = position.x + newWidth / 2;
+                                            const centerY = position.y + newWidth / 2;
+                                            setDesignX(centerX / width);
+                                            setDesignY(centerY / height);
+                                        }
+                                    }}
+                                    bounds="parent"
+                                    lockAspectRatio
+                                    className="flex items-center justify-center pointer-events-auto"
+                                >
+                                    <div className="w-full h-full p-2 relative group-active:cursor-grabbing cursor-grab">
+                                        <div className="absolute inset-0 border border-novraux-bone/20 border-dashed opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <img
+                                            src={imageUrl}
+                                            className="w-full h-full object-contain drop-shadow-2xl mix-blend-multiply opacity-85 pointer-events-none"
+                                        />
+                                    </div>
+                                </Rnd>
+
+                                <div className="absolute top-8 left-8 text-[9px] uppercase tracking-[0.5em] bg-black/60 px-4 py-2 backdrop-blur-md text-white/50 font-medium">Interactive Canvas</div>
                             </div>
 
                             {/* Configuration Panel */}
                             <div className="space-y-10 py-4">
+                                {/* Interactive Help */}
+                                <div className="bg-white/[0.02] border border-white/5 p-8 space-y-6 rounded-sm">
+                                    <h3 className="text-[10px] uppercase tracking-[0.5em] text-novraux-bone/40 border-b border-white/5 pb-4">Artistic Tailoring</h3>
+
+                                    <div className="space-y-4">
+                                        <p className="text-[10px] text-novraux-bone/50 tracking-widest leading-relaxed">
+                                            Engage directly with the canvas. Drag to position, pull edges to scale.
+                                        </p>
+                                        <div className="flex justify-between items-center pt-2">
+                                            <span className="text-[9px] uppercase tracking-[0.3em] text-novraux-bone/30">Scale Fidelity</span>
+                                            <span className="text-xs text-novraux-bone font-serif italic">{Math.round(designScale * 100)}%</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4 pt-2">
+                                        <div className="p-4 bg-white/[0.01] border border-white/5 space-y-2">
+                                            <p className="text-[8px] uppercase tracking-widest text-novraux-bone/20">Horizontal</p>
+                                            <p className="text-[10px] text-novraux-bone font-mono tracking-tighter">{Math.round(designX * 100)}%</p>
+                                        </div>
+                                        <div className="p-4 bg-white/[0.01] border border-white/5 space-y-2">
+                                            <p className="text-[8px] uppercase tracking-widest text-novraux-bone/20">Vertical</p>
+                                            <p className="text-[10px] text-novraux-bone font-mono tracking-tighter">{Math.round(designY * 100)}%</p>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div className="space-y-4 border-b border-white/5 pb-8">
                                     <h3 className="text-[10px] uppercase tracking-[0.4em] text-novraux-bone/30 font-light">Configurable Variations</h3>
                                     <div className="flex gap-8 pt-4">
@@ -506,11 +623,11 @@ export default function PodCreatorPage() {
                                                 <div className="p-4 bg-white/[0.03] border border-white/5 rounded-sm space-y-4">
                                                     <div className="space-y-1">
                                                         <p className="text-[8px] uppercase tracking-[0.3em] text-novraux-bone/30 italic">Meta Title</p>
-                                                        <p className="text-[11px] text-novraux-bone/60 leading-tight">{seo.metaTitle}</p>
+                                                        <p className="text-[11px] text-novraux-bone/60 leading-tight">{seo?.metaTitle}</p>
                                                     </div>
                                                     <div className="space-y-1">
                                                         <p className="text-[8px] uppercase tracking-[0.3em] text-novraux-bone/30 italic">Keywords</p>
-                                                        <p className="text-[10px] text-novraux-bone/60 tracking-widest">{seo.keywords}</p>
+                                                        <p className="text-[10px] text-novraux-bone/60 tracking-widest">{seo?.keywords}</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -521,11 +638,11 @@ export default function PodCreatorPage() {
                                 <div className="grid grid-cols-2 gap-12 px-2">
                                     <div className="space-y-3">
                                         <p className="text-[9px] uppercase tracking-[0.5em] text-novraux-bone/20 font-light">Infrastructure</p>
-                                        <p className="text-sm text-novraux-bone tracking-widest font-serif italic">{selectedProvider.title}</p>
+                                        <p className="text-sm text-novraux-bone tracking-widest font-serif italic">{selectedProvider?.title || 'Elite Workshop'}</p>
                                     </div>
                                     <div className="space-y-3">
                                         <p className="text-[9px] uppercase tracking-[0.5em] text-novraux-bone/20 font-light">Configured Units</p>
-                                        <p className="text-sm text-novraux-bone tracking-widest font-light uppercase">{selectedVariants.length} Variants</p>
+                                        <p className="text-sm text-novraux-bone tracking-widest font-light uppercase">{selectedVariants?.length || 0} Variants</p>
                                     </div>
                                 </div>
 
@@ -565,8 +682,12 @@ export default function PodCreatorPage() {
                             <div className="bg-white/[0.01] p-2 border border-white/5 rounded-sm shadow-2xl relative group">
                                 <div className="aspect-[4/5] relative bg-white overflow-hidden rounded-sm p-4">
                                     <img src={selectedBlueprint.images?.[0]} className="w-full h-full object-contain grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000" />
-                                    <div className="absolute inset-0 flex items-center justify-center p-[20%] opacity-90 mix-blend-multiply transition-all duration-1000 scale-[1.02]">
-                                        <img src={imageUrl} className="w-full h-full object-contain drop-shadow-2xl" style={{ transform: 'translateY(-12%)' }} />
+                                    <div className="absolute inset-0 flex items-center justify-center p-[20%] opacity-90 mix-blend-multiply transition-all duration-1000">
+                                        <img
+                                            src={imageUrl}
+                                            className="w-full h-full object-contain drop-shadow-2xl"
+                                            style={{ transform: `translate(${(designX - 0.5) * 100}%, ${(designY - 0.5) * 100}%) scale(${designScale})` }}
+                                        />
                                     </div>
                                 </div>
                                 <div className="mt-8 p-8 text-center border-t border-white/5">

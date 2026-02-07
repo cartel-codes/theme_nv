@@ -625,8 +625,11 @@ model PrintWebhookLog {
 model AIDesign {
   id            String   @id @default(cuid())
   prompt        String
-  revisedPrompt String?  // The actual optimized prompt used
+  revisedPrompt String?
   imageUrl      String
+  title         String?
+  description   String?
+  seo           Json?
   category      String?
   tags          String[]
   isFavorite    Boolean  @default(false)
