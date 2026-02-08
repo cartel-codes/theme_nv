@@ -1,17 +1,15 @@
 import { NextResponse } from 'next/server';
-import { syncPrintfulProducts } from '@/lib/print-providers/printful/products';
 import { syncPrintifyProducts } from '@/lib/print-providers/printify/products';
 
 export async function POST(request: Request) {
   try {
-    const { provider } = await request.json().catch(() => ({ provider: 'printful' }));
+    const { provider } = await request.json().catch(() => ({ provider: 'printify' }));
 
-    let result;
-    if (provider === 'printify') {
-      result = await syncPrintifyProducts();
-    } else {
-      result = await syncPrintfulProducts();
+    if (provider && provider !== 'printify') {
+      return NextResponse.json({ error: 'Unsupported provider' }, { status: 400 });
     }
+
+    const result = await syncPrintifyProducts();
 
     if (result.success) {
       return NextResponse.json(result);
@@ -28,12 +26,10 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const provider = searchParams.get('provider');
 
-  let result;
-  if (provider === 'printify') {
-    result = await syncPrintifyProducts();
-  } else {
-    result = await syncPrintfulProducts();
+  if (provider && provider !== 'printify') {
+    return NextResponse.json({ error: 'Unsupported provider' }, { status: 400 });
   }
 
+  const result = await syncPrintifyProducts();
   return NextResponse.json(result);
 }

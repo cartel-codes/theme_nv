@@ -25,6 +25,7 @@ export default function PodCreatorPage() {
     const [seo, setSeo] = useState<any>(null);
     const [generating, setGenerating] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+    const [generatorMode, setGeneratorMode] = useState<'openai' | 'standard'>('openai');
 
     // Selection
     const [selectedBlueprint, setSelectedBlueprint] = useState<any>(null);
@@ -41,7 +42,7 @@ export default function PodCreatorPage() {
     const [designX, setDesignX] = useState(0.5);
     const [designY, setDesignY] = useState(0.5);
 
-    // Load blueprints and treasury on mount
+    // Load blueprints, treasury, and check for draft from AI workflows
     useEffect(() => {
         fetch('/api/admin/print-providers/catalog?type=blueprints')
             .then(res => res.json())
@@ -57,6 +58,33 @@ export default function PodCreatorPage() {
             .then(data => {
                 if (data.success) setSavedDesigns(data.designs);
             });
+
+        // Check for draft from Auto-Listing or Collection Generator
+        const draftData = sessionStorage.getItem('printifyDraft');
+        if (draftData) {
+            try {
+                const draft = JSON.parse(draftData);
+                console.log('📦 Loading draft from AI workflow:', draft);
+                
+                // Pre-fill form fields
+                if (draft.imageUrl) setImageUrl(draft.imageUrl);
+                if (draft.title) setTitle(draft.title);
+                if (draft.description) setDescription(draft.description);
+                if (draft.prompt) setDesignPrompt(draft.prompt);
+                if (draft.tags || draft.suggestedProducts) {
+                    const seoData: any = {};
+                    if (draft.tags) seoData.tags = draft.tags;
+                    if (draft.suggestedProducts) seoData.suggestedProducts = draft.suggestedProducts;
+                    if (draft.price) seoData.suggestedPrice = draft.price;
+                    setSeo(seoData);
+                }
+                
+                // Clear the draft after loading
+                sessionStorage.removeItem('printifyDraft');
+            } catch (e) {
+                console.error('Failed to parse draft:', e);
+            }
+        }
     }, []);
 
     // Step 1: Blueprint
@@ -82,15 +110,45 @@ export default function PodCreatorPage() {
                 : designPrompt;
 
             console.log('🎨 Materializing vision for product:', selectedBlueprint?.title);
-            const imageRes = await fetch('/api/admin/print-providers/generate-image', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ prompt: contextualPrompt })
-            });
-            const imageData = await imageRes.json();
+            let nextImageUrl = '';
 
-            if (!imageData.success) throw new Error(imageData.error || 'Artistic generation failed');
-            setImageUrl(imageData.image);
+            if (generatorMode === 'openai') {
+                const imageRes = await fetch('/api/admin/ai/image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        prompt: contextualPrompt,
+                        model: 'gpt-image-1',
+                        quality: 'high',
+                        size: '1024x1024',
+                        n: 1,
+                        saveToR2: true,
+                    })
+                });
+                const imageData = await imageRes.json();
+
+                if (!imageRes.ok) {
+                    throw new Error(imageData.error || 'OpenAI generation failed');
+                }
+
+                nextImageUrl = imageData.data?.[0]?.url || '';
+            } else {
+                const imageRes = await fetch('/api/admin/print-providers/generate-image', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt: contextualPrompt })
+                });
+                const imageData = await imageRes.json();
+
+                if (!imageData.success) throw new Error(imageData.error || 'Artistic generation failed');
+                nextImageUrl = imageData.image;
+            }
+
+            if (!nextImageUrl) {
+                throw new Error('Image generation returned no image');
+            }
+
+            setImageUrl(nextImageUrl);
 
             console.log('📖 Drafting luxury manifest...');
             const aiRes = await fetch('/api/admin/print-providers/generate-metadata', {
@@ -112,7 +170,7 @@ export default function PodCreatorPage() {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             prompt: designPrompt,
-                            imageUrl: imageData.image,
+                            imageUrl: nextImageUrl,
                             revisedPrompt: aiData.revisedPrompt || '',
                             category: aiData.seo?.suggestedCategory || 'General',
                             title: aiData.title,
@@ -345,6 +403,35 @@ export default function PodCreatorPage() {
                                 />
                             </div>
 
+                            <div className="space-y-4">
+                                <label className="text-[10px] uppercase tracking-[0.4em] text-novraux-bone/40">Generation Engine</label>
+                                <div className="flex flex-wrap gap-3">
+                                    <button
+                                        type="button"
+                                        onClick={() => setGeneratorMode('openai')}
+                                        className={`px-4 py-2 text-[10px] uppercase tracking-[0.4em] border transition-all ${generatorMode === 'openai'
+                                            ? 'bg-novraux-bone text-novraux-obsidian border-novraux-bone'
+                                            : 'bg-transparent text-novraux-bone/40 border-white/10 hover:border-novraux-bone/40'}
+                                        `}
+                                    >
+                                        OpenAI
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setGeneratorMode('standard')}
+                                        className={`px-4 py-2 text-[10px] uppercase tracking-[0.4em] border transition-all ${generatorMode === 'standard'
+                                            ? 'bg-novraux-bone text-novraux-obsidian border-novraux-bone'
+                                            : 'bg-transparent text-novraux-bone/40 border-white/10 hover:border-novraux-bone/40'}
+                                        `}
+                                    >
+                                        Standard
+                                    </button>
+                                </div>
+                                <p className="text-[10px] text-novraux-bone/40 tracking-widest">
+                                    OpenAI uses `gpt-image-1` and saves to R2. Standard uses the legacy generator.
+                                </p>
+                            </div>
+
                             {errorMsg && (
                                 <div className="text-red-400 text-[10px] uppercase tracking-widest bg-red-400/5 p-6 border border-red-400/10">
                                     {errorMsg}
@@ -367,39 +454,62 @@ export default function PodCreatorPage() {
                             </button>
                         </div>
 
-                        {/* Design Treasury */}
+                        {/* Design Vault */}
                         {savedDesigns.length > 0 && (
                             <div className="space-y-6 pt-12 border-t border-white/5">
                                 <div className="flex justify-between items-center">
-                                    <h3 className="text-[10px] uppercase tracking-[0.5em] text-novraux-bone/40">Design Treasury</h3>
-                                    <button onClick={() => setShowTreasury(!showTreasury)} className="text-[9px] uppercase tracking-[0.3em] text-novraux-bone/20 hover:text-novraux-bone transition-colors underline underline-offset-4 decoration-white/5">
-                                        {showTreasury ? 'Close Treasury' : 'Browse Archives'}
+                                    <h3 className="text-[10px] uppercase tracking-[0.5em] text-novraux-bone/40">Design Vault</h3>
+                                    <button
+                                        onClick={() => setShowTreasury(true)}
+                                        className="text-[9px] uppercase tracking-[0.3em] text-novraux-bone/20 hover:text-novraux-bone transition-colors underline underline-offset-4 decoration-white/5"
+                                    >
+                                        Open Vault
                                     </button>
                                 </div>
+                            </div>
+                        )}
 
-                                {showTreasury && (
-                                    <div className="grid grid-cols-4 gap-6 animate-in fade-in slide-in-from-top-4 duration-700">
-                                        {savedDesigns.map((d) => (
-                                            <button
-                                                key={d.id}
-                                                onClick={() => {
-                                                    setImageUrl(d.imageUrl);
-                                                    setDesignPrompt(d.prompt);
-                                                    setTitle(d.title || 'Untitled Masterpiece');
-                                                    setDescription(d.description || d.prompt);
-                                                    setSeo(d.seo || null);
-                                                    setStep(3); // Go to Workshop
-                                                }}
-                                                className="group relative aspect-square bg-white/[0.02] border border-white/5 overflow-hidden hover:border-novraux-bone/30 transition-all rounded-sm"
-                                            >
-                                                <img src={d.imageUrl} className="w-full h-full object-contain opacity-40 group-hover:opacity-100 transition-opacity" />
-                                                <div className="absolute inset-0 bg-novraux-obsidian/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                                    <span className="text-[8px] uppercase tracking-widest text-novraux-bone">Resurrect</span>
-                                                </div>
-                                            </button>
-                                        ))}
+                        {showTreasury && (
+                            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+                                <div className="w-[min(1100px,92vw)] max-h-[85vh] overflow-hidden rounded-sm border border-white/10 bg-novraux-obsidian shadow-2xl">
+                                    <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+                                        <div className="space-y-1">
+                                            <h3 className="text-[10px] uppercase tracking-[0.5em] text-novraux-bone/60">Design Vault</h3>
+                                            <p className="text-[10px] text-novraux-bone/30 tracking-widest">Select a saved design to continue.</p>
+                                        </div>
+                                        <button
+                                            onClick={() => setShowTreasury(false)}
+                                            className="text-[10px] uppercase tracking-[0.3em] text-novraux-bone/40 hover:text-novraux-bone transition-colors"
+                                        >
+                                            Close
+                                        </button>
                                     </div>
-                                )}
+
+                                    <div className="p-6 overflow-y-auto max-h-[70vh]">
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+                                            {savedDesigns.map((d) => (
+                                                <button
+                                                    key={d.id}
+                                                    onClick={() => {
+                                                        setImageUrl(d.imageUrl);
+                                                        setDesignPrompt(d.prompt);
+                                                        setTitle(d.title || 'Untitled Masterpiece');
+                                                        setDescription(d.description || d.prompt);
+                                                        setSeo(d.seo || null);
+                                                        setShowTreasury(false);
+                                                        setStep(3);
+                                                    }}
+                                                    className="group relative aspect-square bg-white/[0.02] border border-white/10 overflow-hidden hover:border-novraux-bone/40 transition-all rounded-sm"
+                                                >
+                                                    <img src={d.imageUrl} className="w-full h-full object-contain opacity-60 group-hover:opacity-100 transition-opacity" />
+                                                    <div className="absolute inset-0 bg-novraux-obsidian/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                        <span className="text-[8px] uppercase tracking-widest text-novraux-bone">Select</span>
+                                                    </div>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         )}
 

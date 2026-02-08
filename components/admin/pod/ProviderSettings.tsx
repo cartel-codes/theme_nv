@@ -51,7 +51,7 @@ export default function ProviderSettings() {
 
     return (
         <div className="bg-novraux-bone/5 p-6 rounded-sm border border-novraux-bone/10">
-            <h3 className="text-lg font-serif text-novraux-bone mb-4">Printful Configuration</h3>
+            <h3 className="text-lg font-serif text-novraux-bone mb-4">Printify Configuration</h3>
 
             <div className="flex items-center gap-2 mb-6">
                 <div className={`w-3 h-3 rounded-full ${status === 'configured' ? 'bg-green-500' : 'bg-red-500'}`} />

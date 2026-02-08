@@ -13,25 +13,6 @@ export default function PrintProvidersPortal() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
-        {/* Printful Card */}
-        <Link
-          href="/admin/print-providers/printful"
-          className="group relative overflow-hidden bg-novraux-bone/5 border border-novraux-bone/10 p-8 rounded-sm hover:border-novraux-bone/40 transition-all hover:bg-novraux-bone/10"
-        >
-          <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-            <svg className="w-24 h-24" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 2L2 7l10 5 10-5-10-5zm0 9l2.5-1.25L12 8.5l-2.5 1.25L12 11zm0 2.5l-5-2.5-5 2.5L12 22l10-8.5-5-2.5-5 2.5z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-serif text-novraux-bone mb-2">Printful</h2>
-          <p className="text-novraux-bone/60 text-sm mb-6">
-            Premium embroidery and DTG printing. Best for high-quality basics.
-          </p>
-          <span className="text-xs uppercase tracking-widest text-novraux-bone border-b border-novraux-bone/20 pb-1 group-hover:border-novraux-bone transition-colors">
-            Manage Integration &rarr;
-          </span>
-        </Link>
-
         {/* Printify Card */}
         <Link
           href="/admin/print-providers/printify"

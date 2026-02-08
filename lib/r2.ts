@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand, ListObjectsV2Command } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 /**
@@ -49,11 +49,16 @@ function getR2Client() {
 
 /**
  * Upload a file buffer to R2
+ * @param buffer - File buffer to upload
+ * @param filename - Filename or full path (e.g., "ai-generated/gpt-image-1/1234.png")
+ * @param contentType - MIME type of the file
+ * @param folder - Optional folder prefix (defaults to "products", ignored if filename contains "/")
  */
 export async function uploadToR2(
     buffer: Buffer,
     filename: string,
-    contentType: string
+    contentType: string,
+    folder: string = 'products'
 ): Promise<string> {
     const config = getR2Config();
     const client = getR2Client();
@@ -62,7 +67,11 @@ export async function uploadToR2(
         throw new Error('R2 upload failed: Missing bucket name or public URL configuration.');
     }
 
-    const key = `products/${Date.now()}-${filename}`;
+    // If filename already includes a path separator, use it as-is (full path provided)
+    // Otherwise, prepend the folder and timestamp
+    const key = filename.includes('/')
+        ? filename
+        : `${folder}/${Date.now()}-${filename}`;
 
     const command = new PutObjectCommand({
         Bucket: config.bucketName,
@@ -152,6 +161,34 @@ export async function getPresignedUploadUrl(
     const url = await getSignedUrl(client, command, { expiresIn: 3600 }); // 1 hour
 
     return { url, key };
+}
+
+/**
+ * List files in R2 bucket with an optional prefix
+ */
+export async function listR2Files(prefix: string = ''): Promise<{ key: string, url: string, lastModified?: Date }[]> {
+    const config = getR2Config();
+    const client = getR2Client();
+
+    if (!config.bucketName) {
+        throw new Error('R2 list failed: Missing bucket name configuration.');
+    }
+
+    const command = new ListObjectsV2Command({
+        Bucket: config.bucketName,
+        Prefix: prefix,
+    });
+
+    const response = await client.send(command);
+
+    return (response.Contents || [])
+        .filter(obj => obj.Key && (obj.Key.endsWith('.png') || obj.Key.endsWith('.jpg') || obj.Key.endsWith('.webp')))
+        .map(obj => ({
+            key: obj.Key!,
+            url: `/api/images/${obj.Key}`,
+            lastModified: obj.LastModified
+        }))
+        .sort((a, b) => (b.lastModified?.getTime() || 0) - (a.lastModified?.getTime() || 0));
 }
 
 /**

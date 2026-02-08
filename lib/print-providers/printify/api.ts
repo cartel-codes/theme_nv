@@ -65,6 +65,16 @@ export class PrintifyAPI {
         }
     }
 
+    async getBlueprint(blueprintId: number) {
+        try {
+            const { data } = await this.client.get(`/catalog/blueprints/${blueprintId}.json`);
+            return data;
+        } catch (error: any) {
+            console.error('getBlueprint error:', error.response?.data || error.message);
+            throw error;
+        }
+    }
+
     async getBlueprintVariants(blueprintId: number, providerId: number) {
         try {
             const { data } = await this.client.get(`/catalog/blueprints/${blueprintId}/print_providers/${providerId}/variants.json`);
@@ -144,6 +154,25 @@ export class PrintifyAPI {
             return data;
         } catch (error: any) {
             console.error('publishProduct error:', error.response?.data || error.message);
+            throw error;
+        }
+    }
+
+    async createMockup(blueprintId: number, providerId: number, variantIds: number[], imageId: string) {
+        try {
+            const payload = {
+                blueprint_id: blueprintId,
+                print_provider_id: providerId,
+                variant_ids: variantIds,
+                print_areas: {
+                    front: imageId
+                }
+            };
+            const { data } = await this.client.post('/mockup-generator.json', payload);
+            console.log('Mockup response:', data);
+            return data;
+        } catch (error: any) {
+            console.error('createMockup error:', error.response?.data || error.message);
             throw error;
         }
     }

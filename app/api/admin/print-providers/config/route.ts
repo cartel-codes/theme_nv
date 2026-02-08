@@ -6,7 +6,7 @@ import { encrypt, decrypt } from '@/lib/print-providers/utils/encryption';
 export async function GET() {
     try {
         const provider = await prisma.printProvider.findFirst({
-            where: { name: 'printful' }
+            where: { name: 'printify' }
         });
 
         if (!provider) {
@@ -40,32 +40,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'API key is required' }, { status: 400 });
         }
 
-        // Encrypt the API key before storing
-        // Note: The schema comment says "Encrypted API key", and our `PrintfulAPI` instantiation 
-        // uses `process.env.PRINTFUL_API_KEY`. If we want to use DB-stored keys, 
-        // we need to update `PrintfulAPI` to fetch from DB or decrypt.
-        // However, the `PrintfulAPI` wrapper currently takes `apiKey` in constructor.
-        // The current implementation uses env var default. We should probably stick to Env vars for now 
-        // unless the user explicitly wants dynamic DB configuration. 
-        // Re-reading `POD_INTEGRATION_ROADMAP.md`:
-        // "Phase 3.5: Encryption Utilities... Test with API keys"
-        // "Phase 4.2: Configuration Endpoint... Save encrypted API key"
-        // So the plan IS to store in DB. 
-        // I will store it encrypted.
-
-        // BUT! `PrintfulAPI` singleton exports `new PrintfulAPI(process.env.PRINTFUL_API_KEY)`. 
-        // This singleton needs to be dynamic or we need a factory.
-        // For now, I will implement storage. We might need to adjust `api.ts` later to read from DB.
-
-        // Actually, `PrintfulAPI` class can be instantiated with a key. 
-        // The singleton export is just a convenience for env-based usage.
-        // We should probably remove the singleton or make it smart.
-        // For now, let's implement the storage.
-
-        // Using a simplistic approach: if apiKey is provided, encrypt it.
-        // But `encrypt` function I wrote outputs "iv:encrypted".
-
-        // Let's stick to the plan.
+        // Encrypt the API key before storing in the Printify provider record.
 
         const encryptedKey = encrypt(apiKey);
 
@@ -74,14 +49,14 @@ export async function POST(req: Request) {
                 // We need a unique constraint or we just findFirst and update.
                 // The schema doesn't have a unique constraint on `name`.
                 // We'll search by name first.
-                id: (await prisma.printProvider.findFirst({ where: { name: 'printful' } }))?.id || 'new'
+                id: (await prisma.printProvider.findFirst({ where: { name: 'printify' } }))?.id || 'new'
             },
             update: {
                 apiKey: encryptedKey,
                 isActive: true,
             },
             create: {
-                name: 'printful',
+                name: 'printify',
                 apiKey: encryptedKey,
                 isActive: true,
             }
@@ -97,7 +72,7 @@ export async function POST(req: Request) {
 export async function DELETE() {
     try {
         const provider = await prisma.printProvider.findFirst({
-            where: { name: 'printful' }
+            where: { name: 'printify' }
         });
 
         if (provider) {

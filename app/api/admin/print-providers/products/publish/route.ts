@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { createProductFromPrintful } from '@/lib/print-providers/printful/products';
 import { createProductFromPrintify } from '@/lib/print-providers/printify/products';
 
 // POST: Publish a POD product to the store (create local Product)
@@ -23,13 +22,11 @@ export async function POST(req: Request) {
             targetProvider = printProduct?.provider.name;
         }
 
-        let result;
-        if (targetProvider === 'printify') {
-            result = await createProductFromPrintify(externalId, productData);
-        } else {
-            // Default to printful for backward compatibility
-            result = await createProductFromPrintful(externalId, productData);
+        if (targetProvider && targetProvider !== 'printify') {
+            return NextResponse.json({ error: 'Unsupported provider' }, { status: 400 });
         }
+
+        const result = await createProductFromPrintify(externalId, productData);
 
         if (!result.success) {
             return NextResponse.json({ error: result.error }, { status: 500 });

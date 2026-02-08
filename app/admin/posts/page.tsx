@@ -91,13 +91,6 @@ export default function AdminPostsPage() {
                 <h1 className="font-serif text-4xl md:text-5xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">Articles</h1>
                 <div className="flex gap-3">
                     <Link
-                        href="/admin/posts/ai-wizard"
-                        className="px-8 py-4 bg-novraux-gold text-novraux-obsidian text-xs uppercase tracking-novraux-medium hover:bg-novraux-bone hover:text-novraux-obsidian transition-all rounded-sm font-normal flex items-center gap-2"
-                    >
-                        <span>✨</span>
-                        <span>AI Wizard</span>
-                    </Link>
-                    <Link
                         href="/admin/posts/new"
                         className="px-8 py-4 bg-novraux-obsidian dark:bg-novraux-gold text-novraux-bone dark:text-novraux-obsidian text-xs uppercase tracking-novraux-medium hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-obsidian dark:hover:text-novraux-bone transition-colors rounded-sm font-normal"
                     >

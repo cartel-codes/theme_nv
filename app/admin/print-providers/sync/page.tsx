@@ -43,6 +43,7 @@ export default function PrintProvidersSyncPage() {
       const res = await fetch('/api/admin/print-providers/sync', {
         method: 'POST',
         signal: controller.signal,
+        body: JSON.stringify({ provider: 'printify' }),
       });
 
       clearTimeout(timeoutId);
@@ -77,11 +78,18 @@ export default function PrintProvidersSyncPage() {
   async function loadProducts(page: number) {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/print-providers/sync?page=${page}&pageSize=5`);
+      const res = await fetch(`/api/admin/print-providers/products?page=${page}&limit=5&provider=printify`);
       const data = await res.json();
       if (data.success) {
         setProducts(data.products);
-        setPagination(data.pagination);
+        setPagination({
+          current: page,
+          pageSize: 5,
+          total: data.pagination.total,
+          totalPages: data.pagination.totalPages,
+          hasNext: page < data.pagination.totalPages,
+          hasPrev: page > 1,
+        });
       }
     } catch (error) {
       console.error('Failed to load products:', error);
@@ -116,7 +124,7 @@ export default function PrintProvidersSyncPage() {
           Product Catalog Sync
         </h1>
         <p className="text-novraux-ash dark:text-novraux-bone/70">
-          Sync first 10 Printful products with full details and variants
+          Sync Printify products with full details and variants
         </p>
       </div>
 
@@ -126,7 +134,7 @@ export default function PrintProvidersSyncPage() {
           Sync Catalog
         </h2>
         <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-6">
-          This will fetch the first 10 products from Printful with complete details including images and variant information.
+          This will fetch products from Printify with complete details including images and variants.
         </p>
 
         <button

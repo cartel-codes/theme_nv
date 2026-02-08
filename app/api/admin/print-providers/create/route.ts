@@ -58,19 +58,32 @@ export async function POST(request: Request) {
 
         const api = new PrintifyAPI(provider.apiKey);
 
-        // 1. Upload Image to Printify
-        console.log('🖼️ Uploading image to Printify...');
-        const uploadRes = await api.uploadImage(imageUrl, 'design.png');
-        console.log('Upload response:', uploadRes);
-
-        // Printify returns { id, ... } or { data: { id, ... } }
-        const imageId = uploadRes.id || uploadRes.data?.id;
+        // 1. Get Image ID (Upload if only URL provided)
+        let imageId = body.printifyImageId;
 
         if (!imageId) {
-            throw new Error(`Failed to upload image to Printify. Response: ${JSON.stringify(uploadRes)}`);
-        }
+            if (!imageUrl) {
+                errors.push('imageUrl or printifyImageId is required');
+                return NextResponse.json({
+                    error: 'Validation failed: imageUrl or printifyImageId is required',
+                    status: 'validation_error'
+                }, { status: 400 });
+            }
 
-        console.log('✓ Image uploaded with ID:', imageId);
+            console.log('🖼️ Uploading image to Printify...');
+            const uploadRes = await api.uploadImage(imageUrl, 'design.png');
+            console.log('Upload response:', uploadRes);
+
+            // Printify returns { id, ... } or { data: { id, ... } }
+            imageId = uploadRes.id || uploadRes.data?.id;
+
+            if (!imageId) {
+                throw new Error(`Failed to upload image to Printify. Response: ${JSON.stringify(uploadRes)}`);
+            }
+            console.log('✓ Image uploaded with ID:', imageId);
+        } else {
+            console.log('✓ Using existing Printify Image ID:', imageId);
+        }
 
         // 2. Create Product Payload
         // Ensure variant IDs are numbers as expected by Printify

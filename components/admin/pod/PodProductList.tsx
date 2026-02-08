@@ -11,7 +11,7 @@ interface PodProduct {
     variants: any[];
 }
 
-export default function PodProductList({ provider = 'printful' }: { provider?: string }) {
+export default function PodProductList({ provider = 'printify' }: { provider?: string }) {
     const [products, setProducts] = useState<PodProduct[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
@@ -47,7 +47,7 @@ export default function PodProductList({ provider = 'printful' }: { provider?: s
                 body: JSON.stringify({
                     externalId: product.externalId,
                     name: product.name,
-                    description: 'Imported from Printful', // Could be better mapped
+                    description: 'Imported from Printify',
                     price: 0, // Needs manual adjustment or logic
                     categoryId: 'uncategorized', // Needs logic
                     slug: product.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, ''),

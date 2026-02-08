@@ -11,7 +11,7 @@ export default function ProviderDashboardPage() {
     const router = useRouter();
     // validate provider
     const provider = params.provider as string;
-    const isValid = ['printful', 'printify'].includes(provider);
+    const isValid = ['printify'].includes(provider);
 
     useEffect(() => {
         if (!isValid) router.push('/admin/print-providers');
@@ -44,7 +44,7 @@ export default function ProviderDashboardPage() {
                     <Link href="/admin/print-providers" className="text-xs text-novraux-bone/40 uppercase hover:text-novraux-bone mb-2 block">&larr; Back to Providers</Link>
                     <h1 className="text-3xl font-serif text-novraux-bone mb-2 capitalize">{provider} Integration</h1>
                     <p className="text-novraux-bone/60 text-sm max-w-2xl">
-                        Manage your {provider} products and settings.
+                        Manage your Printify products and settings.
                     </p>
                 </div>
                 <div className="flex gap-3">
@@ -90,7 +90,7 @@ export default function ProviderDashboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Product List */}
                 <div className="lg:col-span-2">
-                    <PodProductList key={key} provider={provider as 'printful' | 'printify'} />
+                    <PodProductList key={key} provider="printify" />
                 </div>
 
                 {/* Status/logs */}

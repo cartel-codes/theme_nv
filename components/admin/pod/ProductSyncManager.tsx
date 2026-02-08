@@ -29,7 +29,7 @@ export default function ProductSyncManager() {
                 <div>
                     <h3 className="text-lg font-serif text-novraux-bone">Catalog Sync</h3>
                     <p className="text-xs text-novraux-bone/60 mt-1">
-                        Fetch latest products and variants from Printful.
+                        Fetch latest products and variants from Printify.
                     </p>
                 </div>
                 <button
