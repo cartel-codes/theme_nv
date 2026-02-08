@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { PrintifyAPI } from '@/lib/print-providers/printify/api';
+import { resolvePrintifyApiKey } from '@/lib/print-providers/printify/auth';
 
 export async function GET(request: Request) {
     try {
@@ -16,7 +17,8 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'Printify not configured' }, { status: 400 });
         }
 
-        const api = new PrintifyAPI(provider.apiKey);
+        const apiKey = resolvePrintifyApiKey(provider.apiKey);
+        const api = new PrintifyAPI(apiKey);
 
         let data;
         switch (type) {

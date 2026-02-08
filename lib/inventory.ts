@@ -25,7 +25,7 @@ export async function deductStockForOrder(orderId: string) {
         // Determine which inventory record to update
         const where = item.variantId
             ? { variantId: item.variantId }
-            : { productId: item.productId, variantId: null };
+            : { productId: item.productId || undefined, variantId: null };
 
         // Update quantity
         const update = prisma.inventory.updateMany({

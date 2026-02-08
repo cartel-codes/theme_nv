@@ -3,18 +3,13 @@ import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { getSession } from '@/lib/session';
 
-interface RouteParams {
-  params: {
-    id: string;
-  };
-}
-
 /**
  * GET /api/admin/users/[id]
  * Get a specific admin user by ID (requires authentication)
  */
-export async function GET(req: NextRequest, { params }: RouteParams) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     // Verify admin authentication
     const session = await getSession();
     if (!session) {
@@ -23,8 +18,6 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
         { status: 401 }
       );
     }
-
-    const { id } = params;
 
     const user = await prisma.adminUser.findUnique({
       where: { id },
@@ -60,8 +53,9 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
  * PUT /api/admin/users/[id]
  * Update an admin user by ID (requires authentication)
  */
-export async function PUT(req: NextRequest, { params }: RouteParams) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     // Verify admin authentication
     const session = await getSession();
     if (!session) {
@@ -71,7 +65,6 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { id } = params;
     const body = await req.json();
     const { username, email, password, role, isActive } = body;
 
@@ -156,8 +149,9 @@ export async function PUT(req: NextRequest, { params }: RouteParams) {
  * DELETE /api/admin/users/[id]
  * Delete an admin user by ID (requires authentication)
  */
-export async function DELETE(req: NextRequest, { params }: RouteParams) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     // Verify admin authentication
     const session = await getSession();
     if (!session) {
@@ -166,8 +160,6 @@ export async function DELETE(req: NextRequest, { params }: RouteParams) {
         { status: 401 }
       );
     }
-
-    const { id } = params;
 
     // Prevent deleting the last admin user
     const adminCount = await prisma.adminUser.count();

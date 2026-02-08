@@ -34,7 +34,10 @@ export async function POST(request: NextRequest) {
         // Fetch product details for all items with variants
         const productIds = cartItems.map((item: any) => item.productId);
         const products = await prisma.product.findMany({
-            where: { id: { in: productIds } },
+            where: { 
+                id: { in: productIds },
+                isPublished: true 
+            },
             include: { variants: true },
         });
 

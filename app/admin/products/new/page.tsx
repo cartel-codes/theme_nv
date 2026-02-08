@@ -8,7 +8,7 @@ export default function NewProductPage() {
         <p className="text-novraux-ash dark:text-novraux-bone/70 mt-2 font-light transition-colors">Add a new product to your store</p>
       </div>
 
-      <ProductForm />
+      <ProductForm allowPrintifyImport />
     </div>
   );
 }

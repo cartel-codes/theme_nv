@@ -210,7 +210,7 @@ export default function PrintProvidersSyncPage() {
         {products.length === 0 ? (
           <div className="text-center py-12 text-neutral-500 dark:text-neutral-400">
             <p className="text-lg mb-2">No products synced yet</p>
-            <p className="text-sm">Click "Sync Product Catalog" to get started</p>
+            <p className="text-sm">Click &quot;Sync Product Catalog&quot; to get started</p>
           </div>
         ) : (
           <>
@@ -321,16 +321,26 @@ export default function PrintProvidersSyncPage() {
                         </div>
                       )}
 
-                      {/* Metadata */}
-                      <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700 flex justify-between text-xs text-neutral-600 dark:text-neutral-400">
-                        <span>Synced: {new Date(product.syncedAt).toLocaleDateString()}</span>
-                        <span className={`px-2 py-1 rounded ${
-                          product.isPublished
-                            ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                            : 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300'
-                        }`}>
-                          {product.isPublished ? 'Published' : 'Draft'}
-                        </span>
+                      {/* Actions */}
+                      <div className="mt-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
+                        <div className="flex items-center justify-between gap-4 mb-3">
+                          <div className="flex items-center gap-2 text-xs text-neutral-600 dark:text-neutral-400">
+                            <span>Synced: {new Date(product.syncedAt).toLocaleDateString()}</span>
+                            <span className={`px-2 py-1 rounded ${
+                              product.isPublished
+                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                                : 'bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300'
+                            }`}>
+                              {product.isPublished ? 'Published' : 'Draft'}
+                            </span>
+                          </div>
+                          <Link
+                            href={`/admin/print-providers/import/${product.externalId}`}
+                            className="px-4 py-2 text-xs uppercase tracking-widest bg-novraux-bone text-novraux-obsidian hover:bg-novraux-gold transition-colors rounded font-bold"
+                          >
+                            Import Product →
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   )}

@@ -5,14 +5,16 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
-export default async function OrderDetailPage({ params }: { params: { id: string } }) {
-    const sessionToken = cookies().get('userSession')?.value;
+export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
+    const cookieStore = await cookies();
+    const sessionToken = cookieStore.get('userSession')?.value;
     if (!sessionToken) redirect('/auth/login');
 
     const session = await getUserSession(sessionToken);
     if (!session) redirect('/auth/login');
 
-    const order = await getUserOrder(session.user.id, params.id);
+    const { id } = await params;
+    const order = await getUserOrder(session.user.id, id);
 
     if (!order) {
         return (
@@ -67,7 +69,7 @@ export default async function OrderDetailPage({ params }: { params: { id: string
                                             Img
                                         </div>
                                         <div>
-                                            <p className="font-medium text-novraux-black">{item.product.name}</p>
+                                            <p className="font-medium text-novraux-black">{item.product?.name || 'Product'}</p>
                                             {item.variantId && (
                                                 <p className="text-sm text-novraux-grey">Variant: {item.variant?.name || 'Standard'}</p>
                                             )}

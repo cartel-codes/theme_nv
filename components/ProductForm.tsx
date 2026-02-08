@@ -14,14 +14,42 @@ interface Category {
 
 interface ProductFormProps {
   productId?: string;
+  allowPrintifyImport?: boolean;
 }
 
-export default function ProductForm({ productId }: ProductFormProps) {
+interface PrintifyVariant {
+  id: string;
+  name?: string;
+  price?: number | string;
+  inStock?: boolean;
+}
+
+interface PrintifyProduct {
+  externalId: string;
+  name: string;
+  description?: string | null;
+  variants?: PrintifyVariant[];
+  mockupUrls?: {
+    main?: string;
+    all?: string[];
+  } | null;
+}
+
+export default function ProductForm({ productId, allowPrintifyImport = false }: ProductFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [isAiGenerating, setIsAiGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [showPrintifyModal, setShowPrintifyModal] = useState(false);
+  const [printifyLoading, setPrintifyLoading] = useState(false);
+  const [printifyError, setPrintifyError] = useState<string | null>(null);
+  const [printifyProducts, setPrintifyProducts] = useState<PrintifyProduct[]>([]);
+  const [printifyImport, setPrintifyImport] = useState<{
+    externalId: string;
+    selectedVariantIds: string[];
+    name: string;
+  } | null>(null);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -36,6 +64,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
     focusKeyword: '',
     images: [] as any[],
     isOnSale: false,
+    isPublished: false,
     discountPercentage: '',
     discountExpiresAt: '',
   });
@@ -83,6 +112,7 @@ export default function ProductForm({ productId }: ProductFormProps) {
         focusKeyword: product.focusKeyword || '',
         images: product.images || [],
         isOnSale: product.isOnSale || false,
+        isPublished: product.isPublished || false,
         discountPercentage: product.discountPercentage ? product.discountPercentage.toString() : '',
         discountExpiresAt: product.discountExpiresAt ? new Date(product.discountExpiresAt).toISOString().split('T')[0] : '',
       });
@@ -99,6 +129,37 @@ export default function ProductForm({ productId }: ProductFormProps) {
     try {
       const method = productId ? 'PUT' : 'POST';
       const endpoint = productId ? `/api/admin/products/${productId}` : '/api/admin/products';
+
+      if (!productId && printifyImport) {
+        const res = await fetch('/api/admin/print-providers/products/publish', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            externalId: printifyImport.externalId,
+            name: formData.name,
+            slug: formData.slug,
+            description: formData.description,
+            price: formData.price,
+            isPublished: formData.isPublished,
+            selectedVariantIds: printifyImport.selectedVariantIds,
+            seo: {
+              metaTitle: formData.metaTitle,
+              metaDescription: formData.metaDescription,
+              keywords: formData.keywords,
+              focusKeyword: formData.focusKeyword,
+            },
+          }),
+        });
+
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || 'Failed to publish Printify product');
+        }
+
+        router.push('/admin/products');
+        router.refresh();
+        return;
+      }
 
       const res = await fetch(endpoint, {
         method,
@@ -230,6 +291,67 @@ export default function ProductForm({ productId }: ProductFormProps) {
     }));
   };
 
+  const loadPrintifyProducts = async () => {
+    setPrintifyLoading(true);
+    setPrintifyError(null);
+    try {
+      const res = await fetch('/api/admin/print-providers/products?limit=50&provider=printify');
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to load Printify products');
+      }
+      setPrintifyProducts(data.products || []);
+    } catch (err) {
+      setPrintifyError(err instanceof Error ? err.message : 'Failed to load Printify products');
+    } finally {
+      setPrintifyLoading(false);
+    }
+  };
+
+  const handleOpenPrintifyModal = async () => {
+    setShowPrintifyModal(true);
+    if (printifyProducts.length === 0) {
+      await loadPrintifyProducts();
+    }
+  };
+
+  const handleImportFromPrintify = (product: PrintifyProduct) => {
+    const variants = Array.isArray(product.variants) ? product.variants : [];
+    const avgPrice = variants.length
+      ? variants.reduce((sum, v) => sum + (parseFloat(String(v.price)) || 0), 0) / variants.length
+      : 0;
+    const nextSlug = product.name
+      ? product.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+      : '';
+    const imageUrls = [product.mockupUrls?.main, ...(product.mockupUrls?.all || [])]
+      .filter((url): url is string => Boolean(url));
+    const images = imageUrls.map((url, index) => ({
+      url,
+      alt: `${product.name} - View ${index + 1}`,
+    }));
+
+    setFormData(prev => ({
+      ...prev,
+      name: product.name || prev.name,
+      slug: nextSlug || prev.slug,
+      description: product.description || '',
+      price: avgPrice ? avgPrice.toFixed(2) : prev.price,
+      metaTitle: product.name || prev.metaTitle,
+      metaDescription: product.description ? product.description.substring(0, 160) : prev.metaDescription,
+      ogImage: product.mockupUrls?.main || prev.ogImage,
+      images: images.length > 0 ? images : prev.images,
+      isPublished: false,
+    }));
+
+    setPrintifyImport({
+      externalId: product.externalId,
+      selectedVariantIds: variants.map(v => String(v.id)).filter(Boolean),
+      name: product.name || 'Printify product',
+    });
+
+    setShowPrintifyModal(false);
+  };
+
   const handleAiGenerateSEO = async () => {
     const hasImages = formData.images && formData.images.length > 0;
     if (!formData.name && !hasImages) return;
@@ -287,6 +409,41 @@ export default function ProductForm({ productId }: ProductFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {allowPrintifyImport && !productId && (
+        <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm border border-novraux-ash/10 dark:border-novraux-graphite p-6 flex flex-col gap-4 transition-colors">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <h2 className="font-serif text-xl font-light text-novraux-obsidian dark:text-novraux-bone transition-colors">Import from Printify</h2>
+              <p className="text-xs text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">
+                Choose a product from your Printify store to prefill this form.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={handleOpenPrintifyModal}
+              className="px-4 py-2 text-xs font-medium bg-novraux-obsidian text-novraux-bone dark:bg-novraux-gold dark:text-novraux-obsidian rounded-sm hover:bg-novraux-gold hover:text-novraux-obsidian dark:hover:bg-novraux-bone dark:hover:text-novraux-obsidian transition-colors"
+            >
+              Select Printify Product
+            </button>
+          </div>
+
+          {printifyImport && (
+            <div className="flex items-center justify-between text-xs bg-novraux-ash/5 dark:bg-novraux-obsidian/60 border border-novraux-ash/10 dark:border-novraux-graphite rounded-sm px-4 py-3">
+              <span className="text-novraux-obsidian dark:text-novraux-bone">
+                Imported: {printifyImport.name} ({printifyImport.selectedVariantIds.length} variants)
+              </span>
+              <button
+                type="button"
+                onClick={() => setPrintifyImport(null)}
+                className="text-novraux-ash hover:text-novraux-obsidian dark:text-novraux-bone/60 dark:hover:text-novraux-bone transition-colors"
+              >
+                Clear Import
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
       {error && (
         <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-300 rounded-sm text-sm font-light transition-colors">
           {error}
@@ -365,6 +522,27 @@ export default function ProductForm({ productId }: ProductFormProps) {
               ))}
             </select>
           </div>
+        </div>
+
+        {/* Visibility */}
+        <div className="pt-4 border-t border-novraux-ash/10 dark:border-novraux-graphite/50">
+          <h3 className="font-serif text-lg text-novraux-obsidian dark:text-novraux-bone mb-4">Visibility</h3>
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="isPublished"
+              name="isPublished"
+              checked={formData.isPublished}
+              onChange={(e) => setFormData(prev => ({ ...prev, isPublished: e.target.checked }))}
+              className="w-4 h-4 rounded border-novraux-ash/20 text-novraux-gold focus:ring-novraux-gold bg-white dark:bg-novraux-graphite"
+            />
+            <label htmlFor="isPublished" className="text-sm font-medium text-novraux-obsidian dark:text-novraux-bone cursor-pointer select-none">
+              Visible on storefront
+            </label>
+          </div>
+          <p className="text-xs text-novraux-ash dark:text-novraux-bone/60 mt-2">
+            Keep this off to save a draft that is hidden from customers.
+          </p>
         </div>
 
         {/* Discount / Sale Section */}
@@ -579,6 +757,66 @@ export default function ProductForm({ productId }: ProductFormProps) {
           Cancel
         </button>
       </div>
+
+      {allowPrintifyImport && showPrintifyModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-3xl bg-white dark:bg-novraux-graphite border border-novraux-ash/20 dark:border-novraux-graphite rounded-sm shadow-2xl">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-novraux-ash/10 dark:border-novraux-graphite">
+              <h3 className="font-serif text-xl text-novraux-obsidian dark:text-novraux-bone">Select Printify Product</h3>
+              <button
+                type="button"
+                onClick={() => setShowPrintifyModal(false)}
+                className="text-novraux-ash hover:text-novraux-obsidian dark:text-novraux-bone/60 dark:hover:text-novraux-bone transition-colors"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="px-6 py-4 space-y-4 max-h-[70vh] overflow-y-auto">
+              {printifyLoading && (
+                <div className="text-sm text-novraux-ash dark:text-novraux-bone/60">Loading Printify products...</div>
+              )}
+              {printifyError && (
+                <div className="text-sm text-red-600 dark:text-red-400">{printifyError}</div>
+              )}
+
+              {!printifyLoading && printifyProducts.length === 0 && !printifyError && (
+                <div className="text-sm text-novraux-ash dark:text-novraux-bone/60">
+                  No Printify products found. Sync your catalog first.
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {printifyProducts.map((product) => (
+                  <button
+                    key={product.externalId}
+                    type="button"
+                    onClick={() => handleImportFromPrintify(product)}
+                    className="group flex items-center gap-4 border border-novraux-ash/10 dark:border-novraux-graphite rounded-sm p-4 text-left hover:border-novraux-gold hover:bg-novraux-ash/5 dark:hover:bg-novraux-obsidian transition-colors"
+                  >
+                    <div className="w-14 h-14 bg-novraux-ash/10 dark:bg-novraux-obsidian rounded-sm overflow-hidden flex items-center justify-center text-[10px] text-novraux-ash/60 dark:text-novraux-bone/40">
+                      {product.mockupUrls?.main ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={product.mockupUrls.main} alt={product.name} className="w-full h-full object-cover" />
+                      ) : (
+                        'No Image'
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-novraux-obsidian dark:text-novraux-bone group-hover:text-novraux-gold transition-colors">
+                        {product.name}
+                      </div>
+                      <div className="text-xs text-novraux-ash dark:text-novraux-bone/60 mt-1">
+                        {Array.isArray(product.variants) ? product.variants.length : 0} variants
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </form>
   );
 }

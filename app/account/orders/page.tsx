@@ -8,7 +8,8 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 export default async function OrdersPage() {
-    const sessionToken = cookies().get('userSession')?.value;
+    const cookieStore = await cookies();
+    const sessionToken = cookieStore.get('userSession')?.value;
     if (!sessionToken) redirect('/auth/login');
 
     const session = await getUserSession(sessionToken);

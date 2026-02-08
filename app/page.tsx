@@ -6,6 +6,7 @@ import ProductCard from '@/components/ProductCard';
 export default async function HomePage() {
   const [featuredProducts, latestPosts] = await Promise.all([
     prisma.product.findMany({
+      where: { isPublished: true },
       take: 6,
       include: {
         category: true,

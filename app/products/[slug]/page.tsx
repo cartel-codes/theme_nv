@@ -72,7 +72,8 @@ export default async function ProductPage({ params }: PageProps) {
   const relatedProducts = await prisma.product.findMany({
     where: {
       categoryId: product.categoryId,
-      id: { not: product.id }
+      id: { not: product.id },
+      isPublished: true
     },
     take: 4,
     include: {
@@ -139,7 +140,12 @@ export default async function ProductPage({ params }: PageProps) {
             </div>
             <div>
               <span className="block text-[#8B8B8B] dark:text-novraux-beige/60 uppercase tracking-[0.25em] mb-1.5 font-medium text-[11px]">Availability</span>
-              {product.variants.reduce((acc, v) => acc + (v.inventory?.quantity || 0), 0) > 0 ? (
+              {product.variants.reduce((acc, v) => {
+                const totalQty = Array.isArray(v.inventory) 
+                  ? v.inventory.reduce((sum, inv) => sum + inv.quantity, 0)
+                  : 0;
+                return acc + totalQty;
+              }, 0) > 0 ? (
                 <span className="text-green-600 dark:text-green-400 font-medium">In Stock</span>
               ) : (
                 <span className="text-red-600 dark:text-red-400 font-medium">Out of Stock</span>

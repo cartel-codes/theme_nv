@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
 
         // Process results and optionally save to R2
         const results = await Promise.all(
-            response.data.map(async (img) => {
+            (response.data || []).map(async (img) => {
                 let imageUrl: string;
                 
                 // gpt-image-1 returns base64, DALL-E returns URL

@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     }
 
     // Check if coupon has expired
-    if (coupon.expiresAt && new Date() > coupon.expiresAt) {
+    if (coupon.validUntil && new Date() > coupon.validUntil) {
       return NextResponse.json(
         { message: 'This coupon has expired' },
         { status: 400 }

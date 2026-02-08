@@ -1,6 +1,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { PrintifyAPI } from './api';
+import { resolvePrintifyApiKey } from './auth';
 
 // This is the token the user provided. 
 // Ideally we store this via Admin UI, but for initial setup we hardcode/seed it or use it if provided.
@@ -32,7 +33,8 @@ export async function syncPrintifyProducts() {
             });
         }
 
-        const api = new PrintifyAPI(provider.apiKey);
+        const apiKey = resolvePrintifyApiKey(provider.apiKey);
+        const api = new PrintifyAPI(apiKey);
 
         // 2. Get Shop ID
         let shopId = provider.shopId;
@@ -185,6 +187,7 @@ export async function createProductFromPrintify(
                 price: finalPrice,
                 imageUrl: mainImage,
                 isPrintOnDemand: true,
+                isPublished: localProductData.isPublished === true,
                 printProductId: printProduct.id,
                 // SEO
                 metaTitle: seoData.metaTitle || baseName,

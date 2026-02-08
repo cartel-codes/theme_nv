@@ -1,10 +1,12 @@
 import AdminUserForm from '@/components/admin/AdminUserForm';
 
-export default function EditAdminUserPage({
+export default async function EditAdminUserPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
+  
   return (
     <div className="space-y-6">
       <div>
@@ -12,7 +14,7 @@ export default function EditAdminUserPage({
         <p className="text-novraux-ash dark:text-novraux-bone/70 mt-2 font-light transition-colors">Update administrator details</p>
       </div>
 
-      <AdminUserForm userId={params.id} />
+      <AdminUserForm userId={id} />
     </div>
   );
 }

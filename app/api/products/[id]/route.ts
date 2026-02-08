@@ -9,7 +9,9 @@ export async function GET(
     const { id } = await params;
 
     const product = await prisma.product.findFirst({
-      where: { OR: [{ id }, { slug: id }] },
+      where: {
+        OR: [{ id, isPublished: true }, { slug: id, isPublished: true }],
+      },
       include: { category: true },
     });
 

@@ -2,20 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import { PrintifyAPI } from '@/lib/print-providers/printify/api';
+import { resolvePrintifyApiKey } from '@/lib/print-providers/printify/auth';
 
 // GET /api/admin/printify/blueprints/[id] - Get blueprint details (providers + variants for first provider)
 export async function GET(
     req: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const session = await getSession();
 
         if (!session) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const blueprintId = parseInt(params.id);
+        const blueprintId = parseInt(id);
         if (isNaN(blueprintId)) {
             return NextResponse.json({ error: 'Invalid blueprint ID' }, { status: 400 });
         }
@@ -32,7 +34,8 @@ export async function GET(
             );
         }
 
-        const api = new PrintifyAPI(providerConfig.apiKey);
+        const apiKey = resolvePrintifyApiKey(providerConfig.apiKey);
+        const api = new PrintifyAPI(apiKey);
 
         // 1. Get Full Blueprint Data (for images and info)
         const blueprint = await api.getBlueprint(blueprintId);

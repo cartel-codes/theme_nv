@@ -34,14 +34,20 @@ export async function POST(request: NextRequest) {
         console.log('   Suggested category:', suggestion.suggestedCategory || '(none)');
         console.log('============================================================\n');
 
-        return NextResponse.json(suggestion);
+        return NextResponse.json({
+            success: true,
+            seo: suggestion
+        });
     } catch (error: any) {
         console.error('\n❌ SEO generation API error:');
         console.error('   Message:', error?.message);
         console.error('   Code:', error?.code);
         console.error('============================================================\n');
         return NextResponse.json(
-            { error: error.message || 'Failed to generate SEO with AI' },
+            { 
+                success: false,
+                error: error.message || 'Failed to generate SEO with AI' 
+            },
             { status: 500 }
         );
     }

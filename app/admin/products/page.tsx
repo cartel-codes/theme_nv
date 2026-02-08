@@ -15,6 +15,7 @@ interface Product {
     images: { id: string; url: string; alt: string }[];
     inventory?: { quantity: number; reserved: number }[];
     createdAt: string;
+    isPublished: boolean;
 }
 
 interface PaginationInfo {
@@ -33,6 +34,12 @@ export default function AdminProductsPage() {
     const [productToDelete, setProductToDelete] = useState<Product | null>(null);
     const [deleting, setDeleting] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+    const [bulkDeleting, setBulkDeleting] = useState(false);
+    const [bulkPublishOpen, setBulkPublishOpen] = useState(false);
+    const [bulkPublishing, setBulkPublishing] = useState(false);
+    const [publishAction, setPublishAction] = useState<'publish' | 'unpublish'>('publish');
 
     useEffect(() => {
         fetchProducts();
@@ -98,6 +105,94 @@ export default function AdminProductsPage() {
         }
     };
 
+    const toggleSelection = (productId: string) => {
+        setSelectedIds(prev => {
+            const next = new Set(prev);
+            if (next.has(productId)) {
+                next.delete(productId);
+            } else {
+                next.add(productId);
+            }
+            return next;
+        });
+    };
+
+    const toggleSelectAll = () => {
+        if (selectedIds.size === products.length) {
+            setSelectedIds(new Set());
+        } else {
+            setSelectedIds(new Set(products.map(product => product.id)));
+        }
+    };
+
+    const closeBulkDelete = () => {
+        setBulkDeleteOpen(false);
+    };
+
+    const handleBulkPublish = async () => {
+        if (selectedIds.size === 0) return;
+
+        setBulkPublishing(true);
+        try {
+            const ids = Array.from(selectedIds);
+            const isPublished = publishAction === 'publish';
+            
+            const results = await Promise.all(
+                ids.map(id => 
+                    fetch(`/api/admin/products/${id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ isPublished })
+                    })
+                )
+            );
+
+            const failed = results.filter(res => !res.ok);
+            if (failed.length > 0) {
+                const data = await failed[0].json();
+                throw new Error(data.error || 'Failed to update selected products');
+            }
+
+            // Refresh products list
+            await fetchProducts(searchTerm);
+            setSelectedIds(new Set());
+            setBulkPublishOpen(false);
+        } catch (error: any) {
+            console.error('Bulk publish failed:', error);
+            alert(error.message || 'Failed to update products');
+        } finally {
+            setBulkPublishing(false);
+        }
+    };
+
+    const handleBulkDelete = async () => {
+        if (selectedIds.size === 0) return;
+
+        setBulkDeleting(true);
+        try {
+            const ids = Array.from(selectedIds);
+            const results = await Promise.all(
+                ids.map(id => fetch(`/api/admin/products/${id}`, { method: 'DELETE' }))
+            );
+
+            const failed = results.filter(res => !res.ok);
+            if (failed.length > 0) {
+                const data = await failed[0].json();
+                throw new Error(data.error || 'Failed to delete selected products');
+            }
+
+            setProducts(prev => prev.filter(product => !selectedIds.has(product.id)));
+            setSelectedIds(new Set());
+            setBulkDeleteOpen(false);
+            router.refresh();
+        } catch (err) {
+            console.error('Bulk delete failed:', err);
+            alert(err instanceof Error ? err.message : 'Bulk delete failed');
+        } finally {
+            setBulkDeleting(false);
+        }
+    };
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -147,6 +242,50 @@ export default function AdminProductsPage() {
                 )}
             </form>
 
+            {selectedIds.size > 0 && (
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-novraux-bone dark:bg-novraux-graphite border border-novraux-ash/10 dark:border-novraux-graphite rounded-sm p-4">
+                    <div className="text-sm text-novraux-obsidian dark:text-novraux-bone">
+                        {selectedIds.size} selected
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setPublishAction('publish');
+                                setBulkPublishOpen(true);
+                            }}
+                            className="px-4 py-2 text-xs font-normal bg-green-600 text-white rounded-sm hover:bg-green-700 transition-colors uppercase tracking-novraux-medium"
+                        >
+                            Publish Selected
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setPublishAction('unpublish');
+                                setBulkPublishOpen(true);
+                            }}
+                            className="px-4 py-2 text-xs font-normal bg-gray-600 text-white rounded-sm hover:bg-gray-700 transition-colors uppercase tracking-novraux-medium"
+                        >
+                            Unpublish Selected
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setSelectedIds(new Set())}
+                            className="px-3 py-2 text-xs text-novraux-ash dark:text-novraux-bone/70 hover:text-novraux-obsidian dark:hover:text-novraux-bone transition-colors uppercase tracking-novraux-medium"
+                        >
+                            Clear Selection
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => setBulkDeleteOpen(true)}
+                            className="px-4 py-2 text-xs font-normal bg-red-600 text-white rounded-sm hover:bg-red-700 transition-colors uppercase tracking-novraux-medium"
+                        >
+                            Delete Selected
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Products Table */}
             <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-sm border border-novraux-ash/10 dark:border-novraux-graphite overflow-hidden transition-colors">
                 {loading ? (
@@ -159,6 +298,15 @@ export default function AdminProductsPage() {
                         <table className="w-full text-left text-sm">
                             <thead className="bg-novraux-obsidian/5 dark:bg-novraux-obsidian/20 border-b border-novraux-ash/20 dark:border-novraux-graphite text-xs uppercase tracking-novraux-medium text-novraux-ash dark:text-novraux-bone/70 transition-colors">
                                 <tr>
+                                    <th className="p-4 font-normal w-10">
+                                        <input
+                                            type="checkbox"
+                                            checked={products.length > 0 && selectedIds.size === products.length}
+                                            onChange={toggleSelectAll}
+                                            className="h-4 w-4 rounded border-novraux-ash/30 text-novraux-gold focus:ring-novraux-gold"
+                                            aria-label="Select all products"
+                                        />
+                                    </th>
                                     <th className="p-4 font-normal">Image</th>
                                     <th className="p-4 font-normal">Name</th>
                                     <th className="p-4 font-normal hidden sm:table-cell">SKU / ID</th>
@@ -175,6 +323,15 @@ export default function AdminProductsPage() {
 
                                     return (
                                         <tr key={product.id} className="hover:bg-novraux-obsidian/5 dark:hover:bg-novraux-obsidian/30 transition-colors">
+                                            <td className="p-4">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedIds.has(product.id)}
+                                                    onChange={() => toggleSelection(product.id)}
+                                                    className="h-4 w-4 rounded border-novraux-ash/30 text-novraux-gold focus:ring-novraux-gold"
+                                                    aria-label={`Select ${product.name}`}
+                                                />
+                                            </td>
                                             <td className="p-4 w-20">
                                                 <div className="relative w-12 h-16 bg-novraux-graphite dark:bg-novraux-obsidian rounded-sm overflow-hidden">
                                                     {displayImage ? (
@@ -194,10 +351,21 @@ export default function AdminProductsPage() {
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <span className="font-medium text-novraux-obsidian dark:text-novraux-bone transition-colors">{product.name}</span>
-                                                <span className="block text-xs text-novraux-ash/60 dark:text-novraux-bone/60 mt-0.5 sm:hidden font-light transition-colors">
-                                                    {product.id.slice(-8)}
-                                                </span>
+                                                <div className="flex items-center gap-2">
+                                                    <div>
+                                                        <span className="font-medium text-novraux-obsidian dark:text-novraux-bone transition-colors">{product.name}</span>
+                                                        <span className="block text-xs text-novraux-ash/60 dark:text-novraux-bone/60 mt-0.5 sm:hidden font-light transition-colors">
+                                                            {product.id.slice(-8)}
+                                                        </span>
+                                                    </div>
+                                                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium uppercase tracking-wide ${
+                                                        product.isPublished 
+                                                            ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
+                                                            : 'bg-gray-100 text-gray-600 dark:bg-gray-900/30 dark:text-gray-400'
+                                                    }`}>
+                                                        {product.isPublished ? 'Published' : 'Draft'}
+                                                    </span>
+                                                </div>
                                             </td>
                                             <td className="p-4 font-mono text-xs text-novraux-ash dark:text-novraux-bone/70 hidden sm:table-cell font-light transition-colors">
                                                 {product.id.slice(-8)}
@@ -245,7 +413,7 @@ export default function AdminProductsPage() {
                                 })}
                                 {products.length === 0 && (
                                     <tr>
-                                        <td colSpan={6} className="p-8 text-center text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">
+                                        <td colSpan={8} className="p-8 text-center text-novraux-ash dark:text-novraux-bone/70 font-light transition-colors">
                                             No products found.
                                         </td>
                                     </tr>
@@ -255,6 +423,112 @@ export default function AdminProductsPage() {
                     </div>
                 )}
             </div>
+
+            {bulkDeleteOpen && (
+                <div className="fixed inset-0 bg-novraux-obsidian/50 dark:bg-black/70 flex items-center justify-center z-50 p-4 transition-colors">
+                    <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-xl max-w-md w-full p-6 space-y-4 transition-colors">
+                        <div className="flex items-start gap-4">
+                            <div className="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-medium text-novraux-obsidian dark:text-novraux-bone transition-colors">Delete Products</h3>
+                                <p className="text-sm text-novraux-ash dark:text-novraux-bone/70 mt-1 font-light transition-colors">
+                                    Are you sure you want to delete {selectedIds.size} product{selectedIds.size !== 1 ? 's' : ''}? This action cannot be undone.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-2">
+                            <button
+                                onClick={closeBulkDelete}
+                                disabled={bulkDeleting}
+                                className="px-4 py-2 text-sm font-normal text-novraux-obsidian dark:text-novraux-bone hover:bg-novraux-ash/10 dark:hover:bg-novraux-obsidian rounded-sm transition-colors disabled:opacity-50 uppercase tracking-novraux-medium"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleBulkDelete}
+                                disabled={bulkDeleting}
+                                className="px-4 py-2 text-sm font-normal bg-red-600 text-white rounded-sm hover:bg-red-700 transition-colors disabled:opacity-50 flex items-center gap-2 uppercase tracking-novraux-medium"
+                            >
+                                {bulkDeleting ? (
+                                    <>
+                                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                        Deleting...
+                                    </>
+                                ) : (
+                                    'Delete Products'
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {bulkPublishOpen && (
+                <div className="fixed inset-0 bg-novraux-obsidian/50 dark:bg-black/70 flex items-center justify-center z-50 p-4 transition-colors">
+                    <div className="bg-novraux-bone dark:bg-novraux-graphite rounded-sm shadow-xl max-w-md w-full p-6 space-y-4 transition-colors">
+                        <div className="flex items-start gap-4">
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                publishAction === 'publish' 
+                                    ? 'bg-green-100 dark:bg-green-900/30' 
+                                    : 'bg-gray-100 dark:bg-gray-900/30'
+                            }`}>
+                                <svg className={`w-5 h-5 ${
+                                    publishAction === 'publish' 
+                                        ? 'text-green-600 dark:text-green-400' 
+                                        : 'text-gray-600 dark:text-gray-400'
+                                }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-medium text-novraux-obsidian dark:text-novraux-bone transition-colors">
+                                    {publishAction === 'publish' ? 'Publish' : 'Unpublish'} Products
+                                </h3>
+                                <p className="text-sm text-novraux-ash dark:text-novraux-bone/70 mt-1 font-light transition-colors">
+                                    {publishAction === 'publish' 
+                                        ? `Make ${selectedIds.size} product${selectedIds.size !== 1 ? 's' : ''} visible on the storefront?`
+                                        : `Hide ${selectedIds.size} product${selectedIds.size !== 1 ? 's' : ''} from the storefront?`
+                                    }
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-2">
+                            <button
+                                onClick={() => setBulkPublishOpen(false)}
+                                disabled={bulkPublishing}
+                                className="px-4 py-2 text-sm font-normal text-novraux-obsidian dark:text-novraux-bone hover:bg-novraux-ash/10 dark:hover:bg-novraux-obsidian rounded-sm transition-colors disabled:opacity-50 uppercase tracking-novraux-medium"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleBulkPublish}
+                                disabled={bulkPublishing}
+                                className={`px-4 py-2 text-sm font-normal text-white rounded-sm transition-colors disabled:opacity-50 flex items-center gap-2 uppercase tracking-novraux-medium ${
+                                    publishAction === 'publish'
+                                        ? 'bg-green-600 hover:bg-green-700'
+                                        : 'bg-gray-600 hover:bg-gray-700'
+                                }`}
+                            >
+                                {bulkPublishing ? (
+                                    <>
+                                        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                        Updating...
+                                    </>
+                                ) : (
+                                    publishAction === 'publish' ? 'Publish Products' : 'Unpublish Products'
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Delete Confirmation Modal */}
             {deleteModalOpen && productToDelete && (

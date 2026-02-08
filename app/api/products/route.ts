@@ -16,6 +16,7 @@ export async function GET(request: Request) {
           : { name: order as 'asc' | 'desc' };
 
     const products = await prisma.product.findMany({
+      where: { isPublished: true },
       include: {
         category: true,
         images: {

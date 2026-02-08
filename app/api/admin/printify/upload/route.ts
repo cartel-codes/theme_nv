@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import { PrintifyAPI } from '@/lib/print-providers/printify/api';
+import { resolvePrintifyApiKey } from '@/lib/print-providers/printify/auth';
 
 // POST /api/admin/printify/upload - Upload image to Printify
 export async function POST(req: NextRequest) {
@@ -41,7 +42,8 @@ export async function POST(req: NextRequest) {
       fullImageUrl = `${baseUrl}${imageUrl}`;
     }
 
-    const api = new PrintifyAPI(provider.apiKey);
+    const apiKey = resolvePrintifyApiKey(provider.apiKey);
+    const api = new PrintifyAPI(apiKey);
     const uploadResponse = await api.uploadImage(fullImageUrl, fileName);
 
     // Extract image ID from response

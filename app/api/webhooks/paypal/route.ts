@@ -77,7 +77,8 @@ export async function POST(request: NextRequest) {
                 try {
                     const { sendOrderConfirmation } = await import('@/lib/email');
                     if (order.user?.email) {
-                        await sendOrderConfirmation(order, order.user.email);
+                        // Cast to correct type since we know product should exist for paid orders
+                        await sendOrderConfirmation(order as any, order.user.email);
                         console.log(`[PayPal Webhook] Sent confirmation email to ${order.user.email}`);
                     }
                 } catch (emailError) {

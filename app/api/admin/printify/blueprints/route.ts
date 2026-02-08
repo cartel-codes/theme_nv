@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import { PrintifyAPI } from '@/lib/print-providers/printify/api';
+import { resolvePrintifyApiKey } from '@/lib/print-providers/printify/auth';
 
 // GET /api/admin/printify/blueprints - Get all Printify product types
 export async function GET(req: NextRequest) {
@@ -24,7 +25,8 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const api = new PrintifyAPI(provider.apiKey);
+    const apiKey = resolvePrintifyApiKey(provider.apiKey);
+    const api = new PrintifyAPI(apiKey);
     const blueprints = await api.getBlueprints();
 
     return NextResponse.json({ blueprints });

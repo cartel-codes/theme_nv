@@ -388,7 +388,7 @@ export default function ProductVariantForm({ productId }: ProductVariantFormProp
                                     </div>
                                 ))}
                             </div>
-                            <p className="text-xs text-neutral-500 mt-3">💡 Leave blank or 0 for sizes you don't have in stock</p>
+                            <p className="text-xs text-neutral-500 mt-3">💡 Leave blank or 0 for sizes you don&apos;t have in stock</p>
                         </div>
 
                         {/* Submit Button */}

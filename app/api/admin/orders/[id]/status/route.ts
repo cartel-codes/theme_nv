@@ -5,9 +5,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function PATCH(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const admin = await getSession();
         if (!admin) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -21,7 +22,7 @@ export async function PATCH(
             return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
         }
 
-        const updatedOrder = await updateOrderStatus(params.id, status);
+        const updatedOrder = await updateOrderStatus(id, status);
 
         return NextResponse.json({ success: true, order: updatedOrder });
     } catch (error) {

@@ -26,6 +26,7 @@ model Product {
   discountPercentage Decimal?      @db.Decimal(5, 2)
   discountExpiresAt DateTime?
   isOnSale        Boolean          @default(false)
+  isPublished     Boolean          @default(false)
   isPrintOnDemand Boolean          @default(false)
   printProductId  String?
   cartItems       CartItem[]
@@ -42,6 +43,7 @@ model Product {
   @@index([categoryId])
   @@index([slug])
   @@index([isOnSale])
+  @@index([isPublished])
   @@index([isPrintOnDemand])
   @@index([printProductId])
 }

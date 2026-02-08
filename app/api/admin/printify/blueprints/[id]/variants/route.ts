@@ -2,20 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/session';
 import { prisma } from '@/lib/prisma';
 import { PrintifyAPI } from '@/lib/print-providers/printify/api';
+import { resolvePrintifyApiKey } from '@/lib/print-providers/printify/auth';
 
 // GET /api/admin/printify/blueprints/[id]/variants?providerId=X - Get variants
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getSession();
 
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const blueprintId = parseInt(params.id);
+    const blueprintId = parseInt(id);
     const providerId = parseInt(req.nextUrl.searchParams.get('providerId') || '');
 
     if (isNaN(blueprintId) || isNaN(providerId)) {
@@ -37,7 +39,8 @@ export async function GET(
       );
     }
 
-    const api = new PrintifyAPI(provider.apiKey);
+    const apiKey = resolvePrintifyApiKey(provider.apiKey);
+    const api = new PrintifyAPI(apiKey);
     const variantsRaw = await api.getBlueprintVariants(blueprintId, providerId);
     const variants = Array.isArray(variantsRaw) ? variantsRaw : (variantsRaw.variants || []);
 

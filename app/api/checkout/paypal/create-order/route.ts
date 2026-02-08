@@ -41,7 +41,10 @@ export async function POST(request: NextRequest) {
         // 3. Fetch Products and Calculate Totals (Server-side validation)
         const productIds = Array.from(new Set(items.map((item: any) => item.productId))) as string[];
         const products = await prisma.product.findMany({
-            where: { id: { in: productIds } },
+            where: { 
+                id: { in: productIds },
+                isPublished: true 
+            },
             include: { variants: true }
         });
 

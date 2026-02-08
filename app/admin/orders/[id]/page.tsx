@@ -22,11 +22,12 @@ function currencyFmt(n: number) {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n);
 }
 
-export default async function AdminOrderDetailPage({ params }: { params: { id: string } }) {
+export default async function AdminOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const admin = await getSession();
     if (!admin) redirect('/admin/login');
 
-    const order = await getAdminOrder(params.id);
+    const { id } = await params;
+    const order = await getAdminOrder(id);
 
     if (!order) {
         return (
@@ -94,9 +95,9 @@ export default async function AdminOrderDetailPage({ params }: { params: { id: s
                                     <div className="flex items-center gap-4">
                                         <div className="w-14 h-14 rounded-sm overflow-hidden bg-novraux-ash/5 dark:bg-novraux-obsidian flex-shrink-0 border border-novraux-ash/10 dark:border-novraux-obsidian">
                                             {(() => {
-                                                const imgUrl = item.product.imageUrl || item.product.images?.[0]?.url;
+                                                const imgUrl = item.product?.imageUrl || item.product?.images?.[0]?.url;
                                                 return imgUrl ? (
-                                                    <Image src={imgUrl} alt={item.product.name} width={56} height={56} className="w-full h-full object-cover" />
+                                                    <Image src={imgUrl} alt={item.product?.name || 'Product'} width={56} height={56} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <span className="flex items-center justify-center w-full h-full text-[9px] text-novraux-ash dark:text-novraux-bone/40 uppercase tracking-wider">No img</span>
                                                 );
@@ -104,12 +105,12 @@ export default async function AdminOrderDetailPage({ params }: { params: { id: s
                                         </div>
                                         <div>
                                             <Link href={`/admin/products/${item.productId}`} className="text-sm font-medium text-novraux-obsidian dark:text-novraux-bone hover:text-novraux-gold transition-colors">
-                                                {item.product.name}
+                                                {item.product?.name || 'Product'}
                                             </Link>
                                             <p className="text-[10px] text-novraux-ash dark:text-novraux-bone/50 mt-0.5">
                                                 {item.variantId ? `${item.variant?.name}: ${item.variant?.value}` : 'Standard'} &middot; Qty: {item.quantity}
                                             </p>
-                                            <p className="text-[9px] text-novraux-ash/60 dark:text-novraux-bone/30 font-mono mt-0.5">SKU: {item.variant?.sku || item.productId.slice(-8)}</p>
+                                            <p className="text-[9px] text-novraux-ash/60 dark:text-novraux-bone/30 font-mono mt-0.5">SKU: {item.variant?.sku || (item.productId ? item.productId.slice(-8) : 'N/A')}</p>
                                         </div>
                                     </div>
                                     <div className="text-right">

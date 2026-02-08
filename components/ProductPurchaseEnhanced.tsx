@@ -238,22 +238,23 @@ export default function ProductPurchaseEnhanced({
 
             {/* Selectors */}
             {variants.length > 0 && (
-                <div className="space-y-8">
+                <div className="space-y-10">
                     {optionKeys.map((optionName) => {
                         const isColor = optionName.toLowerCase() === 'color' || optionName.toLowerCase() === 'colour';
+                        const isSize = optionName.toLowerCase() === 'size';
 
                         return (
-                            <div key={optionName} className="space-y-4">
-                                <div className="flex justify-between items-center text-[10px] uppercase tracking-[0.25em]">
-                                    <span className="text-neutral-500">{optionName}</span>
+                            <div key={optionName} className="space-y-5">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-xs uppercase tracking-[0.25em] text-neutral-500 font-medium">{optionName}</span>
                                     {selectedOptions[optionName] && (
-                                        <span className="text-novraux-obsidian dark:text-novraux-cream font-medium">
+                                        <span className="text-sm text-novraux-obsidian dark:text-novraux-cream font-medium tracking-wide">
                                             {selectedOptions[optionName]}
                                         </span>
                                     )}
                                 </div>
 
-                                <div className={`flex flex-wrap ${isColor ? 'gap-4' : 'gap-x-8 gap-y-3'}`}>
+                                <div className={`flex flex-wrap ${isColor ? 'gap-3' : 'gap-3'}`}>
                                     {Array.from(optionsMap[optionName] || []).map((value) => {
                                         const isSelected = selectedOptions[optionName] === value;
 
@@ -264,29 +265,59 @@ export default function ProductPurchaseEnhanced({
                                                     key={value}
                                                     onClick={() => handleOptionSelect(optionName, value)}
                                                     className={`
-                                                        w-8 h-8 rounded-full transition-all duration-300 relative
+                                                        group relative flex flex-col items-center gap-2 transition-all duration-300
+                                                    `}
+                                                    title={value}
+                                                >
+                                                    <div className={`
+                                                        w-12 h-12 rounded-full transition-all duration-300 
                                                         ${isSelected
-                                                            ? 'ring-1 ring-offset-4 ring-novraux-obsidian dark:ring-novraux-gold dark:ring-offset-black scale-110'
-                                                            : 'hover:scale-110 opacity-80 hover:opacity-100'
+                                                            ? 'ring-2 ring-offset-4 ring-novraux-obsidian dark:ring-novraux-gold scale-110 shadow-lg'
+                                                            : 'hover:scale-110 opacity-80 hover:opacity-100 hover:shadow-md'
                                                         }
-                                                        ${isLight ? 'border border-black/10' : ''}
+                                                        ${isLight ? 'border-2 border-black/10' : ''}
                                                     `}
                                                     style={{ backgroundColor: bg }}
-                                                    title={value}
-                                                />
+                                                    />
+                                                    <span className={`text-[10px] tracking-wider uppercase transition-colors ${
+                                                        isSelected ? 'text-novraux-obsidian dark:text-novraux-gold font-medium' : 'text-neutral-400'
+                                                    }`}>
+                                                        {value}
+                                                    </span>
+                                                </button>
                                             );
                                         }
 
-                                        // Text options (Size, Material, etc)
+                                        // Size options with larger touch targets
+                                        if (isSize) {
+                                            return (
+                                                <button
+                                                    key={value}
+                                                    onClick={() => handleOptionSelect(optionName, value)}
+                                                    className={`
+                                                        min-w-[3rem] px-4 py-3 text-sm uppercase tracking-[0.15em] transition-all duration-300
+                                                        border-2 rounded-sm font-medium
+                                                        ${isSelected
+                                                            ? 'border-novraux-obsidian bg-novraux-obsidian text-white dark:border-novraux-gold dark:bg-novraux-gold dark:text-novraux-obsidian shadow-lg'
+                                                            : 'border-neutral-200 text-neutral-600 hover:border-novraux-obsidian dark:border-neutral-700 dark:text-neutral-300 dark:hover:border-novraux-gold hover:shadow-md'
+                                                        }
+                                                    `}
+                                                >
+                                                    {value}
+                                                </button>
+                                            );
+                                        }
+
+                                        // Text options (Material, etc)
                                         return (
                                             <button
                                                 key={value}
                                                 onClick={() => handleOptionSelect(optionName, value)}
                                                 className={`
-                                                    pb-1 text-xs uppercase tracking-[0.15em] transition-all duration-300 border-b
+                                                    px-5 py-2.5 text-xs uppercase tracking-[0.15em] transition-all duration-300 border-b-2
                                                     ${isSelected
                                                         ? 'border-novraux-obsidian text-novraux-obsidian dark:border-novraux-gold dark:text-novraux-gold font-medium'
-                                                        : 'border-transparent text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300'
+                                                        : 'border-transparent text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 hover:border-neutral-300'
                                                     }
                                                 `}
                                             >
@@ -304,14 +335,24 @@ export default function ProductPurchaseEnhanced({
             {/* Actions */}
             <div className="space-y-6 pt-4">
                 {/* Stock Indicator */}
-                <div className="min-h-[20px] text-[10px] uppercase tracking-[0.2em]">
+                <div className="min-h-[32px] flex items-center">
                     {isSelectionComplete && selectedVariant ? (
-                        <div className={`flex items-center gap-2 ${isOutOfStock ? 'text-red-900' : 'text-green-900 dark:text-green-500'}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${isOutOfStock ? 'bg-red-900' : 'bg-green-600'}`} />
-                            {isOutOfStock ? 'Sold Out' : stockLimit < 5 ? `Low Stock (${stockLimit})` : 'Available'}
+                        <div className={`flex items-center gap-3 px-4 py-2 rounded-sm ${
+                            isOutOfStock 
+                                ? 'bg-red-50 dark:bg-red-900/20 text-red-900 dark:text-red-300' 
+                                : stockLimit < 5 
+                                    ? 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-900 dark:text-yellow-300'
+                                    : 'bg-green-50 dark:bg-green-900/20 text-green-900 dark:text-green-300'
+                        }`}>
+                            <span className={`w-2 h-2 rounded-full animate-pulse ${
+                                isOutOfStock ? 'bg-red-600' : stockLimit < 5 ? 'bg-yellow-600' : 'bg-green-600'
+                            }`} />
+                            <span className="text-xs uppercase tracking-[0.2em] font-medium">
+                                {isOutOfStock ? 'Sold Out' : stockLimit < 5 ? `Only ${stockLimit} Left` : 'In Stock'}
+                            </span>
                         </div>
                     ) : variants.length > 0 && (
-                        <span className="text-neutral-400">Select options</span>
+                        <span className="text-xs uppercase tracking-[0.2em] text-neutral-400">Please select all options</span>
                     )}
                 </div>
 

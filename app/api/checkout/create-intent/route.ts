@@ -75,7 +75,10 @@ export async function POST(request: NextRequest) {
         // Simplest strategy: iterate and fetch individually or fetch all affected products with variants included.
         const productIds = Array.from(new Set(items.map((item: any) => item.productId))) as string[];
         const products = await prisma.product.findMany({
-            where: { id: { in: productIds } },
+            where: { 
+                id: { in: productIds },
+                isPublished: true 
+            },
             include: { variants: true }
         });
 

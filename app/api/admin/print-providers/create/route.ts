@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { PrintifyAPI } from '@/lib/print-providers/printify/api';
+import { resolvePrintifyApiKey } from '@/lib/print-providers/printify/auth';
 import { syncPrintifyProducts } from '@/lib/print-providers/printify/products';
 
 export async function POST(request: Request) {
@@ -56,7 +57,8 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Printify not configured or Shop ID missing. Run a sync first.' }, { status: 400 });
         }
 
-        const api = new PrintifyAPI(provider.apiKey);
+        const apiKey = resolvePrintifyApiKey(provider.apiKey);
+        const api = new PrintifyAPI(apiKey);
 
         // 1. Get Image ID (Upload if only URL provided)
         let imageId = body.printifyImageId;

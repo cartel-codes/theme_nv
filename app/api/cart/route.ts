@@ -43,12 +43,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const product = await prisma.product.findUnique({
-      where: { id: productId },
+    const product = await prisma.product.findFirst({
+      where: { 
+        id: productId,
+        isPublished: true 
+      },
     });
 
     if (!product) {
-      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+      return NextResponse.json({ error: 'Product not found or not available' }, { status: 404 });
     }
 
     // Verify variant if provided
